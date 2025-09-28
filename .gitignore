@@ -1,0 +1,13 @@
+# First, ignore everything
+/*
+
+# Unignore .gitignore
+!.gitignore
+
+# Unignore src dir files
+!/src
+
+# Unignore build files
+!build.bat
+!buildList.txt
+
