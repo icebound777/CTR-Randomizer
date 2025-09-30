@@ -1,5 +1,7 @@
 #include <common.h>
+/* START Randomizer */
 #include "CTRRandomizer_database.h"
+/* END Randomizer */
 
 void AH_WarpPad_ThTick(struct Thread *t);
 void AH_WarpPad_ThDestroy(struct Thread *t);
@@ -87,8 +89,10 @@ void AH_WarpPad_LInB(struct Instance* inst)
         levelID = levelID * 10 + inst->name[i] - '0';
     }
 
+    /* START Randomizer */
     randomized_LevelID = database_fetch(DB_PREFIX_LEVELIDS | levelID, &db_fetch_result);
     if (db_fetch_result == DB_VALUE_OK) levelID = randomized_LevelID;
+    /* END Randomizer */
 
     warppadObj->levelID = levelID;
 
