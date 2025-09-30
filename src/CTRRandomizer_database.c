@@ -1,8 +1,12 @@
 #include <common.h>
 #include "CTRRandomizer_database.h"
 
+#define DB_END -1
+#define DB_RAMMARKER_START 0xDADB0D00, 0xDADB0D00
+#define DB_RAMMARKER_END 0xDADB0DAA, 0xDADB0DAA
 
 static int rando_database[] = {
+    DB_RAMMARKER_START,
     DB_PREFIX_LEVELIDS | CRASH_COVE,     CRASH_COVE,
     DB_PREFIX_LEVELIDS | ROO_TUBES,      ROO_TUBES,
     DB_PREFIX_LEVELIDS | TIGER_TEMPLE,   TIGER_TEMPLE,
@@ -21,7 +25,8 @@ static int rando_database[] = {
     DB_PREFIX_LEVELIDS | OXIDE_STATION,  OXIDE_STATION,
     DB_PREFIX_LEVELIDS | SLIDE_COLISEUM, SLIDE_COLISEUM,
     DB_PREFIX_LEVELIDS | TURBO_TRACK,    TURBO_TRACK,
-    -1
+    DB_RAMMARKER_END,
+    DB_END
 };
 
 
@@ -35,7 +40,7 @@ int database_fetch(
     int *fetch_result
 )
 {
-    for (int i = 0; rando_database[i] != -1; i+=2)
+    for (int i = 0; rando_database[i] != DB_END; i += 2)
     {
         if (rando_database[i] == db_key)
         {
