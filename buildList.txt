@@ -6,5 +6,9 @@
 // Compile code to empty spaces in RDATA
 common, exe, rdata_free, 0x0, src/CTRRandomizer_database.c
 
+// Modify New Savefile: Set all hints as already seen
+common, exe, rdata_free, 0x0, src/CTRRandomizer_init_profile.c
+common, exe, GAMEPROG_NewProfile_InsideAdv, 0x0, src/GAMEPROG_05_NewProfile_InsideAdv.c
+
 // Modify Warppad
 common, 232, AH_WarpPad_LInB, 0x0, src/AH_WarpPad_LInB.c
