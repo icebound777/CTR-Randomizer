@@ -27,6 +27,8 @@ void AH_WarpPad_LInB(struct Instance* inst)
 
     /* START Randomizer */
     int randomized_LevelID;
+    int randomized_unlock_item_type;
+    int randomized_unlock_item_count;
     int db_fetch_result;
     /* END Randomizer */
 
@@ -96,15 +98,67 @@ void AH_WarpPad_LInB(struct Instance* inst)
 
     warppadObj->levelID = levelID;
 
-    unlockItem_numNeeded = -1;
+    /* START Randomizer */
+    randomized_unlock_item_type = database_fetch(
+        DB_PREFIX_UNLOCK_ITEMTYPE | levelID,
+        &db_fetch_result
+    );
+    if (db_fetch_result == DB_VALUE_OK) randomized_unlock_item_type = STATIC_TROPHY;
+
+    unlockItem_numNeeded = database_fetch(
+        DB_PREFIX_UNLOCK_ITEMCOUNT | levelID,
+        &db_fetch_result
+    );
+    if (db_fetch_result == DB_VALUE_OK) unlockItem_numNeeded = 0;
+
+
+    unlockItem_modelID = randomized_unlock_item_type;
+    switch (unlockItem_modelID)
+    {
+        case STATIC_TROPHY:
+            // if trophy not owned
+            if(CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 6)) == 0)
+            {
+                unlockItem_modelID = STATIC_TROPHY;
+                unlockItem_numOwned = gGT->currAdvProfile.numTrophies;
+            }
+            else
+            {
+                unlockItem_modelID = STATIC_KEY;
+                unlockItem_numOwned = gGT->currAdvProfile.numKeys;
+                unlockItem_numNeeded = D232.arrKeysNeeded[data.metaDataLEV[levelID].hubID];
+            }
+            break;
+
+        case STATIC_RELIC:
+            //unlockItem_modelID = STATIC_RELIC;
+            unlockItem_numOwned = gGT->currAdvProfile.numRelics;
+            break;
+
+        case STATIC_GEM:
+            //unlockItem_modelID = STATIC_GEM;
+            // count number of gems owned
+            unlockItem_numOwned = 0;
+            for (i = 0; i < 5; i++)
+            {
+                if(CHECK_ADV_BIT(sdata->advProgress.rewards, (i + 0x6a)) != 0)
+                {
+                    unlockItem_numOwned++;
+                }
+            }
+            break;
+
+        case STATIC_KEY:
+            //unlockItem_modelID = STATIC_KEY;
+            unlockItem_numOwned = gGT->currAdvProfile.numKeys;
+
+        case STATIC_TOKEN:
+    }
+
 
     // Trophy Track
     if (levelID < SLIDE_COLISEUM)
     {
-        // optimization idea:
-        // instead of data.metaDataLEV[levelID].hubID
-        // can we just do gGT->levelID-0x19?
-
         // if trophy owned
         if(CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 6)) != 0)
         {
@@ -165,6 +219,9 @@ GetKeysRequirement:
         arrTokenCount = &gGT->currAdvProfile.numCtrTokens.red;
         unlockItem_numOwned = arrTokenCount[levelID - ADV_CUP];
     }
+
+
+
 
     // if unlocked
     if(unlockItem_numOwned >= unlockItem_numNeeded)
