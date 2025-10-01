@@ -14,6 +14,9 @@ src/*
 !/src/*.h
 !/src/*.s
 
+# Unignore util files
+!util
+
 # Unignore build files
 !build.bat
 !buildList.txt
