@@ -16,3 +16,6 @@ common, exe, GAMEPROG_NewProfile_InsideAdv, 0x0, src/GAMEPROG_05_NewProfile_Insi
 
 // Modify Warppad
 common, 232, AH_WarpPad_LInB, 0x0, src/AH_WarpPad_LInB.c
+
+// Rework Save/Load menu to limit save slots to slot 1
+common, exe, SelectProfile_InputLogic, 0x0, src/SelectProfile_InputLogic.c
