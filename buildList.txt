@@ -14,5 +14,8 @@ common, exe, BOTS_SetRotation, -0x8, src/print_version_hook.s
 // ref: src/CTRRandomizer_init_profile.c
 common, exe, GAMEPROG_NewProfile_InsideAdv, 0x0, src/GAMEPROG_05_NewProfile_InsideAdv.c
 
+// Modify Boss Cutscene Check: Always return 0 so we never see boss scenes
+common, 233, CS_Camera_BoolGotoBoss, 0x0, src/CS_Camera_BoolGotoBoss.c
+
 // Modify Warppad
 common, 232, AH_WarpPad_LInB, 0x0, src/AH_WarpPad_LInB.c
