@@ -16,6 +16,7 @@ src/*
 
 # Unignore util files
 !util
+*.pyc
 
 # Unignore build files
 !build.bat
