@@ -10,6 +10,10 @@ common, exe, rdata_free, 0x0, src/CTRRandomizer_database.c  src/print_version.c 
 // ref: src/print_version.c
 common, exe, BOTS_SetRotation, -0x8, src/print_version_hook.s
 
+// Rework Save/Load menu to limit save slots to slot 0
+common, exe, SelectProfile_InputLogic, 0x0, src/SelectProfile_InputLogic.c
+common, exe, SelectProfile_DrawAdvProfile, 0x0, src/SelectProfile_DrawAdvProfile.c
+
 // Modify New Savefile: Set all hints as already seen
 // ref: src/CTRRandomizer_init_profile.c
 common, exe, GAMEPROG_NewProfile_InsideAdv, 0x0, src/GAMEPROG_05_NewProfile_InsideAdv.c
