@@ -4,7 +4,7 @@
 1020, exe, 0x80031cc8, 0x0, ../../Patches/EurLibcrypt/src/libcrypt.s
 
 // Compile rando files to empty spaces in RDATA
-common, exe, rdata_free, 0x0, src/CTRRandomizer_database.c  src/print_version.c  src/CTRRandomizer_init_profile.c
+common, exe, rdata_free, 0x0, src/CTRRandomizer_database.c  src/print_version.c  src/CTRRandomizer_init_profile.c  src/CTRRandomizer_handle_item_unlocks.c
 
 // Print Randomizer version message on every frame
 // ref: src/print_version.c
@@ -23,3 +23,9 @@ common, 233, CS_Camera_BoolGotoBoss, 0x0, src/CS_Camera_BoolGotoBoss.c
 
 // Modify Warppad
 common, 232, AH_WarpPad_LInB, 0x0, src/AH_WarpPad_LInB.c
+
+// Decouple reward flags from the actual rewards by writing the rewards to save slot 2
+common, 222, AA_EndEvent_DrawMenu, 0x0, src/222_Full.c
+common, exe, UI_DrawNumTrophy, 0x0, src/UI_36_DrawNumTrophy.c
+common, exe, BOTS_Adv_AdjustDifficulty, 0x0, src/BOTS_Adv_AdjustDifficulty.c
+common, exe, VehBirth_TeleportSelf, 0x0, src/VehBirth_0_TeleportSelf.c

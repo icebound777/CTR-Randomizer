@@ -1,6 +1,7 @@
 #include <common.h>
 /* START Randomizer */
 #include "CTRRandomizer_database.h"
+#include "saveslot_defines.h"
 /* END Randomizer */
 
 void AH_WarpPad_ThTick(struct Thread *t);
@@ -26,6 +27,8 @@ void AH_WarpPad_LInB(struct Instance* inst)
     unsigned char ADV_CUP = 100;
 
     /* START Randomizer */
+    struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
+
     int randomized_LevelID;
     int db_fetch_result;
     /* END Randomizer */
@@ -121,7 +124,7 @@ GetKeysRequirement:
         {
             // number trophies needed to open
             unlockItem_modelID = STATIC_TROPHY;
-            unlockItem_numOwned = gGT->currAdvProfile.numTrophies;
+            unlockItem_numOwned = advSlot2->SLOT2_NUM_TROPHIES;
             unlockItem_numNeeded = data.metaDataLEV[levelID].numTrophiesToOpen;
         }
     }
