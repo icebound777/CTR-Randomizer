@@ -58,6 +58,7 @@ void DECOMP_VehBirth_TeleportSelf(struct Driver *d, u_char spawnFlag, int spawnP
     // 8-place starting line
     #ifndef USE_ONLINE
 
+    #if 0 /* RANDOMIZER */
     // If just obtained Roo boss key
     // spawn in front of hub door, beach-to-gemstone
     else if (
@@ -77,19 +78,19 @@ void DECOMP_VehBirth_TeleportSelf(struct Driver *d, u_char spawnFlag, int spawnP
         rotArr = &level1->ptrInstDefs[10].rot[0];
         rotDeltaY = 0x800;
     }
+    #endif
 
     // if you want to spawn outside boss door
-    else if (
-            // After leaving a boss race
-            (spawnAtBoss)
-            ||
-
+    else if (   spawnAtBoss // After leaving a boss race
+             && gGT->podiumRewardID == NOFUNC
+    #if 0 /* RANDOMIZER */
             // Before starting a boss cutscene
             (
                 // Just won the last trophy on the hub
                 (gGT->podiumRewardID == STATIC_TROPHY) &&
                 ((gGT->currAdvProfile.numTrophies & 3) == 0)
             )
+    #endif
     )
     {
         // position outside boss door
