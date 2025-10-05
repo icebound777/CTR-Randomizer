@@ -88,12 +88,14 @@ void AH_Map_HubItems(void* hubPtrs, short *param_2)
                         for (iVar3 = 0; iVar3 < 4; iVar3++)
                         {
                             bit = iVar3 + 0x5e;
-
+                            if (advSlot2->SLOT2_NUM_KEYS < 4) open = false;
+                            #if 0 /* RANDOMIZER */
                             if (CHECK_ADV_BIT(adv->rewards, bit) == 0)
                             {
                                 open = false;
                                 break;
                             }
+                            #endif
                         }
 
                         if (!open)
