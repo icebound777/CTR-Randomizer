@@ -448,7 +448,7 @@ void AA_EndEvent_DrawMenu(void)
         // bitIndex of keys unlocked, and boss beaten
         bitIndex = gGT->bossID + 0x5e;
 
-        // If the number of keys you have is less than 4
+        // If the current boss id is not Oxide
         if (gGT->bossID < 4)
         {
             // only if first time beating boss
@@ -470,7 +470,7 @@ void AA_EndEvent_DrawMenu(void)
             }
         }
 
-        // If you have 4 keys (only here if you beat oxide)
+        // Current boss id is Oxide
         else
         {
             // Always go to podium after oxide,
@@ -499,7 +499,9 @@ void AA_EndEvent_DrawMenu(void)
     // if trophy is not won,
     // Dingo Bingo needs to win trophy and token in the same race
     bitIndex = gGT->levelID + 6;
-    if (CHECK_ADV_BIT(adv->rewards, bitIndex) == 0)
+    if (   gGT->gameMode1 >= 0 // must not be in "racing a boss" mode
+        && (CHECK_ADV_BIT(adv->rewards, bitIndex) == 0)
+    )
     {
         // unlock tropy
         /* START RANDOMIZER */
