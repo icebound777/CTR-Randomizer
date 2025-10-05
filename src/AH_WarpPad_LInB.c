@@ -115,7 +115,7 @@ GetKeysRequirement:
 
             // keys needed to unlock track again
             unlockItem_modelID = STATIC_KEY;
-            unlockItem_numOwned = gGT->currAdvProfile.numKeys;
+            unlockItem_numOwned = advSlot2->SLOT2_NUM_KEYS;
             unlockItem_numNeeded = D232.arrKeysNeeded[data.metaDataLEV[levelID].hubID];
         }
 

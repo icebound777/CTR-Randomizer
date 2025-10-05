@@ -16,4 +16,8 @@ void handle_item_unlocks(
     {
         advSlot2->SLOT2_NUM_TROPHIES++;
     }
+    else if (item_type == STATIC_KEY)
+    {
+        advSlot2->SLOT2_NUM_KEYS++;
+    }
 }

@@ -2,5 +2,6 @@
 #define CTRRANDOMIZER_SAVESLOTDEFINES_H
 
 #define SLOT2_NUM_TROPHIES rewards[0]
+#define SLOT2_NUM_KEYS     rewards[1]
 
 #endif

@@ -456,6 +456,9 @@ void AA_EndEvent_DrawMenu(void)
             {
                 // Go to Podium after returning to Adventure Hub
                 gGT->podiumRewardID = STATIC_KEY; // key
+                /* START RANDOMIZER */
+                handle_item_unlocks(adv, bitIndex, STATIC_KEY);
+                /* END RANDOMIZER */
 
                 // hot air skyway
                 if (gGT->levelID == HOT_AIR_SKYWAY)

@@ -79,7 +79,7 @@ void SelectProfile_DrawAdvProfile(
         // Print the numbers
         SelectProfile_PrintInteger(gGT->currAdvProfile.completionPercent, local_posX + 0x6a, local_posY + 23, 0, integerColor);
         SelectProfile_PrintInteger(advSlot2->SLOT2_NUM_TROPHIES, local_posX + 0x6a, local_posY + 5, 0, integerColor);
-        SelectProfile_PrintInteger(gGT->currAdvProfile.numKeys, local_posX + 0xb5, local_posY + 5, 0, integerColor);
+        SelectProfile_PrintInteger(advSlot2->SLOT2_NUM_KEYS, local_posX + 0xb5, local_posY + 5, 0, integerColor);
         SelectProfile_PrintInteger(gGT->currAdvProfile.numRelics, local_posX + 0xb5, local_posY + 23, 0, integerColor);
 
         // "%"

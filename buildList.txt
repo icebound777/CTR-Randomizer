@@ -25,7 +25,11 @@ common, 233, CS_Camera_BoolGotoBoss, 0x0, src/CS_Camera_BoolGotoBoss.c
 common, 232, AH_WarpPad_LInB, 0x0, src/AH_WarpPad_LInB.c
 
 // Decouple reward flags from the actual rewards by writing the rewards to save slot 2
+common, exe, GAMEPROG_AdvPercent, 0x0, src/GAMEPROG_00_AdvPercent.c
 common, 222, AA_EndEvent_DrawMenu, 0x0, src/222_Full.c
+common, exe, UI_DrawNumKey, 0x0, src/UI_35_DrawNumKey.c
 common, exe, UI_DrawNumTrophy, 0x0, src/UI_36_DrawNumTrophy.c
 common, exe, BOTS_Adv_AdjustDifficulty, 0x0, src/BOTS_Adv_AdjustDifficulty.c
 common, exe, VehBirth_TeleportSelf, 0x0, src/VehBirth_0_TeleportSelf.c
+common, 232, AH_Door_ThTick, 0x0, src/AH_Door_ThTick.c
+common, 232, AH_Map_HubItems, 0x0, src/AH_Map_HubItems.c

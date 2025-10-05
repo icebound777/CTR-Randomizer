@@ -2,7 +2,7 @@
 
 #include "saveslot_defines.h"
 
-void DECOMP_GAMEPROG_AdvPercent(struct AdvProgress* adv)
+void GAMEPROG_AdvPercent(struct AdvProgress* adv)
 {
     int i;
     int percent;
@@ -105,15 +105,15 @@ void DECOMP_GAMEPROG_AdvPercent(struct AdvProgress* adv)
 
     // if beat oxide once, add 2% for first timie (2-0=2%)
     // if beat oxide twice, add 1% for second time (2-1=1%)
-    if(i < 2)
-    {
-        // first bit of beating oxide
-        bitIndex = 0x73 + i;
-        if(CHECK_ADV_BIT(adv->rewards, bitIndex) != 0)
-        {
-            percent += 2-i;
-        }
-    }
+    //if(i < 2)
+    //{
+    //    // first bit of beating oxide
+    //    bitIndex = 0x73 + i;
+    //    if(CHECK_ADV_BIT(adv->rewards, bitIndex) != 0)
+    //    {
+    //        percent += 2-i;
+    //    }
+    //}
 
     // assume all tracks have
     // gold or platinum relic
@@ -141,7 +141,7 @@ void DECOMP_GAMEPROG_AdvPercent(struct AdvProgress* adv)
     percent +=
         gGT->currAdvProfile.numRelics*2 +
         advSlot2->SLOT2_NUM_TROPHIES * 2 +
-        gGT->currAdvProfile.numKeys +
+        advSlot2->SLOT2_NUM_KEYS +
         gGT->currAdvProfile.numCtrTokens.total +
         gGT->currAdvProfile.numCtrTokens.purple +
         numGems;
