@@ -23,6 +23,7 @@ common, 233, CS_Camera_BoolGotoBoss, 0x0, src/CS_Camera_BoolGotoBoss.c
 
 // Modify Warppad
 common, 232, AH_WarpPad_LInB, 0x0, src/AH_WarpPad_LInB.c
+common, 232, AH_WarpPad_ThTick, 0x0, src/232_04_AH_WarpPad_ThTick.c
 
 // Decouple reward flags from the actual rewards by writing the rewards to save slot 2
 common, exe, GAMEPROG_AdvPercent, 0x0, src/GAMEPROG_00_AdvPercent.c
