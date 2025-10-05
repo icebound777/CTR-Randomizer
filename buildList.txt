@@ -32,4 +32,5 @@ common, exe, UI_DrawNumTrophy, 0x0, src/UI_36_DrawNumTrophy.c
 common, exe, BOTS_Adv_AdjustDifficulty, 0x0, src/BOTS_Adv_AdjustDifficulty.c
 common, exe, VehBirth_TeleportSelf, 0x0, src/VehBirth_0_TeleportSelf.c
 common, 232, AH_Door_ThTick, 0x0, src/AH_Door_ThTick.c
+common, 232, AH_Garage_ThTick, 0x0, src/AH_Garage_ThTick.c
 common, 232, AH_Map_HubItems, 0x0, src/AH_Map_HubItems.c
