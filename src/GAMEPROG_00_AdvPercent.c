@@ -105,15 +105,15 @@ void GAMEPROG_AdvPercent(struct AdvProgress* adv)
 
     // if beat oxide once, add 2% for first timie (2-0=2%)
     // if beat oxide twice, add 1% for second time (2-1=1%)
-    //if(i < 2)
-    //{
-    //    // first bit of beating oxide
-    //    bitIndex = 0x73 + i;
-    //    if(CHECK_ADV_BIT(adv->rewards, bitIndex) != 0)
-    //    {
-    //        percent += 2-i;
-    //    }
-    //}
+    for (i = 0; i < 2; i++)
+    {
+        // first bit of beating oxide
+        bitIndex = 0x73 + i;
+        if(CHECK_ADV_BIT(adv->rewards, bitIndex) != 0)
+        {
+            percent += (2 - i);
+        }
+    }
 
     // assume all tracks have
     // gold or platinum relic
