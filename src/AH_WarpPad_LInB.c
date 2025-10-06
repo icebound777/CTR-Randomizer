@@ -165,8 +165,32 @@ GetKeysRequirement:
         unlockItem_modelID = STATIC_TOKEN;
         unlockItem_numNeeded = 4;
 
+        switch (levelID - ADV_CUP)
+        {
+            case 0:
+                unlockItem_numOwned = advSlot2->SLOT2_NUM_TOKENS_RED;
+                break;
+
+            case 1:
+                unlockItem_numOwned = advSlot2->SLOT2_NUM_TOKENS_GREEN;
+                break;
+
+            case 2:
+                unlockItem_numOwned = advSlot2->SLOT2_NUM_TOKENS_BLUE;
+                break;
+
+            case 3:
+                unlockItem_numOwned = advSlot2->SLOT2_NUM_TOKENS_YELLOW;
+                break;
+
+            default:
+                unlockItem_numOwned = advSlot2->SLOT2_NUM_TOKENS_PURPLE;
+                break;
+        }
+        #if 0 /* RANDOMIZER */
         arrTokenCount = &gGT->currAdvProfile.numCtrTokens.red;
         unlockItem_numOwned = arrTokenCount[levelID - ADV_CUP];
+        #endif
     }
 
     // if unlocked

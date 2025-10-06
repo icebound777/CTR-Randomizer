@@ -27,6 +27,7 @@ common, 232, AH_WarpPad_ThTick, 0x0, src/232_04_AH_WarpPad_ThTick.c
 
 // Decouple reward flags from the actual rewards by writing the rewards to save slot 2
 common, exe, GAMEPROG_AdvPercent, 0x0, src/GAMEPROG_00_AdvPercent.c
+common, 221, CC_EndEvent_DrawMenu, 0x0, src/221_Full.c
 common, 222, AA_EndEvent_DrawMenu, 0x0, src/222_Full.c
 common, exe, UI_DrawNumKey, 0x0, src/UI_35_DrawNumKey.c
 common, exe, UI_DrawNumTrophy, 0x0, src/UI_36_DrawNumTrophy.c
@@ -35,3 +36,4 @@ common, exe, VehBirth_TeleportSelf, 0x0, src/VehBirth_0_TeleportSelf.c
 common, 232, AH_Door_ThTick, 0x0, src/AH_Door_ThTick.c
 common, 232, AH_Garage_ThTick, 0x0, src/AH_Garage_ThTick.c
 common, 232, AH_Map_HubItems, 0x0, src/AH_Map_HubItems.c
+common, 232, AH_Pause_Draw, 0x0, src/AH_Pause_Draw.c

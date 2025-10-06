@@ -142,8 +142,11 @@ void GAMEPROG_AdvPercent(struct AdvProgress* adv)
         gGT->currAdvProfile.numRelics*2 +
         advSlot2->SLOT2_NUM_TROPHIES * 2 +
         advSlot2->SLOT2_NUM_KEYS +
-        gGT->currAdvProfile.numCtrTokens.total +
-        gGT->currAdvProfile.numCtrTokens.purple +
+        (advSlot2->SLOT2_NUM_TOKENS_RED) +
+        (advSlot2->SLOT2_NUM_TOKENS_GREEN) +
+        (advSlot2->SLOT2_NUM_TOKENS_BLUE) +
+        (advSlot2->SLOT2_NUM_TOKENS_YELLOW) +
+        (advSlot2->SLOT2_NUM_TOKENS_PURPLE) +
         numGems;
 
     gGT->currAdvProfile.completionPercent = percent;

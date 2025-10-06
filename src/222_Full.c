@@ -1,7 +1,7 @@
 #include <common.h>
-
+/* START RANDOMIZER */
 #include "CTRRandomizer_handle_item_unlocks.h"
-
+/* END RANDOMIZER */
 static int str_number = 0x20; // " \0"
 extern struct RectMenu menu222;
 
@@ -42,7 +42,9 @@ void AA_EndEvent_DrawMenu(void)
     u_int scaleDown;
     u_int txtColor;
     int bitIndex;
-
+    /* START RANDOMIZER */
+    int token_color = TOKEN_NONE;
+    /* END RANDOMIZER */
 
     bitIndex = -1;
     gGT = sdata->gGT;
@@ -103,6 +105,34 @@ void AA_EndEvent_DrawMenu(void)
             *(int *)&letterPos[0] = *(int *)&hudCTR[0];
             if (CHECK_ADV_BIT(adv->rewards, bitIndex) == 0)
             {
+                switch (gGT->levelID)
+                {
+                    case CRASH_COVE:
+                    case MYSTERY_CAVES:
+                    case PAPU_PYRAMID:
+                    case BLIZZARD_BLUFF:
+                        token_color = TOKEN_RED;
+                        break;
+
+                    case ROO_TUBES:
+                    case COCO_PARK:
+                    case POLAR_PASS:
+                    case CORTEX_CASTLE:
+                        token_color = TOKEN_GREEN;
+                        break;
+
+                    case SEWER_SPEEDWAY:
+                    case TIGER_TEMPLE:
+                    case DRAGON_MINES:
+                    case N_GIN_LABS:
+                        token_color = TOKEN_BLUE;
+                        break;
+
+                    default:
+                        token_color = TOKEN_YELLOW;
+                }
+                gGT->podiumRewardID = STATIC_TOKEN;
+
                 scaleDown = hudC->scale[0];
                 scaleDown -= (scaleDown < 0x800) ? 0x800 : 0x401;
                 scaleDown = scaleDown >> 10;
@@ -403,7 +433,7 @@ void AA_EndEvent_DrawMenu(void)
         return;
     }
 
-    // If you are in adventure mode
+    // If you are not in adventure mode
     if ((gGT->gameMode1 & ADVENTURE_MODE) == 0)
         return;
 
@@ -419,7 +449,8 @@ void AA_EndEvent_DrawMenu(void)
     RECTMENU_ClearInput();
 
     sdata->Loading.OnBegin.AddBitsConfig0 |= ADVENTURE_ARENA;
-    sdata->Loading.OnBegin.RemBitsConfig0 |= (ADVENTURE_BOSS | TOKEN_RACE);
+    sdata->Loading.OnBegin.RemBitsConfig0 |= ADVENTURE_BOSS;
+    sdata->Loading.OnBegin.RemBitsConfig8 |= TOKEN_RACE;
 
     // If you are in boss mode
     if (gGT->gameMode1 < 0)
@@ -456,9 +487,6 @@ void AA_EndEvent_DrawMenu(void)
             {
                 // Go to Podium after returning to Adventure Hub
                 gGT->podiumRewardID = STATIC_KEY; // key
-                /* START RANDOMIZER */
-                handle_item_unlocks(adv, bitIndex, STATIC_KEY);
-                /* END RANDOMIZER */
 
                 // hot air skyway
                 if (gGT->levelID == HOT_AIR_SKYWAY)
@@ -490,10 +518,13 @@ void AA_EndEvent_DrawMenu(void)
     }
 
     // if something needs unlocking
-    if(bitIndex > 0)
+    if (   bitIndex > 0
+        && gGT->podiumRewardID != STATIC_BIG1
+    )
     {
-        // Unlock reward
-        UNLOCK_ADV_BIT(adv->rewards, bitIndex);
+        /* START RANDOMIZER */
+        handle_item_unlocks(adv, bitIndex, gGT->podiumRewardID, token_color);
+        /* END RANDOMIZER */
     }
 
     // if trophy is not won,
@@ -505,12 +536,14 @@ void AA_EndEvent_DrawMenu(void)
     {
         // unlock tropy
         /* START RANDOMIZER */
-        handle_item_unlocks(adv, bitIndex, STATIC_TROPHY);
+        handle_item_unlocks(adv, bitIndex, STATIC_TROPHY, TOKEN_NONE);
         /* END RANDOMIZER */
 
         // go to podium with trophy
         gGT->podiumRewardID = STATIC_TROPHY;
     }
+
+    if (gGT->podiumRewardID == STATIC_TOKEN) gGT->podiumRewardID = NOFUNC;
 
     MainRaceTrack_RequestLoad(levSpawn);
 }
