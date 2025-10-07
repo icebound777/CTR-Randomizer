@@ -139,7 +139,7 @@ void GAMEPROG_AdvPercent(struct AdvProgress* adv)
     }
 
     percent +=
-        gGT->currAdvProfile.numRelics*2 +
+        advSlot2->SLOT2_NUM_RELICS * 2 +
         advSlot2->SLOT2_NUM_TROPHIES * 2 +
         advSlot2->SLOT2_NUM_KEYS +
         (advSlot2->SLOT2_NUM_TOKENS_RED) +

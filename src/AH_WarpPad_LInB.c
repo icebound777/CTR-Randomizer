@@ -134,7 +134,7 @@ GetKeysRequirement:
     {
         // number relics needed to open
         unlockItem_modelID = STATIC_RELIC;
-        unlockItem_numOwned = gGT->currAdvProfile.numRelics;
+        unlockItem_numOwned = advSlot2->SLOT2_NUM_RELICS;
         unlockItem_numNeeded = 10;
     }
 

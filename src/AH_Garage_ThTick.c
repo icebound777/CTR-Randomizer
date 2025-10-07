@@ -275,12 +275,11 @@ LAB_800aede8:
 
         if (
             (levelID == GEM_STONE_VALLEY) &&
-            (gGT->currAdvProfile.numRelics == 18))
+            (advSlot2->SLOT2_NUM_RELICS == 18))
         {
             // set string index (0-5) to "N Oxide's Final Challenge"
             gGT->bossID = 5;
         }
-
         else
         {
             gGT->bossID = R232.bossIDs[hubID];

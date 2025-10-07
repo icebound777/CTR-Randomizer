@@ -19,11 +19,15 @@ void handle_item_unlocks(
 {
     struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
 
-    UNLOCK_ADV_BIT(adv->rewards, bitIndex);
+    if (bitIndex != -1) UNLOCK_ADV_BIT(adv->rewards, bitIndex);
 
     if (item_type == STATIC_TROPHY)
     {
         advSlot2->SLOT2_NUM_TROPHIES++;
+    }
+    else if (item_type == STATIC_RELIC)
+    {
+        advSlot2->SLOT2_NUM_RELICS++;
     }
     else if (item_type == STATIC_KEY)
     {

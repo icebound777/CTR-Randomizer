@@ -80,7 +80,7 @@ void SelectProfile_DrawAdvProfile(
         SelectProfile_PrintInteger(gGT->currAdvProfile.completionPercent, local_posX + 0x6a, local_posY + 23, 0, integerColor);
         SelectProfile_PrintInteger(advSlot2->SLOT2_NUM_TROPHIES, local_posX + 0x6a, local_posY + 5, 0, integerColor);
         SelectProfile_PrintInteger(advSlot2->SLOT2_NUM_KEYS, local_posX + 0xb5, local_posY + 5, 0, integerColor);
-        SelectProfile_PrintInteger(gGT->currAdvProfile.numRelics, local_posX + 0xb5, local_posY + 23, 0, integerColor);
+        SelectProfile_PrintInteger(advSlot2->SLOT2_NUM_RELICS, local_posX + 0xb5, local_posY + 23, 0, integerColor);
 
         // "%"
         DecalFont_DrawLine(&sdata->s_percent_sign, local_posX + 0x70, local_posY + 23, 1, percentColor);

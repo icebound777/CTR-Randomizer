@@ -8,5 +8,6 @@
 #define SLOT2_NUM_TOKENS_BLUE    rewards[2] >> 16 & 0xFF
 #define SLOT2_NUM_TOKENS_YELLOW  rewards[2] >> 24 & 0xFF
 #define SLOT2_NUM_TOKENS_PURPLE  rewards[3]       & 0xFF
+#define SLOT2_NUM_RELICS         rewards[4]
 
 #endif

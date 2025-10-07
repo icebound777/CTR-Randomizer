@@ -29,6 +29,8 @@ common, 232, AH_WarpPad_ThTick, 0x0, src/232_04_AH_WarpPad_ThTick.c
 common, exe, GAMEPROG_AdvPercent, 0x0, src/GAMEPROG_00_AdvPercent.c
 common, 221, CC_EndEvent_DrawMenu, 0x0, src/221_Full.c
 common, 222, AA_EndEvent_DrawMenu, 0x0, src/222_Full.c
+common, 223, RR_EndEvent_UnlockAward, 0x0, src/223_RR_EndEvent_UnlockAward.c
+common, exe, UI_DrawNumRelic, 0x0, src/UI_34_DrawNumRelic.c
 common, exe, UI_DrawNumKey, 0x0, src/UI_35_DrawNumKey.c
 common, exe, UI_DrawNumTrophy, 0x0, src/UI_36_DrawNumTrophy.c
 common, exe, BOTS_Adv_AdjustDifficulty, 0x0, src/BOTS_Adv_AdjustDifficulty.c
