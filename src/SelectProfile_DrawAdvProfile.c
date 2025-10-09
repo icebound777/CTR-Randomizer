@@ -1,4 +1,5 @@
 #include <common.h>
+#include "saveslot_defines.h"
 
 void SelectProfile_DrawAdvProfile(
     struct AdvProgress  *adv,
@@ -21,13 +22,14 @@ void SelectProfile_DrawAdvProfile(
     u_int isGreenLoadMenu = (menuFlag & 0x10);
 
     /* START RANDOMIZER*/
+    struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
     /* If we are trying to draw more than one profile, just draw slot 0 and
        center it.
     */
     int local_posX = posX;
     int local_posY = posY;
 
-    if (slotIndex != 0) return;
+    if (slotIndex != 0) return; // don't draw save slots 1-3
     if (local_posY != 0x32) // we're not in the load/save/delete/exit menu
     {
         local_posX = 0x92;
@@ -76,9 +78,9 @@ void SelectProfile_DrawAdvProfile(
 
         // Print the numbers
         SelectProfile_PrintInteger(gGT->currAdvProfile.completionPercent, local_posX + 0x6a, local_posY + 23, 0, integerColor);
-        SelectProfile_PrintInteger(gGT->currAdvProfile.numTrophies, local_posX + 0x6a, local_posY + 5, 0, integerColor);
-        SelectProfile_PrintInteger(gGT->currAdvProfile.numKeys, local_posX + 0xb5, local_posY + 5, 0, integerColor);
-        SelectProfile_PrintInteger(gGT->currAdvProfile.numRelics, local_posX + 0xb5, local_posY + 23, 0, integerColor);
+        SelectProfile_PrintInteger(advSlot2->SLOT2_NUM_TROPHIES, local_posX + 0x6a, local_posY + 5, 0, integerColor);
+        SelectProfile_PrintInteger(advSlot2->SLOT2_NUM_KEYS, local_posX + 0xb5, local_posY + 5, 0, integerColor);
+        SelectProfile_PrintInteger(advSlot2->SLOT2_NUM_RELICS, local_posX + 0xb5, local_posY + 23, 0, integerColor);
 
         // "%"
         DecalFont_DrawLine(&sdata->s_percent_sign, local_posX + 0x70, local_posY + 23, 1, percentColor);

@@ -4,7 +4,7 @@
 1020, exe, 0x80031cc8, 0x0, ../../Patches/EurLibcrypt/src/libcrypt.s
 
 // Compile rando files to empty spaces in RDATA
-common, exe, rdata_free, 0x0, src/CTRRandomizer_database.c  src/print_version.c  src/CTRRandomizer_init_profile.c
+common, exe, rdata_free, 0x0, src/CTRRandomizer_database.c  src/print_version.c  src/CTRRandomizer_init_profile.c  src/CTRRandomizer_handle_item_unlocks.c
 
 // Print Randomizer version message on every frame
 // ref: src/print_version.c
@@ -23,3 +23,20 @@ common, 233, CS_Camera_BoolGotoBoss, 0x0, src/CS_Camera_BoolGotoBoss.c
 
 // Modify Warppad
 common, 232, AH_WarpPad_LInB, 0x0, src/AH_WarpPad_LInB.c
+common, 232, AH_WarpPad_ThTick, 0x0, src/232_04_AH_WarpPad_ThTick.c
+
+// Decouple reward flags from the actual rewards by writing the rewards to save slot 2
+common, exe, GAMEPROG_AdvPercent, 0x0, src/GAMEPROG_00_AdvPercent.c
+common, 221, CC_EndEvent_DrawMenu, 0x0, src/221_Full.c
+common, 222, AA_EndEvent_DrawMenu, 0x0, src/222_Full.c
+common, 223, RR_EndEvent_UnlockAward, 0x0, src/223_RR_EndEvent_UnlockAward.c
+common, exe, UI_DrawNumRelic, 0x0, src/UI_34_DrawNumRelic.c
+common, exe, UI_DrawNumKey, 0x0, src/UI_35_DrawNumKey.c
+common, exe, UI_DrawNumTrophy, 0x0, src/UI_36_DrawNumTrophy.c
+common, exe, UI_CupStandings_InputAndDraw, 0x0, src/UI_58_CupStandings_InputAndDraw.c
+common, exe, BOTS_Adv_AdjustDifficulty, 0x0, src/BOTS_Adv_AdjustDifficulty.c
+common, exe, VehBirth_TeleportSelf, 0x0, src/VehBirth_0_TeleportSelf.c
+common, 232, AH_Door_ThTick, 0x0, src/AH_Door_ThTick.c
+common, 232, AH_Garage_ThTick, 0x0, src/AH_Garage_ThTick.c
+common, 232, AH_Map_HubItems, 0x0, src/AH_Map_HubItems.c
+common, 232, AH_Pause_Draw, 0x0, src/AH_Pause_Draw.c

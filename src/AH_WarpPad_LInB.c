@@ -1,6 +1,7 @@
 #include <common.h>
 /* START Randomizer */
 #include "CTRRandomizer_database.h"
+#include "saveslot_defines.h"
 /* END Randomizer */
 
 void AH_WarpPad_ThTick(struct Thread *t);
@@ -26,6 +27,8 @@ void AH_WarpPad_LInB(struct Instance* inst)
     unsigned char ADV_CUP = 100;
 
     /* START Randomizer */
+    struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
+
     int randomized_LevelID;
     int db_fetch_result;
     /* END Randomizer */
@@ -112,7 +115,7 @@ GetKeysRequirement:
 
             // keys needed to unlock track again
             unlockItem_modelID = STATIC_KEY;
-            unlockItem_numOwned = gGT->currAdvProfile.numKeys;
+            unlockItem_numOwned = advSlot2->SLOT2_NUM_KEYS;
             unlockItem_numNeeded = D232.arrKeysNeeded[data.metaDataLEV[levelID].hubID];
         }
 
@@ -121,7 +124,7 @@ GetKeysRequirement:
         {
             // number trophies needed to open
             unlockItem_modelID = STATIC_TROPHY;
-            unlockItem_numOwned = gGT->currAdvProfile.numTrophies;
+            unlockItem_numOwned = advSlot2->SLOT2_NUM_TROPHIES;
             unlockItem_numNeeded = data.metaDataLEV[levelID].numTrophiesToOpen;
         }
     }
@@ -131,7 +134,7 @@ GetKeysRequirement:
     {
         // number relics needed to open
         unlockItem_modelID = STATIC_RELIC;
-        unlockItem_numOwned = gGT->currAdvProfile.numRelics;
+        unlockItem_numOwned = advSlot2->SLOT2_NUM_RELICS;
         unlockItem_numNeeded = 10;
     }
 
@@ -143,10 +146,13 @@ GetKeysRequirement:
         unlockItem_numNeeded = 5;
 
         // count number of gems owned
+        unlockItem_numOwned = advSlot2->SLOT2_NUM_GEMS;
+        #if 0 /* RANDOMIZER*/
         unlockItem_numOwned = 0;
         for(i = 0; i < 5; i++)
             if(CHECK_ADV_BIT(sdata->advProgress.rewards, (i + 0x6a)) != 0)
                 unlockItem_numOwned++;
+        #endif
     }
 
     // battle maps
@@ -162,8 +168,32 @@ GetKeysRequirement:
         unlockItem_modelID = STATIC_TOKEN;
         unlockItem_numNeeded = 4;
 
+        switch (levelID - ADV_CUP)
+        {
+            case 0:
+                unlockItem_numOwned = advSlot2->SLOT2_NUM_TOKENS_RED;
+                break;
+
+            case 1:
+                unlockItem_numOwned = advSlot2->SLOT2_NUM_TOKENS_GREEN;
+                break;
+
+            case 2:
+                unlockItem_numOwned = advSlot2->SLOT2_NUM_TOKENS_BLUE;
+                break;
+
+            case 3:
+                unlockItem_numOwned = advSlot2->SLOT2_NUM_TOKENS_YELLOW;
+                break;
+
+            default:
+                unlockItem_numOwned = advSlot2->SLOT2_NUM_TOKENS_PURPLE;
+                break;
+        }
+        #if 0 /* RANDOMIZER */
         arrTokenCount = &gGT->currAdvProfile.numCtrTokens.red;
         unlockItem_numOwned = arrTokenCount[levelID - ADV_CUP];
+        #endif
     }
 
     // if unlocked
