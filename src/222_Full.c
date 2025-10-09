@@ -488,6 +488,7 @@ void AA_EndEvent_DrawMenu(void)
                 // Go to Podium after returning to Adventure Hub
                 gGT->podiumRewardID = STATIC_KEY; // key
 
+                #if 0 /* RANDOMIZER */
                 // hot air skyway
                 if (gGT->levelID == HOT_AIR_SKYWAY)
                 {
@@ -495,6 +496,7 @@ void AA_EndEvent_DrawMenu(void)
                     // Load gemstone valley
                     levSpawn = GEM_STONE_VALLEY;
                 }
+                #endif
             }
         }
 
