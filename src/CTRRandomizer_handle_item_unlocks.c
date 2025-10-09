@@ -2,19 +2,25 @@
 
 #include "saveslot_defines.h"
 
-enum TokenColors {
+enum TokenAndGemColors {
+    GEM_RED = 0,
+    GEM_GREEN,
+    GEM_BLUE,
+    GEM_YELLOW,
+    GEM_PURPLE,
     TOKEN_RED,
     TOKEN_GREEN,
     TOKEN_BLUE,
     TOKEN_YELLOW,
-    TOKEN_PURPLE
+    TOKEN_PURPLE,
+    TOKEN_NONE
 };
 
 void handle_item_unlocks(
     struct AdvProgress  *adv,
     int                 bitIndex,
     int                 item_type,
-    int                 token_type
+    int                 token_or_gem_type
 )
 {
     struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
@@ -35,7 +41,7 @@ void handle_item_unlocks(
     }
     else if (item_type == STATIC_TOKEN)
     {
-        switch (token_type)
+        switch (token_or_gem_type)
         {
             case TOKEN_RED:
                 advSlot2->rewards[2] = (
@@ -69,6 +75,34 @@ void handle_item_unlocks(
                 advSlot2->rewards[3]++;
                 break;
 
+            default:
+                ;
+        }
+    }
+    else if (item_type == STATIC_GEM)
+    {
+        switch (token_or_gem_type)
+        {
+            case GEM_RED:
+                advSlot2->rewards[5]++;
+                advSlot2->rewards[5] |= 0x100;
+                break;
+            case GEM_GREEN:
+                advSlot2->rewards[5]++;
+                advSlot2->rewards[5] |= 0x200;
+                break;
+            case GEM_BLUE:
+                advSlot2->rewards[5]++;
+                advSlot2->rewards[5] |= 0x400;
+                break;
+            case GEM_YELLOW:
+                advSlot2->rewards[5]++;
+                advSlot2->rewards[5] |= 0x800;
+                break;
+            case GEM_PURPLE:
+                advSlot2->rewards[5]++;
+                advSlot2->rewards[5] |= 0x1000;
+                break;
             default:
                 ;
         }

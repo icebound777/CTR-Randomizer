@@ -8,7 +8,12 @@ void handle_item_unlocks(
     int                 token_type
 );
 
-enum TokenColors {
+enum TokenAndGemColors {
+    GEM_RED = 0,
+    GEM_GREEN,
+    GEM_BLUE,
+    GEM_YELLOW,
+    GEM_PURPLE,
     TOKEN_RED,
     TOKEN_GREEN,
     TOKEN_BLUE,

@@ -146,10 +146,13 @@ GetKeysRequirement:
         unlockItem_numNeeded = 5;
 
         // count number of gems owned
+        unlockItem_numOwned = advSlot2->SLOT2_NUM_GEMS;
+        #if 0 /* RANDOMIZER*/
         unlockItem_numOwned = 0;
         for(i = 0; i < 5; i++)
             if(CHECK_ADV_BIT(sdata->advProgress.rewards, (i + 0x6a)) != 0)
                 unlockItem_numOwned++;
+        #endif
     }
 
     // battle maps

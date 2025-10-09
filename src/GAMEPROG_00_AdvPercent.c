@@ -147,7 +147,7 @@ void GAMEPROG_AdvPercent(struct AdvProgress* adv)
         (advSlot2->SLOT2_NUM_TOKENS_BLUE) +
         (advSlot2->SLOT2_NUM_TOKENS_YELLOW) +
         (advSlot2->SLOT2_NUM_TOKENS_PURPLE) +
-        numGems;
+        (advSlot2->SLOT2_NUM_GEMS);
 
     gGT->currAdvProfile.completionPercent = percent;
 }
