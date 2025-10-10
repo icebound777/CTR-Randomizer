@@ -2,6 +2,7 @@
 /* START RANDOMIZER */
 #include "CTRRandomizer_handle_item_unlocks.h"
 #include "reward_enums.h"
+#include "CTRRandomizer_database.h"
 /* END RANDOMIZER */
 
 void RR_EndEvent_UnlockAward(void)
@@ -37,9 +38,6 @@ void RR_EndEvent_UnlockAward(void)
 
         UNLOCK_ADV_BIT(adv->rewards, bitIndex);
 
-        gGT->podiumRewardID = STATIC_RELIC;
-        gGT->gameModeEnd |= NEW_RELIC;
-
         if (i == 0)
         {
             if (levelID == TURBO_TRACK)
@@ -48,12 +46,22 @@ void RR_EndEvent_UnlockAward(void)
                 sdata->gameProgress.unlocks[0] |= 2;
             }
             /* START RANDOMIZER */
+            gGT->gameModeEnd |= NEW_RELIC;
+
+            int race_reward = STATIC_RELIC; // default
+            int db_fetch_result = DB_VALUE_NOTFOUND;
+            int item_type = database_fetch(
+                DB_PREFIX_REWARDS | (levelID << 8) | STATIC_RELIC,
+                &db_fetch_result
+            );
+            if (db_fetch_result == DB_VALUE_OK) race_reward = item_type;
             handle_item_unlocks(
                 adv,
                 -1,
-                STATIC_RELIC,
-                TOKEN_NONE
+                GET_CLEAN_REWARD(race_reward),
+                GET_GEMANDTOKEN_COLOR(race_reward)
             );
+            gGT->podiumRewardID = GET_CLEAN_REWARD(race_reward);
             /* END RANDOMIZER */
             continue; // if Sapphire skip storing relic time
         }
