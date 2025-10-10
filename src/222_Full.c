@@ -1,6 +1,7 @@
 #include <common.h>
 /* START RANDOMIZER */
 #include "CTRRandomizer_handle_item_unlocks.h"
+#include "reward_enums.h"
 /* END RANDOMIZER */
 static int str_number = 0x20; // " \0"
 extern struct RectMenu menu222;

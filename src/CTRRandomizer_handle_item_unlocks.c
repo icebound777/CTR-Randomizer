@@ -1,20 +1,7 @@
 #include <common.h>
 
 #include "saveslot_defines.h"
-
-enum TokenAndGemColors {
-    GEM_RED = 0,
-    GEM_GREEN,
-    GEM_BLUE,
-    GEM_YELLOW,
-    GEM_PURPLE,
-    TOKEN_RED,
-    TOKEN_GREEN,
-    TOKEN_BLUE,
-    TOKEN_YELLOW,
-    TOKEN_PURPLE,
-    TOKEN_NONE
-};
+#include "reward_enums.h"
 
 void handle_item_unlocks(
     struct AdvProgress  *adv,

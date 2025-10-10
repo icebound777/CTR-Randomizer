@@ -1,6 +1,7 @@
 #include <common.h>
 /* START Randomizer */
 #include "CTRRandomizer_handle_item_unlocks.h"
+#include "reward_enums.h"
 /* END Randomizer */
 
 const short hub[8] =
