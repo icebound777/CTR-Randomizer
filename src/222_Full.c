@@ -1,6 +1,7 @@
 #include <common.h>
 /* START RANDOMIZER */
 #include "CTRRandomizer_handle_item_unlocks.h"
+#include "CTRRandomizer_database.h"
 #include "reward_enums.h"
 /* END RANDOMIZER */
 static int str_number = 0x20; // " \0"
@@ -526,7 +527,19 @@ void AA_EndEvent_DrawMenu(void)
     )
     {
         /* START RANDOMIZER */
-        handle_item_unlocks(adv, bitIndex, gGT->podiumRewardID, token_color);
+        int race_reward = (gGT->podiumRewardID | (token_color << 8)); // default
+        int db_fetch_result = DB_VALUE_NOTFOUND;
+        int item_type = database_fetch(
+            DB_PREFIX_REWARDS | (gGT->levelID << 8) | gGT->podiumRewardID,
+            &db_fetch_result
+        );
+        if (db_fetch_result == DB_VALUE_OK) race_reward = item_type;
+        handle_item_unlocks(
+            adv,
+            bitIndex,
+            GET_CLEAN_REWARD(race_reward),
+            GET_GEMANDTOKEN_COLOR(race_reward)
+        );
         /* END RANDOMIZER */
     }
 
@@ -537,13 +550,25 @@ void AA_EndEvent_DrawMenu(void)
         && (CHECK_ADV_BIT(adv->rewards, bitIndex) == 0)
     )
     {
-        // unlock tropy
+        // unlock trophy
         /* START RANDOMIZER */
-        handle_item_unlocks(adv, bitIndex, STATIC_TROPHY, TOKEN_NONE);
-        /* END RANDOMIZER */
+        int race_reward = STATIC_TROPHY; // default
+        int db_fetch_result = DB_VALUE_NOTFOUND;
+        int item_type = database_fetch(
+            DB_PREFIX_REWARDS | (gGT->levelID << 8) | STATIC_TROPHY,
+            &db_fetch_result
+        );
+        if (db_fetch_result == DB_VALUE_OK) race_reward = item_type;
+        handle_item_unlocks(
+            adv,
+            bitIndex,
+            GET_CLEAN_REWARD(race_reward),
+            GET_GEMANDTOKEN_COLOR(race_reward)
+        );
 
-        // go to podium with trophy
-        gGT->podiumRewardID = STATIC_TROPHY;
+        // go to podium with reward
+        gGT->podiumRewardID = GET_CLEAN_REWARD(race_reward);
+        /* END RANDOMIZER */
     }
 
     // if (gGT->podiumRewardID == STATIC_TOKEN) gGT->podiumRewardID = NOFUNC;
