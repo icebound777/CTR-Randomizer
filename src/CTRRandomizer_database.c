@@ -5,6 +5,32 @@
 #define DB_RAMMARKER_START 0xDADB0D00, 0xDADB0D00
 #define DB_RAMMARKER_END 0xDADB0DAA, 0xDADB0DAA
 
+static int rando_database[];
+
+
+/*
+Fetch a value from the randomizer database using the given key.
+If the value cannot be found, return the key as value and set the
+fetch result to not_found.
+*/
+int database_fetch(
+    int db_key,
+    int *fetch_result
+)
+{
+    for (int i = 0; rando_database[i] != DB_END; i += 2)
+    {
+        if (rando_database[i] == db_key)
+        {
+            *fetch_result = DB_VALUE_OK;
+            return rando_database[i + 1];
+        }
+    }
+
+    *fetch_result = DB_VALUE_NOTFOUND;
+    return db_key;
+}
+
 static int rando_database[] = {
     DB_RAMMARKER_START,
     DB_PREFIX_LEVELIDS | CRASH_COVE,     CRASH_COVE,
@@ -32,27 +58,3 @@ static int rando_database[] = {
     DB_RAMMARKER_END,
     DB_END
 };
-
-
-/*
-Fetch a value from the randomizer database using the given key.
-If the value cannot be found, return the key as value and set the
-fetch result to not_found.
-*/
-int database_fetch(
-    int db_key,
-    int *fetch_result
-)
-{
-    for (int i = 0; rando_database[i] != DB_END; i += 2)
-    {
-        if (rando_database[i] == db_key)
-        {
-            *fetch_result = DB_VALUE_OK;
-            return rando_database[i + 1];
-        }
-    }
-
-    *fetch_result = DB_VALUE_NOTFOUND;
-    return db_key;
-}
