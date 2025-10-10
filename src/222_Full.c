@@ -546,7 +546,7 @@ void AA_EndEvent_DrawMenu(void)
         gGT->podiumRewardID = STATIC_TROPHY;
     }
 
-    if (gGT->podiumRewardID == STATIC_TOKEN) gGT->podiumRewardID = NOFUNC;
+    // if (gGT->podiumRewardID == STATIC_TOKEN) gGT->podiumRewardID = NOFUNC;
 
     MainRaceTrack_RequestLoad(levSpawn);
 }
