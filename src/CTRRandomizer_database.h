@@ -3,8 +3,14 @@
 
 #include <common.h>
 
+#define GET_GEMANDTOKEN_COLOR(x) ((x >> 8) & 0xF)
+#define GET_CLEAN_REWARD(x) (x & 0xFF)
+
 /* Key type defines via prefixes */
-#define DB_PREFIX_LEVELIDS 0xA0000000
+enum DB_Prefixes {
+    DB_PREFIX_LEVELIDS = 0xA0000000,
+    DB_PREFIX_REWARDS  = 0xA1000000
+};
 
 /* DB fetch results */
 enum DbFetchResult {
