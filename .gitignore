@@ -14,6 +14,11 @@ src/*
 !/src/*.h
 !/src/*.s
 
+#Unignore assets
+!assets
+!assets/*
+!/assets/*.bin
+
 # Unignore util files
 !util
 *.pyc
