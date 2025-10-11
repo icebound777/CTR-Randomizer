@@ -2,6 +2,7 @@
 /* START Randomizer */
 #include "CTRRandomizer_handle_item_unlocks.h"
 #include "reward_enums.h"
+#include "CTRRandomizer_database.h"
 /* END Randomizer */
 
 const short hub[8] =
@@ -214,7 +215,22 @@ void DECOMP_CC_EndEvent_DrawMenu()
     sdata->Loading.OnBegin.RemBitsConfig0 |= CRYSTAL_CHALLENGE;
 
     // unlock token
-    handle_item_unlocks(adv, bitIndex, STATIC_TOKEN, TOKEN_PURPLE);
+    /* START RANDOMIZER */
+    int race_reward = (STATIC_TOKEN | (TOKEN_PURPLE << 8)); // default
+    int db_fetch_result = DB_VALUE_NOTFOUND;
+    int item_type = database_fetch(
+        DB_PREFIX_REWARDS | (levelID << 8) | STATIC_TOKEN,
+        &db_fetch_result
+    );
+    if (db_fetch_result == DB_VALUE_OK) race_reward = item_type;
+    handle_item_unlocks(
+        adv,
+        bitIndex,
+        GET_CLEAN_REWARD(race_reward),
+        GET_GEMANDTOKEN_COLOR(race_reward)
+    );
+    gGT->podiumRewardID = GET_CLEAN_REWARD(race_reward);
+    /* END RANDOMIZER */
 
     // go back to adv hub
     MainRaceTrack_RequestLoad(gGT->prevLEV);
