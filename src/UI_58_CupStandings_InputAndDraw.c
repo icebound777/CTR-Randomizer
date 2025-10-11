@@ -1,6 +1,8 @@
 #include <common.h>
 /* START RANDOMIZER */
 #include "CTRRandomizer_handle_item_unlocks.h"
+#include "CTRRandomizer_database.h"
+#include "reward_enums.h"
 /* END RANDOMIZER */
 
 void DECOMP_UI_CupStandings_InputAndDraw(void)
@@ -540,7 +542,6 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
                 // If this is an Adventure Cup
                 if ((gGT->gameMode2 & 0x10) == 0)
                 {
-                    // Array with the ranking of each player
                     gGT->levelID = i + ADV_CUP;
 
                     // when loading is done,
@@ -555,19 +556,28 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
 
                         if (CHECK_ADV_BIT(sdata->advProgress.rewards, bitIndex) == 0)
                         {
+                            /* START RANDOMIZER */
+                            int race_reward = (STATIC_GEM | (gGT->levelID << 8)); // default
+                            int db_fetch_result = DB_VALUE_NOTFOUND;
+                            int item_type = database_fetch(
+                                DB_PREFIX_REWARDS | (gGT->levelID << 8) | STATIC_GEM,
+                                &db_fetch_result
+                            );
+                            if (db_fetch_result == DB_VALUE_OK) race_reward = item_type;
                             handle_item_unlocks(
                                 adv,
                                 bitIndex,
-                                STATIC_GEM,
-                                i  // ref: enum TokenAndGemColors
+                                GET_CLEAN_REWARD(race_reward),
+                                GET_GEMANDTOKEN_COLOR(race_reward)
                             );
+
+                            // Set podium reward
+                            gGT->podiumRewardID = GET_CLEAN_REWARD(race_reward);
+                            /* END RANDOMIZER */
 
                             // unlock Roo, Papu, Joe, Pinstripe, FCrash
                             bitIndex = 7 + i;
                             UNLOCK_ADV_BIT(sdata->gameProgress.unlocks, bitIndex);
-
-                            // Set podium reward model to Gem
-                            gGT->podiumRewardID = STATIC_GEM;
                         }
 
                         // reset counter for number of times you lost cup, to zero

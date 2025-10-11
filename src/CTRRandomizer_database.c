@@ -8,6 +8,15 @@
 
 static int rando_database[];
 
+/* Potentially removable, since it mirrors the GemColor enum */
+enum CupIds {
+    CUP_RED = 100,
+    CUP_GREEN,
+    CUP_BLUE,
+    CUP_YELLOW,
+    CUP_PURPLE
+};
+
 
 /*
 Fetch a value from the randomizer database using the given key.
@@ -116,6 +125,11 @@ static int rando_database[] = {
     DB_PREFIX_REWARDS | (PAPU_PYRAMID << 8) | STATIC_KEY,      STATIC_KEY,
     DB_PREFIX_REWARDS | (DRAGON_MINES << 8) | STATIC_KEY,      STATIC_KEY,
     DB_PREFIX_REWARDS | (HOT_AIR_SKYWAY << 8) | STATIC_KEY,    STATIC_KEY,
+    DB_PREFIX_REWARDS | (CUP_RED << 8) | STATIC_GEM,           STATIC_GEM | (GEM_RED << 8),
+    DB_PREFIX_REWARDS | (CUP_GREEN << 8) | STATIC_GEM,         STATIC_GEM | (GEM_GREEN << 8),
+    DB_PREFIX_REWARDS | (CUP_BLUE << 8) | STATIC_GEM,          STATIC_GEM | (GEM_BLUE << 8),
+    DB_PREFIX_REWARDS | (CUP_YELLOW << 8) | STATIC_GEM,        STATIC_GEM | (GEM_YELLOW << 8),
+    DB_PREFIX_REWARDS | (CUP_PURPLE << 8) | STATIC_GEM,        STATIC_GEM | (GEM_PURPLE << 8),
     DB_RAMMARKER_END,
     DB_END
 };
