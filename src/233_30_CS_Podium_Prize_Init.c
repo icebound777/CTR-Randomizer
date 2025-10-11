@@ -112,7 +112,21 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
         case STATIC_BIG1:
             // make invisible
             inst->flags |= HIDE_MODEL;
-            goto GEMS_OR_NOTHING;
+            goto GEMS_OR_TOKEN_OR_NOTHING;
+
+        case STATIC_TOKEN:
+            short *tokenColor = &data.AdvCups[prizeColor - 1].color;
+            inst->colorRGBA = (tokenColor[0] << 20 | tokenColor[1] << 12 | tokenColor[2] << 4);
+
+            prize[12] = 0x5d3;
+            prize[13] = 0x718;
+            prize[14] = 0x590;
+            prize[15] = 0x609;
+
+            // specular lighting
+            inst->flags |= USE_SPECULAR_LIGHT;
+
+            goto GEMS_OR_TOKEN_OR_NOTHING;
 
         // if reward is gem
         case STATIC_GEM:
@@ -130,7 +144,7 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
             inst->flags |= USE_SPECULAR_LIGHT;
 
         default:
-            GEMS_OR_NOTHING:
+            GEMS_OR_TOKEN_OR_NOTHING:
             prize[8] = 0x100;
             prize[9] = 0x6c;
             return;
