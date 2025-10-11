@@ -542,7 +542,7 @@ void AA_EndEvent_DrawMenu(void)
         );
 
         // go to podium with reward
-        gGT->podiumRewardID = GET_CLEAN_REWARD(race_reward);
+        gGT->podiumRewardID = race_reward;
         /* END RANDOMIZER */
     }
 
@@ -570,7 +570,7 @@ void AA_EndEvent_DrawMenu(void)
         );
 
         // go to podium with reward
-        gGT->podiumRewardID = GET_CLEAN_REWARD(race_reward);
+        gGT->podiumRewardID = race_reward;
         /* END RANDOMIZER */
     }
 

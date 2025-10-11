@@ -572,7 +572,7 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
                             );
 
                             // Set podium reward
-                            gGT->podiumRewardID = GET_CLEAN_REWARD(race_reward);
+                            gGT->podiumRewardID = race_reward;
                             /* END RANDOMIZER */
 
                             // unlock Roo, Papu, Joe, Pinstripe, FCrash

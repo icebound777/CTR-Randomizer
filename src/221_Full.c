@@ -229,7 +229,7 @@ void DECOMP_CC_EndEvent_DrawMenu()
         GET_CLEAN_REWARD(race_reward),
         GET_GEMANDTOKEN_COLOR(race_reward)
     );
-    gGT->podiumRewardID = GET_CLEAN_REWARD(race_reward);
+    gGT->podiumRewardID = race_reward;
     /* END RANDOMIZER */
 
     // go back to adv hub

@@ -1,4 +1,8 @@
 #include <common.h>
+/* START RANDOMIZER */
+#include "CTRRandomizer_database.h"
+#include "reward_enums.h"
+/* END RANDOMIZER */
 
 #define gte_ldVXY0(r0) __asm__ volatile("mtc2   %0, $0" \
                                         :               \
@@ -33,11 +37,20 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
 
     struct GameTracker *gGT = sdata->gGT;
 
+    /* START RANDOMIZER */
+    int local_prizeModel = GET_CLEAN_REWARD(prizeModel);
+    int prizeColor = GET_GEMANDTOKEN_COLOR(prizeModel);
+    // Here we violate function flow by grabbing and modifying the value that
+    // would be passed to this function as prizeModel, but I really don't want
+    // to have to touch the calling CS_Podium_FullScene_Init function
+    gGT->podiumRewardID = local_prizeModel;
+    /* END RANDOMIZER */
+
     // create thread, get instance
     // 0x200 flag = MediumStackPool
     // 0xd = "other" thread bucket
     struct Instance *inst = INSTANCE_BirthWithThread(
-        prizeModel,
+        local_prizeModel,
         prizeName,
         MEDIUM,
         OTHER,
@@ -93,7 +106,7 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
 
     struct UiElement2D (*ptrHudData)[] = data.hudStructPtr[0];
 
-    switch (prizeModel)
+    switch (local_prizeModel)
     {
         // if reward is [empty], used for Oxide Podium
         case STATIC_BIG1:
@@ -104,7 +117,7 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
         // if reward is gem
         case STATIC_GEM:
             // get color of the gem based off the cup ID
-            short *gemColor = &data.AdvCups[gGT->cup.cupID].color;
+            short *gemColor = &data.AdvCups[prizeColor].color;
 
             inst->colorRGBA = (gemColor[0] << 20 | gemColor[1] << 12 | gemColor[2] << 4);
 
