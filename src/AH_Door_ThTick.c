@@ -37,6 +37,7 @@ void AH_Door_ThTick(struct Thread* t)
 
     /* START Randomizer */
     struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
+    struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
     /* END Randomizer */
 
     doorID = door->doorID;
@@ -144,7 +145,7 @@ void AH_Door_ThTick(struct Thread* t)
     }
 
     // if player has less than that amount
-    if (advSlot2->SLOT2_NUM_KEYS < numKeys)
+    if ((advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS) < numKeys)
     {
         // if one key is required
         if (numKeys == 1)

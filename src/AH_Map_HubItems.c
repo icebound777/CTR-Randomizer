@@ -31,6 +31,7 @@ void AH_Map_HubItems(void* hubPtrs, short *param_2)
 
     /* START Randomizer */
     struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
+    struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
     /* END Randomizer */
 
     gGT = sdata->gGT;
@@ -62,7 +63,7 @@ void AH_Map_HubItems(void* hubPtrs, short *param_2)
                 if (levelID == N_SANITY_BEACH)
                 {
                     // locked if key < 1
-                    sVar7 = (advSlot2->SLOT2_NUM_KEYS < 1);
+                    sVar7 = ((advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS) < 1);
                 }
 
                 LAB_800b17e8:
@@ -88,7 +89,7 @@ void AH_Map_HubItems(void* hubPtrs, short *param_2)
                         for (iVar3 = 0; iVar3 < 4; iVar3++)
                         {
                             bit = iVar3 + 0x5e;
-                            if (advSlot2->SLOT2_NUM_KEYS < 4) open = false;
+                            if ((advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS) < 4) open = false;
                             #if 0 /* RANDOMIZER */
                             if (CHECK_ADV_BIT(adv->rewards, bit) == 0)
                             {
@@ -175,7 +176,7 @@ void AH_Map_HubItems(void* hubPtrs, short *param_2)
                 if (sVar1 == -4)
                 {
                     // locked if keys < 2
-                    sVar7 = ((advSlot2->SLOT2_NUM_KEYS) < 2);
+                    sVar7 = ((advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS) < 2);
                     goto LAB_800b17e8;
                 }
                 if (sVar1 < -3)
@@ -184,7 +185,7 @@ void AH_Map_HubItems(void* hubPtrs, short *param_2)
                     if (sVar1 == -5)
                     {
                         // locked if keys < 3
-                        sVar7 = ((advSlot2->SLOT2_NUM_KEYS) < 3);
+                        sVar7 = ((advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS) < 3);
                         goto LAB_800b17e8;
                     }
                     iVar5 = -1;

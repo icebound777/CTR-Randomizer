@@ -23,6 +23,7 @@ void SelectProfile_DrawAdvProfile(
 
     /* START RANDOMIZER*/
     struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
+    struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
     /* If we are trying to draw more than one profile, just draw slot 0 and
        center it.
     */
@@ -78,9 +79,27 @@ void SelectProfile_DrawAdvProfile(
 
         // Print the numbers
         SelectProfile_PrintInteger(gGT->currAdvProfile.completionPercent, local_posX + 0x6a, local_posY + 23, 0, integerColor);
-        SelectProfile_PrintInteger(advSlot2->SLOT2_NUM_TROPHIES, local_posX + 0x6a, local_posY + 5, 0, integerColor);
-        SelectProfile_PrintInteger(advSlot2->SLOT2_NUM_KEYS, local_posX + 0xb5, local_posY + 5, 0, integerColor);
-        SelectProfile_PrintInteger(advSlot2->SLOT2_NUM_RELICS, local_posX + 0xb5, local_posY + 23, 0, integerColor);
+        SelectProfile_PrintInteger(
+            (advSlot2->SLOT2_NUM_TROPHIES + advSlot3->SLOT2_NUM_TROPHIES),
+            local_posX + 0x6a,
+            local_posY + 5,
+            0,
+            integerColor
+        );
+        SelectProfile_PrintInteger(
+            (advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS),
+            local_posX + 0xb5,
+            local_posY + 5,
+            0,
+            integerColor
+        );
+        SelectProfile_PrintInteger(
+            (advSlot2->SLOT2_NUM_RELICS + advSlot3->SLOT2_NUM_RELICS),
+            local_posX + 0xb5,
+            local_posY + 23,
+            0,
+            integerColor
+        );
 
         // "%"
         DecalFont_DrawLine(&sdata->s_percent_sign, local_posX + 0x70, local_posY + 23, 1, percentColor);

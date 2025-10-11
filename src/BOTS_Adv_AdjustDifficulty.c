@@ -50,7 +50,7 @@ void DECOMP_BOTS_Adv_AdjustDifficulty(void)
         // base difficulty modifier based on number of times lost
         baseModifier = BOTS_Adv_NumTimesLostEvent(sdata->advProgress.timesLostBossRace[gGT->bossID]);
         maxDifficulty = gGT->bossID * 5;
-        modifier = baseModifier - 225; 
+        modifier = baseModifier - 225;
 
         // if Adv Difficulty cheat is activated
         if (advCheat != 0)
@@ -64,8 +64,9 @@ void DECOMP_BOTS_Adv_AdjustDifficulty(void)
       {
         /* START Randomizer */
         struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
+        struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
         /* END Randomizer */
-        short trophyIndex = advSlot2->SLOT2_NUM_TROPHIES + 1;
+        short trophyIndex = (advSlot2->SLOT2_NUM_TROPHIES + advSlot3->SLOT2_NUM_TROPHIES) + 1;
         baseModifier = BOTS_Adv_NumTimesLostEvent(sdata->advProgress.timesLostRacePerLev[gGT->levelID]);
         modifier = baseModifier - 60;
         maxDifficulty = (trophyIndex * 35) >> 2;

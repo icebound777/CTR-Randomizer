@@ -28,6 +28,7 @@ void AH_Garage_ThTick(struct Thread *t)
 
     /* START Randomizer */
     struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
+    struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
     /* END Randomizer */
 
     bossIsOpen = true;
@@ -138,7 +139,7 @@ LAB_800aeb6c:
         bitIndex = 0x5e;
 
         // check four boss keys
-        if (advSlot2->SLOT2_NUM_KEYS < 4) goto LAB_800aebd0;
+        if ((advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS) < 4) goto LAB_800aebd0;
         #if 0 /* RANDOMIZER */
         for (i = 0; i < 4; i++)
         {
@@ -275,7 +276,7 @@ LAB_800aede8:
 
         if (
             (levelID == GEM_STONE_VALLEY) &&
-            (advSlot2->SLOT2_NUM_RELICS == 18))
+            ((advSlot2->SLOT2_NUM_RELICS + advSlot3->SLOT2_NUM_RELICS) == 18))
         {
             // set string index (0-5) to "N Oxide's Final Challenge"
             gGT->bossID = 5;
