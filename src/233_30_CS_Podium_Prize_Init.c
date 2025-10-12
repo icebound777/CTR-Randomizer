@@ -106,27 +106,21 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
 
     struct UiElement2D (*ptrHudData)[] = data.hudStructPtr[0];
 
+    // specular lighting
+    inst->flags |= USE_SPECULAR_LIGHT;
+
     switch (local_prizeModel)
     {
         // if reward is [empty], used for Oxide Podium
         case STATIC_BIG1:
             // make invisible
             inst->flags |= HIDE_MODEL;
+            // not specular lighting
+            inst->flags &= ~USE_SPECULAR_LIGHT;
             goto GEMS_OR_TOKEN_OR_NOTHING;
 
         case STATIC_TOKEN:
-            short *tokenColor = &data.AdvCups[prizeColor - 1].color;
-            inst->colorRGBA = (tokenColor[0] << 20 | tokenColor[1] << 12 | tokenColor[2] << 4);
-
-            prize[12] = 0x5d3;
-            prize[13] = 0x718;
-            prize[14] = 0x590;
-            prize[15] = 0x609;
-
-            // specular lighting
-            inst->flags |= USE_SPECULAR_LIGHT;
-
-            goto GEMS_OR_TOKEN_OR_NOTHING;
+            prizeColor--;
 
         // if reward is gem
         case STATIC_GEM:
@@ -139,9 +133,6 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
             prize[13] = 0x718;
             prize[14] = 0x590;
             prize[15] = 0x609;
-
-            // specular lighting
-            inst->flags |= USE_SPECULAR_LIGHT;
 
         default:
             GEMS_OR_TOKEN_OR_NOTHING:
@@ -191,9 +182,6 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
             prize[14] = 0x1eb;
             prize[15] = 0x670;
 
-            // specular lighting
-            inst->flags |= USE_SPECULAR_LIGHT;
-
             prizeFlag = INC_RELIC;
             break;
 
@@ -207,6 +195,9 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
             inst->scale[0] = 0x4000;
             inst->scale[1] = 0x4000;
             inst->scale[2] = 0x4000;
+
+            // not specular lighting
+            inst->flags &= ~USE_SPECULAR_LIGHT;
 
             prizeFlag = INC_TROPHY;
             break;
@@ -222,8 +213,6 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
             prize[14] = 0x2da;
             prize[15] = 0x54b;
 
-            // specular lighting
-            inst->flags |= USE_SPECULAR_LIGHT;
             prizeFlag = INC_KEY;
     }
 
