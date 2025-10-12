@@ -1,5 +1,7 @@
 #include <common.h>
 
+#include "CTRRandomizer_database.h"
+
 void CS_Camera_ThTick_Boss(struct Thread *t);
 
 void CS_Camera_ThTick_Podium(struct Thread *th)
@@ -158,7 +160,7 @@ void CS_Camera_ThTick_Podium(struct Thread *th)
         OVR_233.PodiumInitUnk3 = 1;
 
         // podium reward
-        rewardId = gGT->podiumRewardID;
+        rewardId = GET_CLEAN_REWARD(gGT->podiumRewardID);
 
         // zero confetti winners
         gGT->numWinners = 0;
@@ -180,45 +182,50 @@ void CS_Camera_ThTick_Podium(struct Thread *th)
 
                 CS_DestroyPodium_StartDriving();
 
-                switch (rewardId)
+                // If the gem color is == 5 then we have a multiworld item gem.
+                // In this case: no hint
+                if (GET_GEMANDTOKEN_COLOR(gGT->podiumRewardID) != 5)
                 {
-                    case STATIC_TROPHY:
-                        // "congratulations, you win a trophy"
-                        hintID = 12;
-                        break;
+                    switch (rewardId)
+                    {
+                        case STATIC_TROPHY:
+                            // "congratulations, you win a trophy"
+                            hintID = 12;
+                            break;
 
-                    case STATIC_RELIC:
-                        // "great, you earn a relic"
-                        hintID = 19;
-                        break;
+                        case STATIC_RELIC:
+                            // "great, you earn a relic"
+                            hintID = 19;
+                            break;
 
-                    case STATIC_KEY:
-                        // "good job, you earned a key"
-                        hintID = 13;
-                        break;
+                        case STATIC_KEY:
+                            // "good job, you earned a key"
+                            hintID = 13;
+                            break;
 
-                    case STATIC_TOKEN:
-                        // "excellent work, you've collected a CTR token"
-                        hintID = 20;
-                        break;
+                        case STATIC_TOKEN:
+                            // "excellent work, you've collected a CTR token"
+                            hintID = 20;
+                            break;
 
-                    default:
-                        // "congratulations, you won a gem"
-                        hintID = 21;
-                        break;
+                        default:
+                            // "congratulations, you won a gem"
+                            hintID = 21;
+                            break;
+                    }
+
+                    // if player uses uka
+                    if ((VehPickupItem_MaskBoolGoodGuy(gGT->drivers[0]) & 0xffff) == 0)
+                    {
+                        // increment index to uka voices
+                        hintID += 0x1f;
+                    }
+
+                    // pause cd
+                    CDSYS_XAPauseForce();
+
+                    CDSYS_XAPlay(1, hintID);
                 }
-
-                // if player uses uka
-                if ((VehPickupItem_MaskBoolGoodGuy(gGT->drivers[0]) & 0xffff) == 0)
-                {
-                    // increment index to uka voices
-                    hintID += 0x1f;
-                }
-
-                // pause cd
-                CDSYS_XAPauseForce();
-
-                CDSYS_XAPlay(1, hintID);
 
                 // reset podium reward
                 gGT->podiumRewardID = NOFUNC; //0
