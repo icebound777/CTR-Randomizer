@@ -464,19 +464,18 @@ LAB_8004f84c:
     // === Relic Race Only ===
 
     unsigned int* rewardsSet = sdata->advProgress.rewards;
+    levID = gGT->levelID;
 
     // If did not unlock relic, draw NEXT goal
     if ((gGT->gameModeEnd & NEW_RELIC) == 0)
     {
-        // Level ID
-        levID = gGT->levelID;
 
         // 3a is bit index for unlocking plat relics
         // 28 is bit index for unlocking gold relics
         // 16 is bit index for unlocking blue relics
 
         // if you have gold, draw platinum
-        if(CHECK_ADV_BIT(rewardsSet, (gGT->levelID + 0x28)) != 0)
+        if(CHECK_ADV_BIT(rewardsSet, (levID + 0x28)) != 0)
         {
 DrawPlatinum:
             str = 200;
@@ -488,18 +487,18 @@ DrawPlatinum:
 
         // if no blue relic, draw blue,
         // if owned blue relic, draw gold
-        lapIndex = CHECK_ADV_BIT(rewardsSet, (gGT->levelID + 0x16));
+        lapIndex = CHECK_ADV_BIT(rewardsSet, (levID + 0x16));
     }
 
     // Draw (blue,gold,plat) based on which you have unlocked
     else
     {
         // if owned plat, draw plat
-        if(CHECK_ADV_BIT(rewardsSet, (gGT->levelID + 0x3a)) != 0) goto DrawPlatinum;
+        if(CHECK_ADV_BIT(rewardsSet, (levID + 0x3a)) != 0) goto DrawPlatinum;
 
         // if own gold, draw gold,
         // if own blue, draw blue
-        lapIndex = CHECK_ADV_BIT(rewardsSet, (gGT->levelID + 0x28));
+        lapIndex = CHECK_ADV_BIT(rewardsSet, (levID + 0x28));
     }
 
     if ((lapIndex & 1) == 0)
