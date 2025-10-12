@@ -45,3 +45,4 @@ common, 233, CS_Podium_Prize_Init, 0x0, src/233_30_CS_Podium_Prize_Init.c
 
 // Update relic timer to skip non-required relic difficulties
 common, exe, UI_INSTANCE_InitAll, 0x0, src/UI_08_INSTANCE_InitAll.c
+common, exe, UI_DrawRaceClock, 0x0, src/UI_23_DrawRaceClock.c
