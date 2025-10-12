@@ -121,13 +121,23 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
 
         case STATIC_TOKEN:
             prizeColor--;
+            /* Intentional fall-through */
 
         // if reward is gem
         case STATIC_GEM:
             // get color of the gem based off the cup ID
-            short *gemColor = &data.AdvCups[prizeColor].color;
+            if (prizeColor < 5)
+            {
+                short *gemColor = &data.AdvCups[prizeColor].color;
 
-            inst->colorRGBA = (gemColor[0] << 20 | gemColor[1] << 12 | gemColor[2] << 4);
+                inst->colorRGBA = (gemColor[0] << 20 | gemColor[1] << 12 | gemColor[2] << 4);
+            }
+            else
+            {
+                // Gem with prizeColor == 5: our tag for multiworld-item
+                // Make gem bright white
+                inst->colorRGBA = 0xe0e0e00;
+            }
 
             prize[12] = 0x5d3;
             prize[13] = 0x718;
