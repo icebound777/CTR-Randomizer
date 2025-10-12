@@ -147,7 +147,7 @@ GetKeysRequirement:
         unlockItem_numNeeded = 5;
 
         // count number of gems owned
-        unlockItem_numOwned = (advSlot2->SLOT2_NUM_GEMS + advSlot3->SLOT2_NUM_GEMS);
+        unlockItem_numOwned = ((advSlot2->SLOT2_NUM_GEMS) + (advSlot3->SLOT2_NUM_GEMS));
         #if 0 /* RANDOMIZER*/
         unlockItem_numOwned = 0;
         for(i = 0; i < 5; i++)
@@ -172,23 +172,38 @@ GetKeysRequirement:
         switch (levelID - ADV_CUP)
         {
             case 0:
-                unlockItem_numOwned = (advSlot2->SLOT2_NUM_TOKENS_RED + advSlot3->SLOT2_NUM_TOKENS_RED);
+                unlockItem_numOwned = (
+                    (advSlot2->SLOT2_NUM_TOKENS_RED)
+                    + (advSlot3->SLOT2_NUM_TOKENS_RED)
+                );
                 break;
 
             case 1:
-                unlockItem_numOwned = (advSlot2->SLOT2_NUM_TOKENS_GREEN + advSlot3->SLOT2_NUM_TOKENS_GREEN);
+                unlockItem_numOwned = (
+                    (advSlot2->SLOT2_NUM_TOKENS_GREEN)
+                    + (advSlot3->SLOT2_NUM_TOKENS_GREEN)
+                );
                 break;
 
             case 2:
-                unlockItem_numOwned = (advSlot2->SLOT2_NUM_TOKENS_BLUE + advSlot3->SLOT2_NUM_TOKENS_BLUE);
+                unlockItem_numOwned = (
+                    (advSlot2->SLOT2_NUM_TOKENS_BLUE)
+                    + (advSlot3->SLOT2_NUM_TOKENS_BLUE)
+                );
                 break;
 
             case 3:
-                unlockItem_numOwned = (advSlot2->SLOT2_NUM_TOKENS_YELLOW + advSlot3->SLOT2_NUM_TOKENS_YELLOW);
+                unlockItem_numOwned = (
+                    (advSlot2->SLOT2_NUM_TOKENS_YELLOW)
+                    + (advSlot3->SLOT2_NUM_TOKENS_YELLOW)
+                );
                 break;
 
             default:
-                unlockItem_numOwned = (advSlot2->SLOT2_NUM_TOKENS_PURPLE + advSlot3->SLOT2_NUM_TOKENS_PURPLE);
+                unlockItem_numOwned = (
+                    (advSlot2->SLOT2_NUM_TOKENS_PURPLE)
+                    + (advSlot3->SLOT2_NUM_TOKENS_PURPLE)
+                );
                 break;
         }
         #if 0 /* RANDOMIZER */
