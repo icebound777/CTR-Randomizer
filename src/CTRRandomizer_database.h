@@ -9,7 +9,8 @@
 /* Key type defines via prefixes */
 enum DB_Prefixes {
     DB_PREFIX_LEVELIDS = 0xA0000000,
-    DB_PREFIX_REWARDS  = 0xA1000000
+    DB_PREFIX_REWARDS  = 0xA1000000,
+    DB_PREFIX_SETTINGS = 0xAF000000
 };
 
 /* DB fetch results */

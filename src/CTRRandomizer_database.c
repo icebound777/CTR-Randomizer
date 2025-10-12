@@ -2,6 +2,14 @@
 #include "CTRRandomizer_database.h"
 #include "reward_enums.h"
 
+#ifndef FALSE
+#define FALSE  0
+#endif
+
+#ifndef TRUE
+#define TRUE  1
+#endif
+
 #define DB_END -1
 #define DB_RAMMARKER_START 0xDADB0D00, 0xDADB0D00
 #define DB_RAMMARKER_END 0xDADB0DAA, 0xDADB0DAA
@@ -134,6 +142,9 @@ static int rando_database[] = {
     DB_PREFIX_REWARDS | (CUP_BLUE << 8) | STATIC_GEM,          STATIC_GEM | (GEM_BLUE << 8),
     DB_PREFIX_REWARDS | (CUP_YELLOW << 8) | STATIC_GEM,        STATIC_GEM | (GEM_YELLOW << 8),
     DB_PREFIX_REWARDS | (CUP_PURPLE << 8) | STATIC_GEM,        STATIC_GEM | (GEM_PURPLE << 8),
+    /* SEED SETTINGS */
+    DB_PREFIX_SETTINGS | SETTING_RELIC_DIFFICULTY,    RELICDIFF_SAPPHIRE,
+    DB_PREFIX_SETTINGS | SETTING_RELIC_NEEDS_PERFECT, FALSE,
     DB_RAMMARKER_END,
     DB_END
 };
