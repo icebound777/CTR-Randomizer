@@ -1,4 +1,8 @@
 #include <common.h>
+/* START RANDOMIZER */
+#include "CTRRandomizer_database.h"
+#include "reward_enums.h"
+/* END RANDOMIZER */
 
 void DECOMP_UI_INSTANCE_InitAll(void)
 {
@@ -114,6 +118,15 @@ void DECOMP_UI_INSTANCE_InitAll(void)
             }
 
             // Get Relic Time to put in HUD
+            int required_difficulty = RELICDIFF_SAPPHIRE; // default
+            /* START RANDOMIZER */
+            int db_fetch_result = DB_VALUE_NOTFOUND;
+            int db_ret = database_fetch(
+                DB_PREFIX_SETTINGS | SETTING_RELIC_DIFFICULTY,
+                &db_fetch_result
+            );
+            if (db_fetch_result == DB_VALUE_OK) required_difficulty = db_ret;
+            /* END RANDOMIZER */
             // no platinum and no gold
             if (   (CHECK_ADV_BIT(sdata->advProgress.rewards, (gGT->levelID + 0x3a)) == 0)
                 && (CHECK_ADV_BIT(sdata->advProgress.rewards, (gGT->levelID + 0x28)) == 0)
@@ -128,6 +141,9 @@ void DECOMP_UI_INSTANCE_InitAll(void)
                 // put platinum time on screen
                 relicType = 2;
             }
+            /* START RANDOMIZER */
+            if (required_difficulty > relicType) relicType = required_difficulty;
+            /* END RANDOMIZER */
 
             // get relic time on this track, for this relic type (sapphire, gold, platinum)
             unsigned int relicTime = data.RelicTime[gGT->levelID*3 + relicType];
