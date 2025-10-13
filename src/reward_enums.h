@@ -16,14 +16,5 @@ enum TokenColors {
     TOKEN_YELLOW,
     TOKEN_PURPLE
 };
-enum SettingsIds {
-    SETTING_RELIC_DIFFICULTY = 0,
-    SETTING_RELIC_NEEDS_PERFECT
-};
-enum RelicDifficulty {
-    RELICDIFF_SAPPHIRE = 0,
-    RELICDIFF_GOLD,
-    RELICDIFF_PLATINUM
-};
 
 #endif

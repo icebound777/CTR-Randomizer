@@ -2,7 +2,6 @@
 /* START RANDOMIZER */
 #include "CTRRandomizer_handle_item_unlocks.h"
 #include "CTRRandomizer_database.h"
-#include "reward_enums.h"
 /* END RANDOMIZER */
 
 void DECOMP_UI_CupStandings_InputAndDraw(void)

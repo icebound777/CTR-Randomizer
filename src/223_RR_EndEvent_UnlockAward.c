@@ -1,7 +1,6 @@
 #include <common.h>
 /* START RANDOMIZER */
 #include "CTRRandomizer_handle_item_unlocks.h"
-#include "reward_enums.h"
 #include "CTRRandomizer_database.h"
 /* END RANDOMIZER */
 

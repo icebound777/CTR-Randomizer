@@ -1,7 +1,6 @@
 #include <common.h>
 /* START RANDOMIZER */
 #include "CTRRandomizer_database.h"
-#include "reward_enums.h"
 /* END RANDOMIZER */
 
 void DECOMP_UI_INSTANCE_InitAll(void)

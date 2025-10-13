@@ -1,7 +1,6 @@
 #include <common.h>
 
 #include "CTRRandomizer_database.h"
-#include "reward_enums.h"
 
 #ifdef REBUILD_PC
 struct

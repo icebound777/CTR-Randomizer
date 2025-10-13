@@ -1,7 +1,6 @@
 #include <common.h>
 /* START RANDOMIZER */
 #include "CTRRandomizer_database.h"
-#include "reward_enums.h"
 /* END RANDOMIZER */
 
 #define gte_ldVXY0(r0) __asm__ volatile("mtc2   %0, $0" \

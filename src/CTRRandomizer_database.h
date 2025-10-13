@@ -19,6 +19,16 @@ enum DbFetchResult {
     DB_VALUE_NOTFOUND
 };
 
+enum SettingsIds {
+    SETTING_RELIC_DIFFICULTY = 0,
+    SETTING_RELIC_NEEDS_PERFECT
+};
+enum RelicDifficulty {
+    RELICDIFF_SAPPHIRE = 0,
+    RELICDIFF_GOLD,
+    RELICDIFF_PLATINUM
+};
+
 int database_fetch(
     int db_key,
     int *fetch_result
