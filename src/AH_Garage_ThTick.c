@@ -15,7 +15,9 @@ void AH_Garage_ThTick(struct Thread *t)
     int ratio;
     int bottom;
     short *check;
+    #if 0 /* RANDOMIZER */
     u_int bitIndex;
+    #endif
     u_int uVar5;
     u_int uVar8;
     int dist[3];
@@ -135,11 +137,16 @@ LAB_800aeb6c:
     // If you're in Gemstone Valley
     if (levelID == GEM_STONE_VALLEY)
     {
+        #if 0 /* RANDOMIZER */
         // ripper roo boss key
         bitIndex = 0x5e;
+        #endif
 
         // check four boss keys
-        if ((advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS) < 4) goto LAB_800aebd0;
+        if ((advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS) < 4)
+        {
+            bossIsOpen = false;
+        }
         #if 0 /* RANDOMIZER */
         for (i = 0; i < 4; i++)
         {
@@ -149,8 +156,7 @@ LAB_800aeb6c:
         }
         #endif
     }
-    // If you're not in Gemstone Valley
-    else
+    else // If you're not in Gemstone Valley
     {
         check = &data.advHubTrackIDs[(levelID - N_SANITY_BEACH) * 4];
         // check all four tracks on hub
@@ -158,24 +164,21 @@ LAB_800aeb6c:
         {
             // if any trophy on this hub is not unlocked
             if (CHECK_ADV_BIT(adv->rewards, check[i] + 6) == 0)
+            {
                 // boss is not open
-                goto LAB_800aebd0;
+                bossIsOpen = false;
+                break;
+            }
         }
     }
-    goto LAB_800aec34;
 
-LAB_800aebd0:
-    bossIsOpen = false;
-
-LAB_800aec34:
     dist[0] = drv_inst->matrix.t[0] - inst->instDef->pos[0];
     dist[1] = drv_inst->matrix.t[1] - inst->instDef->pos[1];
     dist[2] = drv_inst->matrix.t[2] - inst->instDef->pos[2];
 
     // if in a state where you're seeing the boss key open an adv door,
     // or some other kind of cutscene where you can't move
-    if ((gGT->gameMode2 & 4) != 0)
-        return;
+    if ((gGT->gameMode2 & 4) != 0) return;
 
     // check distance
     if (0x143fff < dist[0] * dist[0] + dist[1] * dist[1] + dist[2] * dist[2])
