@@ -467,6 +467,9 @@ LAB_8004f84c:
     levID = gGT->levelID;
 
     // If did not unlock relic, draw NEXT goal
+    // This is used during the relic race to show what the next time to beat is,
+    // as well as continuing to show that time after the race if you fail to
+    // beat the time
     if ((gGT->gameModeEnd & NEW_RELIC) == 0)
     {
 
@@ -475,51 +478,59 @@ LAB_8004f84c:
         // 16 is bit index for unlocking blue relics
 
         // if you have gold, draw platinum
-        if(CHECK_ADV_BIT(rewardsSet, (levID + 0x28)) != 0)
+        if (CHECK_ADV_BIT(rewardsSet, (levID + 0x28)) != 0)
         {
-DrawPlatinum:
+            lapIndex = 2;
+        }
+        else
+        {
+            // If you have not unlocked Gold or Plat relic on this track
+
+            // if no blue relic, draw blue,
+            // if owned blue relic, draw gold
+            lapIndex = CHECK_ADV_BIT(rewardsSet, (levID + 0x16));
+        }
+    }
+    else
+    {
+        // Draw (blue,gold,plat) based on which you have unlocked
+        // This is used in the post-race menu, as par-time you just beat to
+        // compare the time you just set to
+
+        // if owned plat, draw plat
+        if (CHECK_ADV_BIT(rewardsSet, (levID + 0x3a)) != 0)
+        {
+            lapIndex = 2;
+        }
+        else
+        {
+            // if own gold, draw gold,
+            // if own blue, draw blue
+            lapIndex = CHECK_ADV_BIT(rewardsSet, (levID + 0x28));
+        }
+    }
+
+    switch (lapIndex)
+    {
+        case 0:
+            // SAPPHIRE
+            str = 0xc6;
+            stringColor_but_its_also_relicColor = TROPY_LIGHT_BLUE;
+            break;
+
+        case 1:
+            // GOLD
+            str = 199;
+            stringColor_but_its_also_relicColor = PAPU_YELLOW;
+            break;
+
+        default:
+            // PLATINUM
             str = 200;
             stringColor_but_its_also_relicColor = SILVER;
-            goto LAB_8004f378;
-        }
-
-        // If you have not unlocked Gold or Plat relic on this track
-
-        // if no blue relic, draw blue,
-        // if owned blue relic, draw gold
-        lapIndex = CHECK_ADV_BIT(rewardsSet, (levID + 0x16));
+            break;
     }
 
-    // Draw (blue,gold,plat) based on which you have unlocked
-    else
-    {
-        // if owned plat, draw plat
-        if(CHECK_ADV_BIT(rewardsSet, (levID + 0x3a)) != 0) goto DrawPlatinum;
-
-        // if own gold, draw gold,
-        // if own blue, draw blue
-        lapIndex = CHECK_ADV_BIT(rewardsSet, (levID + 0x28));
-    }
-
-    if ((lapIndex & 1) == 0)
-    {
-        // SAPPHIRE
-        str = 0xc6;
-
-        // blue color
-        stringColor_but_its_also_relicColor = TROPY_LIGHT_BLUE;
-    }
-
-    else
-    {
-        // GOLD
-        str = 199;
-
-        // yellow color
-        stringColor_but_its_also_relicColor = PAPU_YELLOW;
-    }
-
-LAB_8004f378:
     fontType = FONT_BIG;
     if ((flags & 1) == 0)
     {
@@ -528,7 +539,6 @@ LAB_8004f378:
         strFlags_but_its_also_posY = textPosY + 0x20;
         uVar11 = textPosX;
     }
-
     else
     {
         stringColor_but_its_also_relicColor = stringColor_but_its_also_relicColor | JUSTIFY_RIGHT;
