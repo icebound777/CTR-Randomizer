@@ -25,19 +25,57 @@ enum CupIds {
     CUP_PURPLE
 };
 
-
 /*
 Fetch a value from the randomizer database using the given key.
 If the value cannot be found, return the key as value and set the
 fetch result to not_found.
+This function is sped up using dynamic jump offsets, making subsequent queries
+faster. However, this requires the settings to be grouped by types, instead
+of being randomly arranged.
 */
 int database_fetch(
     int db_key,
     int *fetch_result
 )
 {
-    for (int i = 0; rando_database[i] != DB_END; i += 2)
+    static int db_offset_rewards = 0;
+    static int db_offset_settings = 0;
+    int i = 0;
+
+    // If we have db offsets from a previous fetch call, use them to skip
+    // a bunch of entries
+    if (   (db_offset_settings != 0)
+        && (db_key & DB_PREFIX_SETTINGS) == DB_PREFIX_SETTINGS
+    )
     {
+        i = db_offset_settings;
+    }
+    else if (   (db_offset_rewards != 0)
+             && (db_key & DB_PREFIX_REWARDS) == DB_PREFIX_REWARDS
+    )
+    {
+        i = db_offset_rewards;
+    }
+
+    for (; rando_database[i] != DB_END; i += 2)
+    {
+        // If we have un-set db offsets, check if we have found the first
+        // matching entry and, if so, set the offset jump value
+        if (   db_offset_rewards == 0
+            && (rando_database[i] & DB_PREFIX_REWARDS) == DB_PREFIX_REWARDS
+        )
+        {
+            db_offset_rewards = i;
+        }
+
+        if (   db_offset_settings == 0
+            && (rando_database[i] & DB_PREFIX_SETTINGS) == DB_PREFIX_SETTINGS
+        )
+        {
+            db_offset_settings = i;
+        }
+
+        // If we have found our value, set output
         if (rando_database[i] == db_key)
         {
             *fetch_result = DB_VALUE_OK;
@@ -45,6 +83,7 @@ int database_fetch(
         }
     }
 
+    // If we get here, then we didn't find what we were looking for
     *fetch_result = DB_VALUE_NOTFOUND;
     return db_key;
 }
