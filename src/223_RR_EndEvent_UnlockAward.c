@@ -65,7 +65,7 @@ void RR_EndEvent_UnlockAward(void)
 
             UNLOCK_ADV_BIT(adv->rewards, bitIndex);
 
-            gGT->gameModeEnd |= NEW_RELIC;
+            if (i >= required_difficulty) gGT->gameModeEnd |= NEW_RELIC;
 
             if (i == required_difficulty)
             {

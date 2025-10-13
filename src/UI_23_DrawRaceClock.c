@@ -1,5 +1,8 @@
 #include <common.h>
 
+#include "CTRRandomizer_database.h"
+#include "reward_enums.h"
+
 #ifdef REBUILD_PC
 struct
 {
@@ -509,6 +512,16 @@ LAB_8004f84c:
             lapIndex = CHECK_ADV_BIT(rewardsSet, (levID + 0x28));
         }
     }
+
+    int required_difficulty = RELICDIFF_SAPPHIRE; // default
+    int db_fetch_result = DB_VALUE_NOTFOUND;
+    int db_ret = database_fetch(
+        DB_PREFIX_SETTINGS | SETTING_RELIC_DIFFICULTY,
+        &db_fetch_result
+    );
+    if (db_fetch_result == DB_VALUE_OK) required_difficulty = db_ret;
+
+    if ((u_int) required_difficulty > lapIndex) lapIndex = required_difficulty;
 
     switch (lapIndex)
     {
