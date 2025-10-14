@@ -1,2 +1,2 @@
 .set noreorder
-j print_version
+j messages_handler
