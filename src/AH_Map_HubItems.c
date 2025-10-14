@@ -1,6 +1,7 @@
 #include <common.h>
 /* START Randomizer */
 #include "saveslot_defines.h"
+#include "CTRRandomizer_database.h"
 /* END Randomizer */
 
 void AH_Map_HubItems(void* hubPtrs, short *param_2)
@@ -122,35 +123,86 @@ void AH_Map_HubItems(void* hubPtrs, short *param_2)
                                 local_40 = (int) *psVar10 + -0x200;
                                 local_3c = (int) *psVar9 + -0x100;
 
-                            UI_Map_GetIconPos(hubPtrs, &local_40, &local_3c);
+                                UI_Map_GetIconPos(hubPtrs, &local_40, &local_3c);
 
-                            AH_Map_LoadSave_Full(
-                                local_40,
-                                local_3c,
-                                &D232.loadSave_pos[0],
-                                (char*) &D232.loadSave_col[0],
-                                0x800,
-                                (int) psVar9[1]
-                            );
+                                AH_Map_LoadSave_Full(
+                                    local_40,
+                                    local_3c,
+                                    &D232.loadSave_pos[0],
+                                    (char*) &D232.loadSave_col[0],
+                                    0x800,
+                                    (int) psVar9[1]
+                                );
 
-                            iVar5 = -0x10000;
+                                iVar5 = -0x10000;
                             }
                             goto LAB_800b17ec;
                         }
 
                         // did not use GOTO,
                         // must be == 3, for Boss Garage
-
                         int base = levelID - N_SANITY_BEACH;
 
-                        for (iVar3 = 0; iVar3 < 4; iVar3++)
-                        {
-                            trophies = &data.advHubTrackIDs[base * 4];
+                        int garage_requirement_logic = GARAGE_OPENING_VANILLA_WARPPADS; // default
+                        int db_fetch_result = DB_VALUE_NOTFOUND;
+                        int db_ret = database_fetch(
+                            DB_PREFIX_SETTINGS | SETTING_BOSS_GARAGE_OPENING,
+                            &db_fetch_result
+                        );
+                        if (db_fetch_result == DB_VALUE_OK) garage_requirement_logic = db_ret;
 
-                            if (CHECK_ADV_BIT(adv->rewards, (trophies[iVar3]+6)) == 0)
+                        if (garage_requirement_logic == GARAGE_OPENING_TROPHIES)
+                        {
+                            int required_trophies;
+                            switch (levelID)
+                            {
+                                case N_SANITY_BEACH:
+                                    required_trophies = 4;
+                                    break;
+
+                                case THE_LOST_RUINS:
+                                    required_trophies = 8;
+                                    break;
+
+                                case GLACIER_PARK:
+                                    required_trophies = 12;
+                                    break;
+
+                                default: // CITADEL_CITY
+                                    required_trophies = 16;
+                                    break;
+                            }
+                            if ((advSlot2->SLOT2_NUM_TROPHIES + advSlot3->SLOT2_NUM_TROPHIES) < required_trophies)
                             {
                                 open = false;
-                                break;
+                            }
+                        }
+                        else
+                        {
+                            trophies = &data.advHubTrackIDs[base * 4];
+                            for (iVar3 = 0; iVar3 < 4; iVar3++)
+                            {
+                                int levelID_to_check = trophies[iVar3];
+
+                                if (garage_requirement_logic == GARAGE_OPENING_CURRENTHUB_WARPPADS)
+                                {
+                                    // Adjust check to look at the warp pads in the current hub
+                                    // compensating for any warp pad randomization
+                                    int randomized_LevelID = database_fetch(
+                                        DB_PREFIX_LEVELIDS | levelID_to_check,
+                                        &db_fetch_result
+                                    );
+                                    if (db_fetch_result == DB_VALUE_OK)
+                                    {
+                                        levelID_to_check = randomized_LevelID;
+                                    }
+                                }
+
+                                if (CHECK_ADV_BIT(adv->rewards, (levelID_to_check + 6)) == 0)
+                                {
+                                    open = false;
+                                    break;
+                                }
                             }
                         }
                         if (!open) goto LAB_800b17e4;
