@@ -1,6 +1,7 @@
 #include <common.h>
 /* START Randomizer */
 #include "saveslot_defines.h"
+#include "CTRRandomizer_database.h"
 /* END Randomizer */
 
 void AH_Garage_Open(struct ScratchpadStruct *, struct Thread *);
@@ -15,7 +16,9 @@ void AH_Garage_ThTick(struct Thread *t)
     int ratio;
     int bottom;
     short *check;
+    #if 0 /* RANDOMIZER */
     u_int bitIndex;
+    #endif
     u_int uVar5;
     u_int uVar8;
     int dist[3];
@@ -135,11 +138,16 @@ LAB_800aeb6c:
     // If you're in Gemstone Valley
     if (levelID == GEM_STONE_VALLEY)
     {
+        #if 0 /* RANDOMIZER */
         // ripper roo boss key
         bitIndex = 0x5e;
+        #endif
 
         // check four boss keys
-        if ((advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS) < 4) goto LAB_800aebd0;
+        if ((advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS) < 4)
+        {
+            bossIsOpen = false;
+        }
         #if 0 /* RANDOMIZER */
         for (i = 0; i < 4; i++)
         {
@@ -149,33 +157,79 @@ LAB_800aeb6c:
         }
         #endif
     }
-    // If you're not in Gemstone Valley
-    else
+    else // If you're not in Gemstone Valley
     {
-        check = &data.advHubTrackIDs[(levelID - N_SANITY_BEACH) * 4];
-        // check all four tracks on hub
-        for (i = 0; i < 4; i++)
+        int garage_requirement_logic = GARAGE_OPENING_VANILLA_WARPPADS; // default
+        int db_fetch_result = DB_VALUE_NOTFOUND;
+        int db_ret = database_fetch(
+            DB_PREFIX_SETTINGS | SETTING_BOSS_GARAGE_OPENING,
+            &db_fetch_result
+        );
+        if (db_fetch_result == DB_VALUE_OK) garage_requirement_logic = db_ret;
+
+        if (garage_requirement_logic == GARAGE_OPENING_TROPHIES)
         {
-            // if any trophy on this hub is not unlocked
-            if (CHECK_ADV_BIT(adv->rewards, check[i] + 6) == 0)
-                // boss is not open
-                goto LAB_800aebd0;
+            int required_trophies;
+            switch (levelID)
+            {
+                case N_SANITY_BEACH:
+                    required_trophies = 4;
+                    break;
+
+                case THE_LOST_RUINS:
+                    required_trophies = 8;
+                    break;
+
+                case GLACIER_PARK:
+                    required_trophies = 12;
+                    break;
+
+                default: // CITADEL_CITY
+                    required_trophies = 16;
+                    break;
+            }
+            if ((advSlot2->SLOT2_NUM_TROPHIES + advSlot3->SLOT2_NUM_TROPHIES) < required_trophies)
+            {
+                bossIsOpen = false;
+            }
+        }
+        else
+        {
+            check = &data.advHubTrackIDs[(levelID - N_SANITY_BEACH) * 4];
+            // check all four vanilla tracks on current hub
+            for (i = 0; i < 4; i++)
+            {
+                int levelID_to_check = check[i];
+
+                if (garage_requirement_logic == GARAGE_OPENING_CURRENTHUB_WARPPADS)
+                {
+                    // Adjust check to look at the warp pads in the current hub
+                    // compensating for any warp pad randomization
+                    int randomized_LevelID = database_fetch(
+                        DB_PREFIX_LEVELIDS | levelID_to_check,
+                        &db_fetch_result
+                    );
+                    if (db_fetch_result == DB_VALUE_OK) levelID_to_check = randomized_LevelID;
+                }
+
+                // if any of the four trophy races is not beaten
+                if (CHECK_ADV_BIT(adv->rewards, levelID_to_check + 6) == 0)
+                {
+                    // boss is not open
+                    bossIsOpen = false;
+                    break;
+                }
+            }
         }
     }
-    goto LAB_800aec34;
 
-LAB_800aebd0:
-    bossIsOpen = false;
-
-LAB_800aec34:
     dist[0] = drv_inst->matrix.t[0] - inst->instDef->pos[0];
     dist[1] = drv_inst->matrix.t[1] - inst->instDef->pos[1];
     dist[2] = drv_inst->matrix.t[2] - inst->instDef->pos[2];
 
     // if in a state where you're seeing the boss key open an adv door,
     // or some other kind of cutscene where you can't move
-    if ((gGT->gameMode2 & 4) != 0)
-        return;
+    if ((gGT->gameMode2 & 4) != 0) return;
 
     // check distance
     if (0x143fff < dist[0] * dist[0] + dist[1] * dist[1] + dist[2] * dist[2])
