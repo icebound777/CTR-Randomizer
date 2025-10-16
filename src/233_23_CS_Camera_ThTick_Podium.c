@@ -122,14 +122,25 @@ void CS_Camera_ThTick_Podium(struct Thread *th)
         && (sdata->ptrActiveMenu == NULL)
     )
     {
-        // If do not tap the "Start" button
-        if (   ((sdata->gGamepads->gamepad[0].buttonsTapped & BTN_START) == 0)
-            && // If do not tap the "Start" button or "Cross" button
-               (   OVR_233.cutsceneState == 0
-                || (sdata->gGamepads->gamepad[0].buttonsTapped & (BTN_START | BTN_CROSS_one)) == 0)
-            && (gGT->gameMode2 & 4) != 0) // if podium scene flag is enabled
+        int auto_skip_podium = false; // default
+        int db_result = DB_VALUE_NOTFOUND;
+        int db_ret = database_fetch(
+            DB_PREFIX_SETTINGS | SETTING_QOL_SKIP_PODIUM,
+            &db_result
+        );
+        if (db_result == DB_VALUE_OK) auto_skip_podium = db_ret;
+
+        if (!auto_skip_podium)
         {
-            return;
+            // If do not tap the "Start" button
+            if (   ((sdata->gGamepads->gamepad[0].buttonsTapped & BTN_START) == 0)
+                && // If do not tap the "Start" button or "Cross" button
+                   (   OVR_233.cutsceneState == 0
+                    || (sdata->gGamepads->gamepad[0].buttonsTapped & (BTN_START | BTN_CROSS_one)) == 0)
+                && (gGT->gameMode2 & 4) != 0) // if podium scene flag is enabled
+            {
+                return;
+            }
         }
 
         // === if you're here, it means podium scene must end ===
