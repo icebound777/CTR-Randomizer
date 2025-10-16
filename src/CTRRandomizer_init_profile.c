@@ -1,5 +1,7 @@
 #include <common.h>
 
+#include "CTRRandomizer_database.h"
+
 // rewards[3]
 #define REWARD_MASKHINT_WELCOMETOARENA  0x400000
 #define REWARD_MASKHINT_USINGWARPPAD    0x800000
@@ -34,30 +36,41 @@ void randomizer_set_profile_defaults(struct AdvProgress* adv)
     adv->HubLevYouSavedOn = 0x1a;
 
     /* START Randomizer */
-    // Set all mask hints as already witnessed
-    adv->rewards[3] = (
-        REWARD_MASKHINT_WELCOMETOARENA  |
-        REWARD_MASKHINT_USINGWARPPAD    |
-        REWARD_MASKHINT_ACCESSINGATRACK |
-        REWARD_MASKHINT_BOSSGARAGE      |
-        REWARD_MASKHINT_ENTEROXIDESHIO  |
-        REWARD_MASKHINT_OPENDOORS       |
-        REWARD_MASKHINT_SAVELOADSCREEN  |
-        REWARD_MASKHINT_NEWWORLD
+    int skip_mask_hints = false; // default
+    int db_result = DB_VALUE_NOTFOUND;
+    int db_ret = database_fetch(
+        DB_PREFIX_SETTINGS | SETTING_QOL_SKIP_MASKHINTS,
+        &db_result
     );
-    adv->rewards[4] = (
-        REWARD_MASKHINT_HANGTIMETURBO  |
-        REWARD_MASKHINT_POWERSLIDE     |
-        REWARD_MASKHINT_TURBOBOOST     |
-        REWARD_MASKHINT_BREAKSLIDE     |
-        REWARD_MASKHINT_NEEDTWOKEYS    |
-        REWARD_MASKHINT_WUMPAFRUIT     |
-        REWARD_MASKHINT_TNT            |
-        REWARD_MASKHINT_MAPINFO        |
-        REWARD_MASKHINT_ARENACRYSTALS  |
-        REWARD_MASKHINT_TOKENCHALLENGE |
-        REWARD_MASKHINT_GEMCUP         |
-        REWARD_MASKHINT_NEED10RELICS   |
-        REWARD_MASKHINT_RELICCHALLENGE
-    );
+    if (db_result == DB_VALUE_OK) skip_mask_hints = db_ret;
+
+    if (skip_mask_hints)
+    {
+        // Set all mask hints as already witnessed
+        adv->rewards[3] = (
+            REWARD_MASKHINT_WELCOMETOARENA  |
+            REWARD_MASKHINT_USINGWARPPAD    |
+            REWARD_MASKHINT_ACCESSINGATRACK |
+            REWARD_MASKHINT_BOSSGARAGE      |
+            REWARD_MASKHINT_ENTEROXIDESHIO  |
+            REWARD_MASKHINT_OPENDOORS       |
+            REWARD_MASKHINT_SAVELOADSCREEN  |
+            REWARD_MASKHINT_NEWWORLD
+        );
+        adv->rewards[4] = (
+            REWARD_MASKHINT_HANGTIMETURBO  |
+            REWARD_MASKHINT_POWERSLIDE     |
+            REWARD_MASKHINT_TURBOBOOST     |
+            REWARD_MASKHINT_BREAKSLIDE     |
+            REWARD_MASKHINT_NEEDTWOKEYS    |
+            REWARD_MASKHINT_WUMPAFRUIT     |
+            REWARD_MASKHINT_TNT            |
+            REWARD_MASKHINT_MAPINFO        |
+            REWARD_MASKHINT_ARENACRYSTALS  |
+            REWARD_MASKHINT_TOKENCHALLENGE |
+            REWARD_MASKHINT_GEMCUP         |
+            REWARD_MASKHINT_NEED10RELICS   |
+            REWARD_MASKHINT_RELICCHALLENGE
+        );
+    }
 }
