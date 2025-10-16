@@ -4,11 +4,11 @@
 1020, exe, 0x80031cc8, 0x0, ../../Patches/EurLibcrypt/src/libcrypt.s
 
 // Compile rando files to empty spaces in RDATA
-common, exe, rdata_free, 0x0, src/CTRRandomizer_database.c  src/print_version.c  src/CTRRandomizer_init_profile.c  src/CTRRandomizer_handle_item_unlocks.c
+common, exe, rdata_free, 0x0, src/CTRRandomizer_database.c  src/messages_handler.c  src/CTRRandomizer_init_profile.c  src/CTRRandomizer_handle_item_unlocks.c
 
 // Print Randomizer version message on every frame
 // ref: src/print_version.c
-common, exe, BOTS_SetRotation, -0x8, src/print_version_hook.s
+common, exe, BOTS_SetRotation, -0x8, src/messages_handler_hook.s
 
 // Rework Save/Load menu to limit save slots to slot 0
 common, exe, SelectProfile_InputLogic, 0x0, src/SelectProfile_InputLogic.c

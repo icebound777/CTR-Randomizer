@@ -2,6 +2,7 @@
 /* START RANDOMIZER */
 #include "CTRRandomizer_handle_item_unlocks.h"
 #include "CTRRandomizer_database.h"
+#include "messages_handler.h"
 /* END RANDOMIZER */
 
 void RR_EndEvent_UnlockAward(void)
@@ -90,6 +91,8 @@ void RR_EndEvent_UnlockAward(void)
                 {
                     // unlock turbo track
                     sdata->gameProgress.unlocks[0] |= 2;
+
+                    enqueue_unlock("Turbo Track");
                 }
                 continue; // if Sapphire skip storing relic time
             }

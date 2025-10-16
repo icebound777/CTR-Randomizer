@@ -1,0 +1,174 @@
+#include <common.h>
+
+#define EMPTY_MESSAGE1 " xxxxxx20characters1"
+#define EMPTY_MESSAGE2 " xxxxxx20characters2"
+#define EMPTY_MESSAGE3 " xxxxxx20characters3"
+#define MSG_POS_X 130
+#define MSG_POS_Y_LINE1 180
+#define MSG_POS_Y_LINE2 190
+#define MSG_POS_Y_LINE3 200
+
+static char ap_message_buffer_line1[] = EMPTY_MESSAGE1;
+static char ap_message_buffer_line2[] = EMPTY_MESSAGE2;
+static char ap_message_buffer_line3[] = EMPTY_MESSAGE3;
+
+enum MessageHandlerStates {
+    WAITING_FOR_MESSAGE,
+    DISPLAYING_MESSAGE_AP,
+    DISPLAYING_MESSAGE_INTERNAL,
+    INTER_MESSAGE_DELAY
+};
+enum MessageTimers {
+    TIMER_VALUE_WAITING = 30,
+    TIMER_INTER_MESSAGE_DELAY = 15,
+    TIMER_DISPLAY_DURATION = 120
+};
+
+static char *unlock_msg_queue[3] = {0};
+
+/* Handles all messages the randomizer wants to print */
+void messages_handler()
+{
+    static int msg_mode = WAITING_FOR_MESSAGE;
+    static int msg_timer = TIMER_VALUE_WAITING;
+
+    if ((sdata->gGT->gameMode1 & LOADING))
+    {
+        msg_timer = TIMER_DISPLAY_DURATION;
+        return;
+    }
+
+    // Print the version of the randomizer into the bottom-left corner,
+    // if we're not currently printing an unlock message
+    if (msg_mode != DISPLAYING_MESSAGE_AP && msg_mode != DISPLAYING_MESSAGE_INTERNAL)
+    {
+        DecalFont_DrawLine("CTR Randomizer", 10, 190, FONT_SMALL, ORANGE);
+        DecalFont_DrawLine("pre-alpha          ", 10, 200, FONT_SMALL, ORANGE);
+    }
+
+    // Handle messsage handler states
+    if (msg_mode == INTER_MESSAGE_DELAY)
+    {
+        if (msg_timer > 0)
+        {
+            msg_timer--;
+        }
+        else
+        {
+            msg_mode = WAITING_FOR_MESSAGE;
+            msg_timer = TIMER_VALUE_WAITING;
+        }
+    }
+    else if (msg_mode == DISPLAYING_MESSAGE_AP)
+    {
+        if (msg_timer > 0)
+        {
+            DecalFont_DrawLine(
+                ap_message_buffer_line1,
+                MSG_POS_X,
+                MSG_POS_Y_LINE1,
+                FONT_SMALL,
+                ORANGE
+            );
+            DecalFont_DrawLine(
+                ap_message_buffer_line2,
+                MSG_POS_X,
+                MSG_POS_Y_LINE2,
+                FONT_SMALL,
+                ORANGE
+            );
+            DecalFont_DrawLine(
+                ap_message_buffer_line3,
+                MSG_POS_X,
+                MSG_POS_Y_LINE3,
+                FONT_SMALL,
+                ORANGE
+            );
+            msg_timer--;
+        }
+        else
+        {
+            ap_message_buffer_line1[0] = ' ';
+            ap_message_buffer_line2[0] = ' ';
+            ap_message_buffer_line3[0] = ' ';
+            msg_mode = INTER_MESSAGE_DELAY;
+            msg_timer = TIMER_INTER_MESSAGE_DELAY;
+        }
+    }
+    else if (msg_mode == DISPLAYING_MESSAGE_INTERNAL)
+    {
+        if (msg_timer > 0)
+        {
+            DecalFont_DrawLine(
+                "Unlocked:",
+                MSG_POS_X,
+                MSG_POS_Y_LINE2,
+                FONT_SMALL,
+                ORANGE
+            );
+            DecalFont_DrawLine(
+                unlock_msg_queue[0],
+                MSG_POS_X,
+                MSG_POS_Y_LINE3,
+                FONT_SMALL,
+                PENTA_WHITE
+            );
+            msg_timer--;
+        }
+        else
+        {
+            unlock_msg_queue[0] = unlock_msg_queue[1];
+            unlock_msg_queue[1] = unlock_msg_queue[2];
+            unlock_msg_queue[2] = NULL;
+            msg_mode = INTER_MESSAGE_DELAY;
+            msg_timer = TIMER_INTER_MESSAGE_DELAY;
+        }
+    }
+    else // (msg_mode == MODE_WAITING_FOR_MESSAGE)
+    {
+        if (msg_timer > 0)
+        {
+            msg_timer--;
+        }
+        else
+        {
+            // Check for new messages
+            if (ap_message_buffer_line1[0] != ' ')
+            {
+                // Multiworld message is queued
+                msg_mode = DISPLAYING_MESSAGE_AP;
+                msg_timer = TIMER_DISPLAY_DURATION;
+            }
+            else if (unlock_msg_queue[0] != NULL)
+            {
+                // Internal message is queued
+                msg_mode = DISPLAYING_MESSAGE_INTERNAL;
+                msg_timer = TIMER_DISPLAY_DURATION;
+            }
+            else
+            {
+                msg_timer = TIMER_VALUE_WAITING;
+            }
+        }
+    }
+}
+
+/* Add string pointed to by `msg_pointer` to the message handler queue for
+   internal messages. Silently fails if there are already 3 internal messages
+   in the queue.
+*/
+void enqueue_unlock(char *msg_pointer)
+{
+    if (unlock_msg_queue[0] == NULL)
+    {
+        unlock_msg_queue[0] = msg_pointer;
+    }
+    else if (unlock_msg_queue[1] == NULL)
+    {
+        unlock_msg_queue[1] = msg_pointer;
+    }
+    else if (unlock_msg_queue[2] == NULL)
+    {
+        unlock_msg_queue[2] = msg_pointer;
+    }
+}
