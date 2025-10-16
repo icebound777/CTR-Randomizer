@@ -1,6 +1,10 @@
 #include <common.h>
 
 #define EMPTY_MESSAGE " xxxxxxx20characters"
+#define MSG_POS_X 130
+#define MSG_POS_Y_LINE1 180
+#define MSG_POS_Y_LINE2 190
+#define MSG_POS_Y_LINE3 200
 
 static char ap_message_buffer_line1[] = EMPTY_MESSAGE;
 static char ap_message_buffer_line2[] = EMPTY_MESSAGE;
@@ -37,7 +41,7 @@ void messages_handler()
         DecalFont_DrawLine("pre-alpha          ", 10, 200, FONT_SMALL, ORANGE);
     }
 
-    // Handle messsage queue states
+    // Handle messsage handler states
     if (msg_mode == INTER_MESSAGE_DELAY)
     {
         if (msg_timer > 0)
@@ -54,9 +58,27 @@ void messages_handler()
     {
         if (msg_timer > 0)
         {
-            DecalFont_DrawLine(ap_message_buffer_line1, 130, 180, FONT_SMALL, ORANGE);
-            DecalFont_DrawLine(ap_message_buffer_line2, 130, 190, FONT_SMALL, ORANGE);
-            DecalFont_DrawLine(ap_message_buffer_line3, 130, 200, FONT_SMALL, ORANGE);
+            DecalFont_DrawLine(
+                ap_message_buffer_line1,
+                MSG_POS_X,
+                MSG_POS_Y_LINE1,
+                FONT_SMALL,
+                ORANGE
+            );
+            DecalFont_DrawLine(
+                ap_message_buffer_line2,
+                MSG_POS_X,
+                MSG_POS_Y_LINE2,
+                FONT_SMALL,
+                ORANGE
+            );
+            DecalFont_DrawLine(
+                ap_message_buffer_line3,
+                MSG_POS_X,
+                MSG_POS_Y_LINE3,
+                FONT_SMALL,
+                ORANGE
+            );
             msg_timer--;
         }
         else
@@ -76,16 +98,16 @@ void messages_handler()
         }
         else
         {
-            // Check for new message
-            if (ap_message_buffer_line1[0] == ' ')
+            // Check for new messages
+            if (ap_message_buffer_line1[0] != ' ')
             {
-                msg_timer = TIMER_VALUE_WAITING;
+                // Multiworld message is queued
+                msg_mode = DISPLAYING_MESSAGE;
+                msg_timer = TIMER_DISPLAY_DURATION;
             }
             else
             {
-                // New message: Display it
-                msg_mode = DISPLAYING_MESSAGE;
-                msg_timer = TIMER_DISPLAY_DURATION;
+                msg_timer = TIMER_VALUE_WAITING;
             }
         }
     }
