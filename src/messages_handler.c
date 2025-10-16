@@ -1,14 +1,16 @@
 #include <common.h>
 
-#define EMPTY_MESSAGE " xxxxxxx20characters"
+#define EMPTY_MESSAGE1 " xxxxxx20characters1"
+#define EMPTY_MESSAGE2 " xxxxxx20characters2"
+#define EMPTY_MESSAGE3 " xxxxxx20characters3"
 #define MSG_POS_X 130
 #define MSG_POS_Y_LINE1 180
 #define MSG_POS_Y_LINE2 190
 #define MSG_POS_Y_LINE3 200
 
-static char ap_message_buffer_line1[] = EMPTY_MESSAGE;
-static char ap_message_buffer_line2[] = EMPTY_MESSAGE;
-static char ap_message_buffer_line3[] = EMPTY_MESSAGE;
+static char ap_message_buffer_line1[] = EMPTY_MESSAGE1;
+static char ap_message_buffer_line2[] = EMPTY_MESSAGE2;
+static char ap_message_buffer_line3[] = EMPTY_MESSAGE3;
 
 enum MessageHandlerStates {
     WAITING_FOR_MESSAGE,
