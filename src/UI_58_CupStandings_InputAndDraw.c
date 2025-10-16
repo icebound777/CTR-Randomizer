@@ -2,6 +2,7 @@
 /* START RANDOMIZER */
 #include "CTRRandomizer_handle_item_unlocks.h"
 #include "CTRRandomizer_database.h"
+#include "messages_handler.h"
 /* END RANDOMIZER */
 
 void DECOMP_UI_CupStandings_InputAndDraw(void)
@@ -572,11 +573,33 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
 
                             // Set podium reward
                             gGT->podiumRewardID = race_reward;
-                            /* END RANDOMIZER */
 
                             // unlock Roo, Papu, Joe, Pinstripe, FCrash
                             bitIndex = 7 + i;
                             UNLOCK_ADV_BIT(sdata->gameProgress.unlocks, bitIndex);
+                            switch (i)
+                            {
+                                case 0:
+                                    enqueue_unlock("Ripper Roo");
+                                    break;
+
+                                case 1:
+                                    enqueue_unlock("Papu Papu");
+                                    break;
+
+                                case 2:
+                                    enqueue_unlock("Komodo Joe");
+                                    break;
+
+                                case 3:
+                                    enqueue_unlock("Pinstripe");
+                                    break;
+
+                                default:
+                                    enqueue_unlock("Fake Crash");
+                                    break;
+                            }
+                            /* END RANDOMIZER */
                         }
 
                         // reset counter for number of times you lost cup, to zero

@@ -14,7 +14,8 @@ static char ap_message_buffer_line3[] = EMPTY_MESSAGE3;
 
 enum MessageHandlerStates {
     WAITING_FOR_MESSAGE,
-    DISPLAYING_MESSAGE,
+    DISPLAYING_MESSAGE_AP,
+    DISPLAYING_MESSAGE_INTERNAL,
     INTER_MESSAGE_DELAY
 };
 enum MessageTimers {
@@ -22,6 +23,8 @@ enum MessageTimers {
     TIMER_INTER_MESSAGE_DELAY = 15,
     TIMER_DISPLAY_DURATION = 120
 };
+
+static char *unlock_msg_queue[3] = {0};
 
 /* Handles all messages the randomizer wants to print */
 void messages_handler()
@@ -37,7 +40,7 @@ void messages_handler()
 
     // Print the version of the randomizer into the bottom-left corner,
     // if we're not currently printing an unlock message
-    if (msg_mode != DISPLAYING_MESSAGE)
+    if (msg_mode != DISPLAYING_MESSAGE_AP && msg_mode != DISPLAYING_MESSAGE_INTERNAL)
     {
         DecalFont_DrawLine("CTR Randomizer", 10, 190, FONT_SMALL, ORANGE);
         DecalFont_DrawLine("pre-alpha          ", 10, 200, FONT_SMALL, ORANGE);
@@ -56,7 +59,7 @@ void messages_handler()
             msg_timer = TIMER_VALUE_WAITING;
         }
     }
-    else if (msg_mode == DISPLAYING_MESSAGE)
+    else if (msg_mode == DISPLAYING_MESSAGE_AP)
     {
         if (msg_timer > 0)
         {
@@ -92,6 +95,35 @@ void messages_handler()
             msg_timer = TIMER_INTER_MESSAGE_DELAY;
         }
     }
+    else if (msg_mode == DISPLAYING_MESSAGE_INTERNAL)
+    {
+        if (msg_timer > 0)
+        {
+            DecalFont_DrawLine(
+                "Unlocked:",
+                MSG_POS_X,
+                MSG_POS_Y_LINE2,
+                FONT_SMALL,
+                ORANGE
+            );
+            DecalFont_DrawLine(
+                unlock_msg_queue[0],
+                MSG_POS_X,
+                MSG_POS_Y_LINE3,
+                FONT_SMALL,
+                PENTA_WHITE
+            );
+            msg_timer--;
+        }
+        else
+        {
+            unlock_msg_queue[0] = unlock_msg_queue[1];
+            unlock_msg_queue[1] = unlock_msg_queue[2];
+            unlock_msg_queue[2] = NULL;
+            msg_mode = INTER_MESSAGE_DELAY;
+            msg_timer = TIMER_INTER_MESSAGE_DELAY;
+        }
+    }
     else // (msg_mode == MODE_WAITING_FOR_MESSAGE)
     {
         if (msg_timer > 0)
@@ -104,7 +136,13 @@ void messages_handler()
             if (ap_message_buffer_line1[0] != ' ')
             {
                 // Multiworld message is queued
-                msg_mode = DISPLAYING_MESSAGE;
+                msg_mode = DISPLAYING_MESSAGE_AP;
+                msg_timer = TIMER_DISPLAY_DURATION;
+            }
+            else if (unlock_msg_queue[0] != NULL)
+            {
+                // Internal message is queued
+                msg_mode = DISPLAYING_MESSAGE_INTERNAL;
                 msg_timer = TIMER_DISPLAY_DURATION;
             }
             else
@@ -112,5 +150,25 @@ void messages_handler()
                 msg_timer = TIMER_VALUE_WAITING;
             }
         }
+    }
+}
+
+/* Add string pointed to by `msg_pointer` to the message handler queue for
+   internal messages. Silently fails if there are already 3 internal messages
+   in the queue.
+*/
+void enqueue_unlock(char *msg_pointer)
+{
+    if (unlock_msg_queue[0] == NULL)
+    {
+        unlock_msg_queue[0] = msg_pointer;
+    }
+    else if (unlock_msg_queue[1] == NULL)
+    {
+        unlock_msg_queue[1] = msg_pointer;
+    }
+    else if (unlock_msg_queue[2] == NULL)
+    {
+        unlock_msg_queue[2] = msg_pointer;
     }
 }
