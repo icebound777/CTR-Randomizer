@@ -194,8 +194,17 @@ void CS_Camera_ThTick_Podium(struct Thread *th)
                 CS_DestroyPodium_StartDriving();
 
                 // If the gem color is == 5 then we have a multiworld item gem.
-                // In this case: no hint
-                if (GET_GEMANDTOKEN_COLOR(gGT->podiumRewardID) != 5)
+                // In this case, or if we always skip the hints here: no hint
+                int skip_mask_congrats = false; // default
+                int db_result = DB_VALUE_NOTFOUND;
+                int db_ret = database_fetch(
+                    DB_PREFIX_SETTINGS | SETTING_QOL_SKIP_CONGRATS,
+                    &db_result
+                );
+                if (db_result == DB_VALUE_OK) skip_mask_congrats = db_ret;
+                if (   GET_GEMANDTOKEN_COLOR(gGT->podiumRewardID) != 5
+                    && !skip_mask_congrats
+                )
                 {
                     switch (rewardId)
                     {
@@ -236,6 +245,10 @@ void CS_Camera_ThTick_Podium(struct Thread *th)
                     CDSYS_XAPauseForce();
 
                     CDSYS_XAPlay(1, hintID);
+                }
+                else
+                {
+                    CDSYS_XAPauseForce();
                 }
 
                 // reset podium reward
