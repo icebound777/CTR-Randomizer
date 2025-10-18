@@ -198,6 +198,7 @@ void AH_WarpPad_LInB(struct Instance* inst)
                     );
                     break;
             }
+            break;
 
         case STATIC_GEM:
             switch (unlockItem_color)
