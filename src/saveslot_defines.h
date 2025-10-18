@@ -10,5 +10,10 @@
 #define SLOT2_NUM_TOKENS_PURPLE  rewards[3]       & 0xFF
 #define SLOT2_NUM_RELICS         rewards[4]
 #define SLOT2_NUM_GEMS           rewards[5] & 0xFF
+#define SLOT2_CHECK_GEM_RED      rewards[5] & 0x100
+#define SLOT2_CHECK_GEM_GREEN    rewards[5] & 0x200
+#define SLOT2_CHECK_GEM_BLUE     rewards[5] & 0x400
+#define SLOT2_CHECK_GEM_YELLOW   rewards[5] & 0x800
+#define SLOT2_CHECK_GEM_PURPLE   rewards[5] & 0x1000
 
 #endif

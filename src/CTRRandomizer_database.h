@@ -5,6 +5,9 @@
 
 #define GET_GEMANDTOKEN_COLOR(x) ((x >> 8) & 0xF)
 #define GET_CLEAN_REWARD(x) (x & 0xFF)
+#define GET_REQUIREMENT_TYPE(x)  (x & 0xFF)
+#define GET_REQUIREMENT_COLOR(x) ((x >> 8) & 0xFF)
+#define GET_REQUIREMENT_COUNT(x) ((x >> 16) & 0xFF)
 
 /* Key type defines via prefixes */
 enum DB_Prefixes {
