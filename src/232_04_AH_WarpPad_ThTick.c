@@ -235,11 +235,6 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
 
         modelcolorID = ((InstArr0->flags) >> 20) & 0xFF;
         modelID = InstArr0->model->id;
-        //int db_result = DB_VALUE_NOTFOUND;
-        //int db_ret = database_fetch(
-//
-        //    &db_result
-        //);
 
 #ifndef REBUILD_PS1
         // Trophy has no specular light
