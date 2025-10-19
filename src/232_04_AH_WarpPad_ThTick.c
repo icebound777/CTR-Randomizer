@@ -1,5 +1,8 @@
 #include <common.h>
 
+#include "CTRRandomizer_database.h"
+#include "reward_enums.h"
+
 void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
 {
     int i;
@@ -41,6 +44,7 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     char randKartSpawn[8];
 
     int hubID;
+    unsigned short modelcolorID;
 
     //for human reading purposes
     unsigned char ADV_CUP = 100;
@@ -157,7 +161,7 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
             }
             else if (   levelID < SLIDE_COLISEUM // Trophy track
                      && (sdata->advProgress.rewards[3] & 0x1000000) == 0 // Dont have hint "you must have more trophies"
-                     && instArr[WPIS_CLOSED_ITEM]->model->id != STATIC_KEY // required item is not KEY
+                     && GET_REQUIREMENT_TYPE((instArr[WPIS_CLOSED_ITEM]->model->id)) != STATIC_KEY // required item is not KEY
             )
             {
                 // give hint for "need more trophies"
@@ -229,7 +233,13 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
             &warppadObj->spinRot_Prize[0]
         );
 
+        modelcolorID = ((InstArr0->flags) >> 20) & 0xFF;
         modelID = InstArr0->model->id;
+        //int db_result = DB_VALUE_NOTFOUND;
+        //int db_ret = database_fetch(
+//
+        //    &db_result
+        //);
 
 #ifndef REBUILD_PS1
         // Trophy has no specular light
@@ -253,6 +263,17 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
         // Token
         if (modelID == STATIC_TOKEN)
         {
+            if (modelcolorID == TOKEN_ANY)
+            {
+                i = (gGT->timer / FPS_DOUBLE(0x3C)) % 5;
+
+                InstArr0->colorRGBA = (
+                    ((unsigned int)data.AdvCups[i].color[0] << 0x14)
+                    | ((unsigned int)data.AdvCups[i].color[1] << 0xc)
+                    | ((unsigned int)data.AdvCups[i].color[2] << 0x4)
+                );
+            }
+
             Vector_SpecLightSpin3D(
                 InstArr0,
                 &warppadObj->spinRot_Prize[0],
@@ -264,13 +285,16 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
         // If Gem, change colors every 2 seconds
         if (modelID == STATIC_GEM)
         {
-            i = (gGT->timer / FPS_DOUBLE(0x3C)) % 5;
-
-            InstArr0->colorRGBA = (
-                ((unsigned int)data.AdvCups[i].color[0] << 0x14)
-                | ((unsigned int)data.AdvCups[i].color[1] << 0xc)
-                | ((unsigned int)data.AdvCups[i].color[2] << 0x4)
-            );
+            if (modelcolorID == GEM_ANY)
+            {
+                modelcolorID = (gGT->timer / FPS_DOUBLE(0x3C)) % 5;
+                // gem color
+                InstArr0->colorRGBA = (
+                    ((unsigned int)data.AdvCups[modelcolorID].color[0] << 0x14)
+                    | ((unsigned int)data.AdvCups[modelcolorID].color[1] << 0xc)
+                    | ((unsigned int)data.AdvCups[modelcolorID].color[2] << 0x4)
+                );
+            }
         }
 
         // for Key or Gem

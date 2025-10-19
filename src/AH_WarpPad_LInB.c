@@ -553,8 +553,14 @@ SlideColTurboTrack:
         }
         else if (unlockItem_modelID == STATIC_GEM)
         {
-            // dont set color, that gets set in ThTick
-
+            if (unlockItem_color != GEM_ANY)
+            {
+                // set color
+                newInst->colorRGBA =
+                    ((unsigned int)data.AdvCups[unlockItem_color].color[0] << 0x14) |
+                    ((unsigned int)data.AdvCups[unlockItem_color].color[1] << 0xc) |
+                    ((unsigned int)data.AdvCups[unlockItem_color].color[2] << 0x4);
+            }
             // store in Gem array
             warppadObj->specLightGem[0] = D232.specLightGem[0];
             warppadObj->specLightGem[1] = D232.specLightGem[1];
@@ -562,13 +568,14 @@ SlideColTurboTrack:
         }
         else // assume token
         {
-            i = levelID - ADV_CUP;
-
             // token color
-            newInst->colorRGBA =
-                ((unsigned int)data.AdvCups[unlockItem_color - 1].color[0] << 0x14) |
-                ((unsigned int)data.AdvCups[unlockItem_color - 1].color[1] << 0xc) |
-                ((unsigned int)data.AdvCups[unlockItem_color - 1].color[2] << 0x4);
+            if (unlockItem_color != TOKEN_ANY)
+            {
+                newInst->colorRGBA =
+                    ((unsigned int)data.AdvCups[unlockItem_color - 1].color[0] << 0x14) |
+                    ((unsigned int)data.AdvCups[unlockItem_color - 1].color[1] << 0xc) |
+                    ((unsigned int)data.AdvCups[unlockItem_color - 1].color[2] << 0x4);
+            }
 
             // === Naughty Dog Bug ===
             // They made an array where every token color
@@ -581,6 +588,7 @@ SlideColTurboTrack:
         }
     }
 
+    newInst->flags |= (unlockItem_color << 20);
     warppadObj->inst[WPIS_CLOSED_ITEM] = newInst;
 
     // ====== "X" ========
