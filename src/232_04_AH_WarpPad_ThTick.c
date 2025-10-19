@@ -40,6 +40,8 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
 
     char randKartSpawn[8];
 
+    int hubID;
+
     //for human reading purposes
     unsigned char ADV_CUP = 100;
 
@@ -99,15 +101,14 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     dist = x*x + y*y + z*z;
 
     levelID = warppadObj->levelID;
+    hubID = gGT->levelID - GEM_STONE_VALLEY;
 
     // if near a portal
-    if (   // Trophy tracks (-16) / Battle tracks (-18)
-           (   (   (((unsigned short) levelID) < SLIDE_COLISEUM)
-                || (((unsigned short)(levelID - NITRO_COURT)) < 7))
+    // usually checks specific level ids, but why not just check current hub?
+    // all warp pads that need special casing are in hub 0, gem stone valley
+    if (   (   hubID != 0
             && dist < 0x144000)
-        || // Slide Col + Turbo Track (-16) / Gem cups
-           (   (   (((unsigned short)(levelID - SLIDE_COLISEUM)) < 2)
-                || (((unsigned short) levelID) >= 100))
+        || (   hubID == 0
             && dist < 0x90000)
     )
     {
