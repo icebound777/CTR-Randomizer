@@ -2,6 +2,7 @@
 /* START Randomizer */
 #include "CTRRandomizer_database.h"
 #include "saveslot_defines.h"
+#include "reward_enums.h"
 /* END Randomizer */
 
 void AH_WarpPad_ThTick(struct Thread *t);
@@ -19,6 +20,7 @@ void AH_WarpPad_LInB(struct Instance* inst)
     int unlockItem_numOwned;
     int unlockItem_numNeeded;
     int unlockItem_modelID;
+    int unlockItem_color;
 
     int* arrTokenCount;
     struct Instance* newInst;
@@ -30,7 +32,7 @@ void AH_WarpPad_LInB(struct Instance* inst)
     struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
     struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
 
-    int randomized_LevelID;
+    int db_ret;
     int db_fetch_result;
     /* END Randomizer */
 
@@ -94,126 +96,155 @@ void AH_WarpPad_LInB(struct Instance* inst)
     }
 
     /* START Randomizer */
-    randomized_LevelID = database_fetch(DB_PREFIX_LEVELIDS | levelID, &db_fetch_result);
-    if (db_fetch_result == DB_VALUE_OK) levelID = randomized_LevelID;
+    db_ret = database_fetch(DB_PREFIX_LEVELIDS | levelID, &db_fetch_result);
+    if (db_fetch_result == DB_VALUE_OK) levelID = db_ret;
     /* END Randomizer */
 
     warppadObj->levelID = levelID;
 
     unlockItem_numNeeded = -1;
+    unlockItem_numOwned = 0;
+    unlockItem_modelID = STATIC_TROPHY;
+    unlockItem_color = 0;
 
-    // Trophy Track
-    if (levelID < SLIDE_COLISEUM)
+    if (   levelID < SLIDE_COLISEUM // Trophy Track
+        && CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 6)) != 0 // trophy owned
+    )
     {
-        // optimization idea:
-        // instead of data.metaDataLEV[levelID].hubID
-        // can we just do gGT->levelID-0x19?
+        db_ret = database_fetch(
+            DB_PREFIX_WARPPADUNLOCK_2 | levelID,
+            &db_fetch_result
+        );
+    }
+    else // Trophy Track + Trophy owned, Turbo&Slide, Battle maps, Gem Cups
+    {
+        db_ret = database_fetch(
+            DB_PREFIX_WARPPADUNLOCK_1 | levelID,
+            &db_fetch_result
+        );
+    }
 
-        // if trophy owned
-        if(CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 6)) != 0)
-        {
-GetKeysRequirement:
+    if (db_fetch_result == DB_VALUE_OK)
+    {
+        unlockItem_numNeeded = GET_REQUIREMENT_COUNT(db_ret);
+        unlockItem_modelID = GET_REQUIREMENT_TYPE(db_ret);
+    }
 
-            // keys needed to unlock track again
-            unlockItem_modelID = STATIC_KEY;
-            unlockItem_numOwned = (advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS);
-            unlockItem_numNeeded = D232.arrKeysNeeded[data.metaDataLEV[levelID].hubID];
-        }
+    if (unlockItem_modelID == STATIC_TOKEN || unlockItem_modelID == STATIC_GEM)
+    {
+        // Have to check color
+        unlockItem_color = GET_REQUIREMENT_COLOR(db_ret);
+    }
 
-        // if trophy not owned
-        else
-        {
-            // number trophies needed to open
-            unlockItem_modelID = STATIC_TROPHY;
+    switch (unlockItem_modelID)
+    {
+        case STATIC_TROPHY:
             unlockItem_numOwned = (advSlot2->SLOT2_NUM_TROPHIES + advSlot3->SLOT2_NUM_TROPHIES);
-            unlockItem_numNeeded = data.metaDataLEV[levelID].numTrophiesToOpen;
-        }
-    }
+            break;
 
-    // Slide Col
-    else if (levelID == SLIDE_COLISEUM)
-    {
-        // number relics needed to open
-        unlockItem_modelID = STATIC_RELIC;
-        unlockItem_numOwned = (advSlot2->SLOT2_NUM_RELICS + advSlot3->SLOT2_NUM_RELICS);
-        unlockItem_numNeeded = 10;
-    }
+        case STATIC_KEY:
+            unlockItem_numOwned = (advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS);
+            break;
 
-    // Turbo Track
-    else if (levelID == TURBO_TRACK)
-    {
-        // number gems needed to open
-        unlockItem_modelID = STATIC_GEM;
-        unlockItem_numNeeded = 5;
+        case STATIC_RELIC:
+            unlockItem_numOwned = (advSlot2->SLOT2_NUM_RELICS + advSlot3->SLOT2_NUM_RELICS);
+            break;
 
-        // count number of gems owned
-        unlockItem_numOwned = ((advSlot2->SLOT2_NUM_GEMS) + (advSlot3->SLOT2_NUM_GEMS));
-        #if 0 /* RANDOMIZER*/
-        unlockItem_numOwned = 0;
-        for(i = 0; i < 5; i++)
-            if(CHECK_ADV_BIT(sdata->advProgress.rewards, (i + 0x6a)) != 0)
-                unlockItem_numOwned++;
-        #endif
-    }
+        case STATIC_TOKEN:
+            switch (unlockItem_color)
+            {
+                case TOKEN_RED:
+                    unlockItem_numOwned = (
+                        (advSlot2->SLOT2_NUM_TOKENS_RED)
+                        + (advSlot3->SLOT2_NUM_TOKENS_RED)
+                    );
+                    break;
 
-    // battle maps
-    else if (levelID < GEM_STONE_VALLEY)
-    {
-        goto GetKeysRequirement;
-    }
+                case TOKEN_GREEN:
+                    unlockItem_numOwned = (
+                        (advSlot2->SLOT2_NUM_TOKENS_GREEN)
+                        + (advSlot3->SLOT2_NUM_TOKENS_GREEN)
+                    );
+                    break;
 
-    // gem cups
-    else
-    {
-        // number tokens needed to open
-        unlockItem_modelID = STATIC_TOKEN;
-        unlockItem_numNeeded = 4;
+                case TOKEN_BLUE:
+                    unlockItem_numOwned = (
+                        (advSlot2->SLOT2_NUM_TOKENS_BLUE)
+                        + (advSlot3->SLOT2_NUM_TOKENS_BLUE)
+                    );
+                    break;
 
-        switch (levelID - ADV_CUP)
-        {
-            case 0:
-                unlockItem_numOwned = (
-                    (advSlot2->SLOT2_NUM_TOKENS_RED)
-                    + (advSlot3->SLOT2_NUM_TOKENS_RED)
-                );
-                break;
+                case TOKEN_YELLOW:
+                    unlockItem_numOwned = (
+                        (advSlot2->SLOT2_NUM_TOKENS_YELLOW)
+                        + (advSlot3->SLOT2_NUM_TOKENS_YELLOW)
+                    );
+                    break;
 
-            case 1:
-                unlockItem_numOwned = (
-                    (advSlot2->SLOT2_NUM_TOKENS_GREEN)
-                    + (advSlot3->SLOT2_NUM_TOKENS_GREEN)
-                );
-                break;
+                case TOKEN_PURPLE:
+                    unlockItem_numOwned = (
+                        (advSlot2->SLOT2_NUM_TOKENS_PURPLE)
+                        + (advSlot3->SLOT2_NUM_TOKENS_PURPLE)
+                    );
+                    break;
 
-            case 2:
-                unlockItem_numOwned = (
-                    (advSlot2->SLOT2_NUM_TOKENS_BLUE)
-                    + (advSlot3->SLOT2_NUM_TOKENS_BLUE)
-                );
-                break;
+                default: //case TOKEN_ANY:
+                    unlockItem_numOwned = (
+                        (advSlot2->SLOT2_NUM_TOKENS_RED) + (advSlot3->SLOT2_NUM_TOKENS_RED)
+                        + (advSlot2->SLOT2_NUM_TOKENS_GREEN) + (advSlot3->SLOT2_NUM_TOKENS_GREEN)
+                        + (advSlot2->SLOT2_NUM_TOKENS_BLUE) + (advSlot3->SLOT2_NUM_TOKENS_BLUE)
+                        + (advSlot2->SLOT2_NUM_TOKENS_YELLOW) + (advSlot3->SLOT2_NUM_TOKENS_YELLOW)
+                        + (advSlot2->SLOT2_NUM_TOKENS_PURPLE) + (advSlot3->SLOT2_NUM_TOKENS_PURPLE)
+                    );
+                    break;
+            }
+            break;
 
-            case 3:
-                unlockItem_numOwned = (
-                    (advSlot2->SLOT2_NUM_TOKENS_YELLOW)
-                    + (advSlot3->SLOT2_NUM_TOKENS_YELLOW)
-                );
-                break;
-
-            default:
-                unlockItem_numOwned = (
-                    (advSlot2->SLOT2_NUM_TOKENS_PURPLE)
-                    + (advSlot3->SLOT2_NUM_TOKENS_PURPLE)
-                );
-                break;
-        }
-        #if 0 /* RANDOMIZER */
-        arrTokenCount = &gGT->currAdvProfile.numCtrTokens.red;
-        unlockItem_numOwned = arrTokenCount[levelID - ADV_CUP];
-        #endif
+        case STATIC_GEM:
+            switch (unlockItem_color)
+            {
+                case GEM_ANY:
+                    unlockItem_numOwned = (
+                        (advSlot2->SLOT2_NUM_GEMS)
+                        + (advSlot3->SLOT2_NUM_GEMS)
+                    );
+                    break;
+                case GEM_RED:
+                    unlockItem_numOwned = (
+                        ((advSlot2->SLOT2_CHECK_GEM_RED) + (advSlot3->SLOT2_CHECK_GEM_RED))
+                        > 0
+                    );
+                    break;
+                case GEM_GREEN:
+                    unlockItem_numOwned = (
+                        ((advSlot2->SLOT2_CHECK_GEM_GREEN) + (advSlot3->SLOT2_CHECK_GEM_GREEN))
+                        > 0
+                    );
+                    break;
+                case GEM_BLUE:
+                    unlockItem_numOwned = (
+                        ((advSlot2->SLOT2_CHECK_GEM_BLUE) + (advSlot3->SLOT2_CHECK_GEM_BLUE))
+                        > 0
+                    );
+                    break;
+                case GEM_YELLOW:
+                    unlockItem_numOwned = (
+                        ((advSlot2->SLOT2_CHECK_GEM_YELLOW) + (advSlot3->SLOT2_CHECK_GEM_YELLOW))
+                        > 0
+                    );
+                    break;
+                default: //case GEM_PURPLE:
+                    unlockItem_numOwned = (
+                        ((advSlot2->SLOT2_CHECK_GEM_PURPLE) + (advSlot3->SLOT2_CHECK_GEM_PURPLE))
+                        > 0
+                    );
+                    break;
+            }
+            break;
     }
 
     // if unlocked
-    if(unlockItem_numOwned >= unlockItem_numNeeded)
+    if (unlockItem_numOwned >= unlockItem_numNeeded)
     {
         warppadObj->digit1s = 0;
 
@@ -260,8 +291,7 @@ GetKeysRequirement:
             }
         }
 
-        for(i = 0; i < 3; i++)
-            warppadObj->thirds[i] = 0x555*i;
+        for (i = 0; i < 3; i++) warppadObj->thirds[i] = 0x555*i;
 
         warppadObj->spinRot_Prize[0] = 0;
         warppadObj->spinRot_Prize[1] = 0;
@@ -271,14 +301,14 @@ GetKeysRequirement:
         warppadObj->spinRot_Beam[1] = 0;
         warppadObj->spinRot_Beam[2] = 0;
 
-        for(i = 0; i < 2; i++)
+        for (i = 0; i < 2; i++)
         {
             warppadObj->spinRot_Wisp[i][0] = 0;
             warppadObj->spinRot_Wisp[i][1] = 0;
             warppadObj->spinRot_Wisp[i][2] = 0;
         }
 
-        if(levelID < SLIDE_COLISEUM)
+        if (levelID < SLIDE_COLISEUM)
         {
             // unlocked all
             t->modelIndex = 2;
@@ -496,13 +526,13 @@ SlideColTurboTrack:
     newInst->scale[2] = 0x2000;
 
     // no specular for trophy
-    if(unlockItem_modelID != STATIC_TROPHY)
+    if (unlockItem_modelID != STATIC_TROPHY)
     {
         // specular lighting
         newInst->flags |= 0x20000;
 
         // relic
-        if(unlockItem_modelID == STATIC_RELIC)
+        if (unlockItem_modelID == STATIC_RELIC)
         {
             // Relic blue color
             newInst->colorRGBA = 0x20a5ff0;
@@ -511,9 +541,7 @@ SlideColTurboTrack:
             warppadObj->specLightRelic[1] = D232.specLightRelic[1];
             warppadObj->specLightRelic[2] = D232.specLightRelic[2];
         }
-
-        // Key
-        else if(unlockItem_modelID == STATIC_KEY)
+        else if (unlockItem_modelID == STATIC_KEY)
         {
             // Key color
             newInst->colorRGBA = 0xdca6000;
@@ -523,28 +551,31 @@ SlideColTurboTrack:
             warppadObj->specLightGem[1] = D232.specLightGem[1];
             warppadObj->specLightGem[2] = D232.specLightGem[2];
         }
-
-        // Gem
-        else if(unlockItem_modelID == STATIC_GEM)
+        else if (unlockItem_modelID == STATIC_GEM)
         {
-            // dont set color, that gets set in ThTick
-
+            if (unlockItem_color != GEM_ANY)
+            {
+                // set color
+                newInst->colorRGBA =
+                    ((unsigned int)data.AdvCups[unlockItem_color].color[0] << 0x14) |
+                    ((unsigned int)data.AdvCups[unlockItem_color].color[1] << 0xc) |
+                    ((unsigned int)data.AdvCups[unlockItem_color].color[2] << 0x4);
+            }
             // store in Gem array
             warppadObj->specLightGem[0] = D232.specLightGem[0];
             warppadObj->specLightGem[1] = D232.specLightGem[1];
             warppadObj->specLightGem[2] = D232.specLightGem[2];
         }
-
-        // assume token
-        else
+        else // assume token
         {
-            i = levelID - ADV_CUP;
-
             // token color
-            newInst->colorRGBA =
-                ((unsigned int)data.AdvCups[i].color[0] << 0x14) |
-                ((unsigned int)data.AdvCups[i].color[1] << 0xc) |
-                ((unsigned int)data.AdvCups[i].color[2] << 0x4);
+            if (unlockItem_color != TOKEN_ANY)
+            {
+                newInst->colorRGBA =
+                    ((unsigned int)data.AdvCups[unlockItem_color - 1].color[0] << 0x14) |
+                    ((unsigned int)data.AdvCups[unlockItem_color - 1].color[1] << 0xc) |
+                    ((unsigned int)data.AdvCups[unlockItem_color - 1].color[2] << 0x4);
+            }
 
             // === Naughty Dog Bug ===
             // They made an array where every token color
@@ -557,6 +588,7 @@ SlideColTurboTrack:
         }
     }
 
+    newInst->flags |= (unlockItem_color << 20);
     warppadObj->inst[WPIS_CLOSED_ITEM] = newInst;
 
     // ====== "X" ========

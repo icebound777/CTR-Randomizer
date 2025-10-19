@@ -1,27 +1,34 @@
 #include <common.h>
 
+#include "CTRRandomizer_database.h"
+#include "reward_enums.h"
+
 void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
 {
     int i;
     int j;
     int boolOpen;
-    struct GameTracker* gGT;
-    struct WarpPad* warppadObj;
-    struct Instance* warppadInst;
-    struct Instance** visInstSrc;
-    struct Instance** instArr;
+    struct GameTracker *gGT;
+    struct WarpPad *warppadObj;
+    struct Instance *warppadInst;
+    struct Instance **visInstSrc;
+    struct Instance **instArr;
 
-    struct Driver* driver;
-    struct Instance* driverInst;
+    struct Driver *driver;
+    struct Instance *driverInst;
 
     int modelID;
     int levelID;
-    int x,y,z,dist;
+    int x;
+    int y;
+    int z;
+    int dist;
     char* warppadLNG;
 
     int angleCamToWarppad;
-    int angleSin, angleCos;
-    MATRIX* warppadMatrix;
+    int angleSin;
+    int angleCos;
+    MATRIX *warppadMatrix;
 
     int wispMaxHeight;
     int wispRiseRate;
@@ -36,6 +43,9 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
 
     char randKartSpawn[8];
 
+    int hubID;
+    unsigned short modelcolorID;
+
     //for human reading purposes
     unsigned char ADV_CUP = 100;
 
@@ -46,9 +56,9 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     visInstSrc = gGT->cameraDC[0].visInstSrc;
 
 #ifndef REBUILD_PS1
-    while(visInstSrc[0] != 0)
+    while (visInstSrc[0] != 0)
     {
-        if(visInstSrc[0] == warppadInst)
+        if (visInstSrc[0] == warppadInst)
         {
             boolOpen = 1;
             break;
@@ -64,20 +74,21 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     instArr = &warppadObj->inst[0];
     warppadMatrix = &warppadInst->matrix;
 
-    // make instances visible
-    if(boolOpen == 1)
+    if (boolOpen == 1)
     {
-        for(i = 0; i < WPIS_NUM_INSTANCES; i++)
-            if (instArr[i] != 0)
-                instArr[i]->flags &= ~(0x80);
+        // make instances visible
+        for (i = 0; i < WPIS_NUM_INSTANCES; i++)
+        {
+            if (instArr[i] != 0) instArr[i]->flags &= ~(0x80);
+        }
     }
-
-    // make instances invisible
     else
     {
-        for(i = 0; i < WPIS_NUM_INSTANCES; i++)
-            if (instArr[i] != 0)
-                instArr[i]->flags |= 0x80;
+        // make instances invisible
+        for (i = 0; i < WPIS_NUM_INSTANCES; i++)
+        {
+            if (instArr[i] != 0) instArr[i]->flags |= 0x80;
+        }
     }
 
     // This is the red triangle in DCxDemo's
@@ -94,114 +105,78 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     dist = x*x + y*y + z*z;
 
     levelID = warppadObj->levelID;
+    hubID = gGT->levelID - GEM_STONE_VALLEY;
 
     // if near a portal
-    if(
-        // Trophy tracks (-16)
-        ((((unsigned short)(levelID)) < SLIDE_COLISEUM)    && (dist < 0x144000)) ||
-
-        // Slide Col + Turbo Track (-16)
-        ((((unsigned short)(levelID - SLIDE_COLISEUM)) < 2)     && (dist < 0x90000)) ||
-
-        // Battle tracks (-18)
-        ((((unsigned short)(levelID - NITRO_COURT)) < 7)    && (dist < 0x144000)) ||
-
-        // Gem cups
-        ((((unsigned short)(levelID))        >= 100)    && (dist < 0x90000))
-      )
+    // usually checks specific level ids, but why not just check current hub?
+    // all warp pads that need special casing are in hub 0, gem stone valley
+    if (   (   hubID != 0
+            && dist < 0x144000)
+        || (   hubID == 0
+            && dist < 0x90000)
+    )
     {
         // if you are near a new warppad, or if you already were
         // determined as near the same warppad in the last frame,
         // then use this warppad as the "closest". Otherwise the
         // game could run this for two warppads right next to each other
-        if(
-                (D232.levelID == -1) ||
-                (D232.levelID == levelID)
-          )
+        if (   D232.levelID == -1
+            || D232.levelID == levelID
+        )
         {
             // saved as nearest warppad
             D232.levelID = levelID;
 
-
             // if not giving Aku Hint
-            if(sdata->AkuAkuHintState == 0)
+            if (sdata->AkuAkuHintState == 0)
             {
-                // default
-                if(levelID < ADV_CUP)
-                    warppadLNG =
-                        sdata->lngStrings
-                        [data.metaDataLEV[levelID].name_LNG];
-
-                // gem cups
-                else
-                    warppadLNG =
-                        sdata->lngStrings
-                        [data.AdvCups[levelID-ADV_CUP].lngIndex_CupName];
+                if (levelID < ADV_CUP) // default
+                {
+                    warppadLNG = sdata->lngStrings[data.metaDataLEV[levelID].name_LNG];
+                }
+                else // gem cups
+                {
+                    warppadLNG = sdata->lngStrings[data.AdvCups[levelID - ADV_CUP].lngIndex_CupName];
+                }
 
                 // midpoing X,
                 // 30 pixels above botttom Y
-                DecalFont_DrawLine
-                (
+                DecalFont_DrawLine(
                     warppadLNG,
-                    gGT->pushBuffer[0].rect.x + gGT->pushBuffer[0].rect.w/2,
+                    gGT->pushBuffer[0].rect.x + gGT->pushBuffer[0].rect.w / 2,
                     gGT->pushBuffer[0].rect.x + gGT->pushBuffer[0].rect.h - 30,
-                    FONT_BIG, (JUSTIFY_CENTER | ORANGE)
+                    FONT_BIG,
+                    (JUSTIFY_CENTER | ORANGE)
                 );
             }
 
             // if track is unlocked, ignore all other ELSE-IFs
-            if(instArr[WPIS_CLOSED_1S] == 0) {}
-
-            else if
-              (
-
-                // gem cup
-                (levelID >= ADV_CUP) &&
-
-                // Dont have hint "you must have 4 tokens for a gem"
-                ((sdata->advProgress.rewards[4] & 0x20000) == 0)
-
-               )
+            if (instArr[WPIS_CLOSED_1S] == 0) {}
+            else if (   levelID >= ADV_CUP // gem cup
+                     && (sdata->advProgress.rewards[4] & 0x20000) == 0 // Dont have hint "you must have 4 tokens for a gem"
+            )
             {
                 // give hint "you must have 4 tokens for a gem"
                 MainFrame_RequestMaskHint(0x1b, 0);
             }
-
-            else if
-               (
-
-                // Trophy track
-                (levelID < SLIDE_COLISEUM) &&
-
-                // Dont have hint "you must have more trophies"
-                ((sdata->advProgress.rewards[3] & 0x1000000) == 0) &&
-
-                // required item is not KEY
-                (instArr[WPIS_CLOSED_ITEM]->model->id != STATIC_KEY)
-               )
+            else if (   levelID < SLIDE_COLISEUM // Trophy track
+                     && (sdata->advProgress.rewards[3] & 0x1000000) == 0 // Dont have hint "you must have more trophies"
+                     && GET_REQUIREMENT_TYPE((instArr[WPIS_CLOSED_ITEM]->model->id)) != STATIC_KEY // required item is not KEY
+            )
             {
                 // give hint for "need more trophies"
                 MainFrame_RequestMaskHint(2, 0);
             }
-
-            else if
-               (
-
-                // Slide Col
-                (levelID == SLIDE_COLISEUM) &&
-
-                // Dont have hint "you must have 10 relics"
-                ((sdata->advProgress.rewards[4] & 0x40000) == 0)
-               )
+            else if (   levelID == SLIDE_COLISEUM // Slide Col
+                     && (sdata->advProgress.rewards[4] & 0x40000) == 0 // Dont have hint "you must have 10 relics"
+            )
             {
                 // give hint for "need more trophies"
                 MainFrame_RequestMaskHint(0x1C, 0);
             }
         }
     }
-
-    // not near portal
-    else
+    else // not near portal
     {
         D232.levelID = -1;
     }
@@ -209,19 +184,17 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     // if warppad is locked
     if (instArr[WPIS_CLOSED_1S] != 0)
     {
-        angleCamToWarppad =
-            ratan2(
-                warppadMatrix->t[0] - gGT->pushBuffer[0].pos[0],
-                warppadMatrix->t[2] - gGT->pushBuffer[0].pos[2]
-            );
+        angleCamToWarppad = ratan2(
+            warppadMatrix->t[0] - gGT->pushBuffer[0].pos[0],
+            warppadMatrix->t[2] - gGT->pushBuffer[0].pos[2]
+        );
 
         angleCamToWarppad = -angleCamToWarppad;
 
         angleSin = MATH_Sin(angleCamToWarppad);
         angleCos = MATH_Cos(angleCamToWarppad);
 
-        // no 10s digit
-        if(instArr[WPIS_CLOSED_10S] == 0)
+        if (instArr[WPIS_CLOSED_10S] == 0) // no 10s digit
         {
             instArr[WPIS_CLOSED_1S]->matrix.t[0] = warppadMatrix->t[0] + (angleCos * -0x80 >> 0xC);
             instArr[WPIS_CLOSED_1S]->matrix.t[2] = warppadMatrix->t[2] + (angleSin * -0x80 >> 0xC);
@@ -229,9 +202,7 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
             instArr[WPIS_CLOSED_ITEM]->matrix.t[0] = warppadMatrix->t[0] + ((angleCos << 7) >> 0xC);
             instArr[WPIS_CLOSED_ITEM]->matrix.t[2] = warppadMatrix->t[2] + ((angleSin << 7) >> 0xC);
         }
-
-        // 10s digit
-        else
+        else // 10s digit
         {
             instArr[WPIS_CLOSED_ITEM]->matrix.t[0] = warppadMatrix->t[0] + (angleCos * 0xC0 >> 0xC);
             instArr[WPIS_CLOSED_ITEM]->matrix.t[2] = warppadMatrix->t[2] + (angleSin * 0xC0 >> 0xC);
@@ -259,56 +230,83 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
         // converted to TEST in rebuildPS1
         ConvertRotToMatrix(
             &InstArr0->matrix,
-            &warppadObj->spinRot_Prize[0]);
+            &warppadObj->spinRot_Prize[0]
+        );
 
+        modelcolorID = ((InstArr0->flags) >> 20) & 0xFF;
         modelID = InstArr0->model->id;
 
 #ifndef REBUILD_PS1
         // Trophy has no specular light
-        if(modelID == STATIC_TROPHY) return;
+        if (modelID == STATIC_TROPHY) return;
 
         // OG code had pointers to warppadObj->specLightXXX
         // but that was replaced with pointers to globals,
         // because the arrays didnt actually change per warppad
 
         // Relic
-        if(modelID == STATIC_RELIC)
+        if (modelID == STATIC_RELIC)
         {
-            Vector_SpecLightSpin3D(InstArr0, &warppadObj->spinRot_Prize[0], &D232.specLightRelic[0]);
+            Vector_SpecLightSpin3D(
+                InstArr0,
+                &warppadObj->spinRot_Prize[0],
+                &D232.specLightRelic[0]
+            );
             return;
         }
 
         // Token
-        if(modelID == STATIC_TOKEN)
+        if (modelID == STATIC_TOKEN)
         {
-            Vector_SpecLightSpin3D(InstArr0, &warppadObj->spinRot_Prize[0], &D232.specLightToken[0]);
+            if (modelcolorID == TOKEN_ANY)
+            {
+                i = (gGT->timer / FPS_DOUBLE(0x3C)) % 5;
+
+                InstArr0->colorRGBA = (
+                    ((unsigned int)data.AdvCups[i].color[0] << 0x14)
+                    | ((unsigned int)data.AdvCups[i].color[1] << 0xc)
+                    | ((unsigned int)data.AdvCups[i].color[2] << 0x4)
+                );
+            }
+
+            Vector_SpecLightSpin3D(
+                InstArr0,
+                &warppadObj->spinRot_Prize[0],
+                &D232.specLightToken[0]
+            );
             return;
         }
 
         // If Gem, change colors every 2 seconds
-        if(modelID == STATIC_GEM)
+        if (modelID == STATIC_GEM)
         {
-            i = (gGT->timer / FPS_DOUBLE(0x3C)) % 5;
-
-            InstArr0->colorRGBA =
-                ((unsigned int)data.AdvCups[i].color[0] << 0x14) |
-                ((unsigned int)data.AdvCups[i].color[1] << 0xc) |
-                ((unsigned int)data.AdvCups[i].color[2] << 0x4);
-
+            if (modelcolorID == GEM_ANY)
+            {
+                modelcolorID = (gGT->timer / FPS_DOUBLE(0x3C)) % 5;
+                // gem color
+                InstArr0->colorRGBA = (
+                    ((unsigned int)data.AdvCups[modelcolorID].color[0] << 0x14)
+                    | ((unsigned int)data.AdvCups[modelcolorID].color[1] << 0xc)
+                    | ((unsigned int)data.AdvCups[modelcolorID].color[2] << 0x4)
+                );
+            }
         }
 
         // for Key or Gem
-        Vector_SpecLightSpin3D(InstArr0, &warppadObj->spinRot_Prize[0], &D232.specLightGem[0]);
+        Vector_SpecLightSpin3D(
+            InstArr0,
+            &warppadObj->spinRot_Prize[0],
+            &D232.specLightGem[0]
+        );
 #endif
         return;
     }
 
     // === Assume Unlocked ===
 
-    if(
-        (instArr[WPIS_OPEN_BEAM] != 0) &&
-        ((gGT->timer & FPS_DOUBLE(1)) != 0)
-      )
+    if (   instArr[WPIS_OPEN_BEAM] != 0
+        && (gGT->timer & FPS_DOUBLE(1)) != 0
+    )
     {
         warppadObj->spinRot_Beam[0] = 0;
         warppadObj->spinRot_Beam[2] = 0;
@@ -321,7 +319,8 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
         // converted to TEST in rebuildPS1
         ConvertRotToMatrix(
             &instArr[WPIS_OPEN_BEAM]->matrix,
-            &warppadObj->spinRot_Beam[0]);
+            &warppadObj->spinRot_Beam[0]
+        );
     }
 
     wispRiseRate = FPS_HALF(0x20);
@@ -329,12 +328,11 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     wispMaxHeight = 0x600;
 
     // if close to this warppad
-    if(D232.levelID != -1)
-        wispMaxHeight = 0x400;
+    if (D232.levelID != -1) wispMaxHeight = 0x400;
 
-    for(i = 0; i < 2; i++)
+    for (i = 0; i < 2; i++)
     {
-        if(instArr[WPIS_OPEN_RING1+i] != 0)
+        if (instArr[WPIS_OPEN_RING1 + i] != 0)
         {
             warppadObj->spinRot_Wisp[i][0] = 0;
             warppadObj->spinRot_Wisp[i][2] = 0;
@@ -344,49 +342,39 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
             // converted to TEST in rebuildPS1
             ConvertRotToMatrix(
                 &instArr[WPIS_OPEN_RING1+i]->matrix,
-                &warppadObj->spinRot_Wisp[i][0]);
+                &warppadObj->spinRot_Wisp[i][0]
+            );
 
             // if height hasn't reached max height
-            if(
-                instArr[WPIS_OPEN_RING1+i]->matrix.t[1] <
-                (warppadInst->matrix.t[1] + wispMaxHeight)
-              )
+            if (instArr[WPIS_OPEN_RING1 + i]->matrix.t[1] < (warppadInst->matrix.t[1] + wispMaxHeight))
             {
-                instArr[WPIS_OPEN_RING1+i]->matrix.t[1] += wispRiseRate;
+                instArr[WPIS_OPEN_RING1 + i]->matrix.t[1] += wispRiseRate;
 
                 // if height hasn't reached 4x RiseRate,
                 // first 4 frames of rising
-                if(
-                    instArr[WPIS_OPEN_RING1+i]->matrix.t[1] <
-                    (warppadInst->matrix.t[1] + wispRiseRate*4)
-                )
+                if (instArr[WPIS_OPEN_RING1 + i]->matrix.t[1] < (warppadInst->matrix.t[1] + wispRiseRate * 4))
                 {
                     // reduce transparency
-                    instArr[WPIS_OPEN_RING1+i]->alphaScale -= 0x380;
+                    instArr[WPIS_OPEN_RING1 + i]->alphaScale -= 0x380;
                 }
-
-                // after first 4 frames
-                else
+                else // after first 4 frames
                 {
                     // add transparency as the wisp spirals upward (~0x60  per frame)
-                    instArr[WPIS_OPEN_RING1+i]->alphaScale += 0xc00 / (wispMaxHeight/wispRiseRate);
+                    instArr[WPIS_OPEN_RING1 + i]->alphaScale += 0xc00 / (wispMaxHeight / wispRiseRate);
                 }
             }
-
-            // eached max height
-            else
+            else // reached max height
             {
                 // reset height
-                instArr[WPIS_OPEN_RING1+i]->matrix.t[1] = warppadInst->matrix.t[1];
+                instArr[WPIS_OPEN_RING1 + i]->matrix.t[1] = warppadInst->matrix.t[1];
 
                 // full transparency
-                instArr[WPIS_OPEN_RING1+i]->alphaScale = 0x1000;
+                instArr[WPIS_OPEN_RING1 + i]->alphaScale = 0x1000;
 
                 rng1 = MixRNG_Scramble() >> 3;
 
                 rng2 = rng1;
-                if(rng1 < 0)
-                    rng2 = rng1 + 0xfff;
+                if(rng1 < 0) rng2 = rng1 + 0xfff;
 
                 warppadObj->spinRot_Wisp[i][1] = (short)rng1 + (short)(rng2 >> 0xc) * -0x1000;
             }
@@ -399,54 +387,53 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
 
     rewardScale = 0x100;
 
-    if(dist > 0x900000*2)
+    if (dist > 0x900000 * 2)
     {
         rewardScale = 0;
     }
-
-    else if(dist > 0x900000)
+    else if (dist > 0x900000)
     {
         // range [90, 90*2] to [0%, 100%]
-        rewardScale = ((((0x900000*2)-dist) * 0x100) / 0x900000);
+        rewardScale = ((((0x900000 * 2) - dist) * 0x100) / 0x900000);
     }
 
-    for(i = 0; i < 3; i++)
+    for (i = 0; i < 3; i++)
     {
         warppadObj->spinRot_Prize[2] = 0x155;
 
-        if(instArr[WPIS_OPEN_PRIZE1+i] != 0)
+        if(instArr[WPIS_OPEN_PRIZE1 + i] != 0)
         {
             AH_WarpPad_SpinRewards(
-                instArr[WPIS_OPEN_PRIZE1+i],
+                instArr[WPIS_OPEN_PRIZE1 + i],
                 warppadObj, i,
                 warppadInst->matrix.t[0],
                 warppadInst->matrix.t[1],
-                warppadInst->matrix.t[2]);
+                warppadInst->matrix.t[2]
+            );
 
-            modelID = instArr[WPIS_OPEN_PRIZE1+i]->model->id;
+            modelID = instArr[WPIS_OPEN_PRIZE1 + i]->model->id;
 
-            if(rewardScale == 0)
+            if (rewardScale == 0)
             {
                 // invisible
-                instArr[WPIS_OPEN_PRIZE1+i]->flags |= 0x80;
+                instArr[WPIS_OPEN_PRIZE1 + i]->flags |= 0x80;
             }
-
             else
             {
                 // visible
-                instArr[WPIS_OPEN_PRIZE1+i]->flags &= ~(0x80);
+                instArr[WPIS_OPEN_PRIZE1 + i]->flags &= ~(0x80);
 
                 // token
                 rewardScale2 = 0x2000;
 
                 // not token
-                if(modelID != STATIC_TOKEN)
+                if (modelID != STATIC_TOKEN)
                 {
                     // trophy
                     rewardScale2 = 0x2800;
 
                     // relic
-                    if(modelID == STATIC_RELIC)
+                    if (modelID == STATIC_RELIC)
                     {
                         rewardScale2 = 0x1800;
                     }
@@ -457,7 +444,6 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
                 instArr[WPIS_OPEN_PRIZE1+i]->scale[1] = (short)rewardScale2;
                 instArr[WPIS_OPEN_PRIZE1+i]->scale[2] = (short)rewardScale2;
             }
-
         }
 
         warppadObj->thirds[i] += FPS_HALF(0x20);
@@ -465,16 +451,16 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     }
 
     // if flag is on-screen, loading has already been finalized
-    if(RaceFlag_IsTransitioning() != 0) return;
+    if (RaceFlag_IsTransitioning() != 0) return;
 
     // if driver has not entered this warppad
-    if(warppadObj->boolEnteredWarppad == 0)
+    if (warppadObj->boolEnteredWarppad == 0)
     {
-        // if far away from warppad, quit
-        if(dist > 0x8fff) return;
-
-        // close to warppad, first frame
-        else
+        if (dist > 0x8fff) // if far away from warppad, quit
+        {
+            return;
+        }
+        else // close to warppad, first frame
         {
             // now in warppad
             warppadObj->boolEnteredWarppad = 1;
@@ -492,8 +478,7 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     gGT->drivers[0]->funcPtrs[0] = VehStuckProc_Warp_Init;
 #endif
 
-    if (warppadObj->framesWarping < FPS_DOUBLE(0x400))
-        warppadObj->framesWarping++;
+    if (warppadObj->framesWarping < FPS_DOUBLE(0x400)) warppadObj->framesWarping++;
 
     // optimization, dont do this "every" frame,
     // which the original game did. Also this needs
@@ -505,7 +490,9 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
         // Dont worry about Token or Relic, those dont
         // use kartSpawnOrderArray, the OG game just did
         // this without an IF check at all
-        if( (levelID < SLIDE_COLISEUM) || (levelID >= ADV_CUP) )
+        if (   levelID < SLIDE_COLISEUM
+            || levelID >= ADV_CUP
+        )
         {
             // assign characterIDs, not actually "load"
             LOAD_Robots1P(data.characterIDs[0]);
@@ -521,33 +508,31 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
 
             // If Speed Champion is on the track (Crash-Pura)
             // and is not the same characterID as Player 1
-            if(
-                (champID < 8) &&
-                (champID != data.characterIDs[0])
+            if (   champID < 8
+                && champID != data.characterIDs[0]
             )
             {
                 // set everyone to spawn in order
-                for(i = 1; i < 7; i++)
+                for (i = 1; i < 7; i++)
                 {
-                    if(champID == data.characterIDs[i])
+                    if (champID == data.characterIDs[i])
                     {
                         sdata->kartSpawnOrderArray[i] = 0;
                         champSlot = i;
                     }
-
                     else
+                    {
                         sdata->kartSpawnOrderArray[i] = i;
+                    }
                 }
 
                 sdata->kartSpawnOrderArray[7] = champSlot;
             }
-
-            // Speed Champion is invalid
-            else
+            else // Speed Champion is invalid
             {
-                for(i = 1; i < 8; i++) randKartSpawn[i] = i;
+                for (i = 1; i < 8; i++) randKartSpawn[i] = i;
 
-                for(i = 0; i < 7; i++)
+                for (i = 0; i < 7; i++)
                 {
                     #ifndef REBUILD_PS1
                     rng1 = RngDeadCoed(&sdata->const_0x30215400);
@@ -558,13 +543,13 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
                     rng2 = 7 - i;
 
                     rng2 = (rng1 & 0xfff) % rng2 + 1;
-                    rng2 = (short)rng2;
+                    rng2 = (short) rng2;
 
-                    sdata->kartSpawnOrderArray[randKartSpawn[rng2]] = (char)i;
+                    sdata->kartSpawnOrderArray[randKartSpawn[rng2]] = (char) i;
 
-                    while(rng2 < 7)
+                    while (rng2 < 7)
                     {
-                        randKartSpawn[rng2] = randKartSpawn[rng2+1];
+                        randKartSpawn[rng2] = randKartSpawn[rng2 + 1];
                         rng2++;
                     }
                 }
@@ -576,16 +561,17 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     if (warppadObj->framesWarping <= FPS_DOUBLE(60)) return;
 
     // only works for trophy tracks rn
-    if(levelID < SLIDE_COLISEUM)
+    if (levelID < SLIDE_COLISEUM)
     {
         // if trophy is unlocked
-        if(CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 6)) != 0)
+        if (CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 6)) != 0)
         {
             // if never opened
-            if(sdata->boolOpenTokenRelicMenu == 0)
+            if (sdata->boolOpenTokenRelicMenu == 0)
             {
-                D232.menuTokenRelic.rowSelected =
-                    (CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x4c)) != 0);
+                D232.menuTokenRelic.rowSelected = (
+                    CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x4c)) != 0
+                );
 
                 // now opened
                 sdata->boolOpenTokenRelicMenu = 1;
@@ -597,72 +583,63 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
             }
 
             // if opened, but not closed yet
-            if((RECTMENU_BoolHidden(&D232.menuTokenRelic) & 0xffff) == 0)
+            if ((RECTMENU_BoolHidden(&D232.menuTokenRelic) & 0xffff) == 0)
             {
                 // dont load level
                 return;
             }
-
-            // if opened, then closed
-            else
+            else // if opened, then closed
             {
                 // Relic Hint
                 i = 0x1d;
 
                 // CTR Token Hint
-                if((gGT->gameMode2 & 8) != 0)
-                    i = 0x1a;
+                if ((gGT->gameMode2 & 8) != 0) i = 0x1a;
 
                 // if hint is locked
-                if(CHECK_ADV_BIT(sdata->advProgress.rewards, (i+0x76)) == 0)
+                if (CHECK_ADV_BIT(sdata->advProgress.rewards, (i + 0x76)) == 0)
+                {
                     MainFrame_RequestMaskHint(i, 1);
+                }
 
                 // if can't spawn aku cause he's already here,
                 // quit function, wait till he's done to start race
                 i = AH_MaskHint_boolCanSpawn();
-                if((i & 0xffff) == 0) return;
+                if ((i & 0xffff) == 0) return;
 
                 // reset for future gameplay
                 sdata->boolOpenTokenRelicMenu = 0;
             }
         }
     }
-
-    // Slide Col or Turbo Track
-    else if(levelID < NITRO_COURT)
+    else if (levelID < NITRO_COURT) // Slide Col or Turbo Track
     {
         // Add Relic
         sdata->Loading.OnBegin.AddBitsConfig0 |= 0x4000000;
     }
-
-    // Battle Tracks
-    else if(levelID < GEM_STONE_VALLEY)
+    else if (levelID < GEM_STONE_VALLEY) // Battle Tracks
     {
         // Add Crystal Challenge
         sdata->Loading.OnBegin.AddBitsConfig0 |= 0x8000000;
 
         // Dont have hint "collect every crystal"
-        if ((sdata->advProgress.rewards[4] & 0x8000) == 0)
-            MainFrame_RequestMaskHint(0x19, 1);
+        if ((sdata->advProgress.rewards[4] & 0x8000) == 0) MainFrame_RequestMaskHint(0x19, 1);
 
         // if can't spawn aku cause he's already here,
         // quit function, wait till he's done to start race
         i = AH_MaskHint_boolCanSpawn();
-        if((i & 0xffff) == 0) return;
+        if ((i & 0xffff) == 0) return;
 
         gGT->originalEventTime = D232.timeCrystalChallenge[levelID - NITRO_COURT];
     }
-
-    // gem cups
-    else
+    else // gem cups
     {
         // Add Adv Cup
         sdata->Loading.OnBegin.AddBitsConfig0 |= 0x10000000;
 
         gGT->cup.cupID = levelID - ADV_CUP;
         gGT->cup.trackIndex = 0;
-        for(i = 0; i < 8; i++)
-            gGT->cup.points[i] = 0;
+        for(i = 0; i < 8; i++) gGT->cup.points[i] = 0;
 
         levelID = data.advCupTrackIDs[4*gGT->cup.cupID];
     }

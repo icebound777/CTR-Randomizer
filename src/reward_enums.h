@@ -6,7 +6,8 @@ enum GemColors {
     GEM_GREEN,
     GEM_BLUE,
     GEM_YELLOW,
-    GEM_PURPLE
+    GEM_PURPLE,
+    GEM_ANY = 10
 };
 enum TokenColors {
     TOKEN_NONE,
@@ -14,7 +15,8 @@ enum TokenColors {
     TOKEN_GREEN,
     TOKEN_BLUE,
     TOKEN_YELLOW,
-    TOKEN_PURPLE
+    TOKEN_PURPLE,
+    TOKEN_ANY = 10
 };
 
 #endif

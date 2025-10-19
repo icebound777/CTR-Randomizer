@@ -5,12 +5,17 @@
 
 #define GET_GEMANDTOKEN_COLOR(x) ((x >> 8) & 0xF)
 #define GET_CLEAN_REWARD(x) (x & 0xFF)
+#define GET_REQUIREMENT_TYPE(x)  (x & 0xFF)
+#define GET_REQUIREMENT_COLOR(x) ((x >> 8) & 0xFF)
+#define GET_REQUIREMENT_COUNT(x) ((x >> 16) & 0xFF)
 
 /* Key type defines via prefixes */
 enum DB_Prefixes {
-    DB_PREFIX_LEVELIDS = 0xA0000000,
-    DB_PREFIX_REWARDS  = 0xA1000000,
-    DB_PREFIX_SETTINGS = 0xAF000000
+    DB_PREFIX_LEVELIDS        = 0xA0000000,
+    DB_PREFIX_REWARDS         = 0xA1000000,
+    DB_PREFIX_WARPPADUNLOCK_1 = 0xA2000000,
+    DB_PREFIX_WARPPADUNLOCK_2 = 0xA3000000,
+    DB_PREFIX_SETTINGS        = 0xAF000000
 };
 
 /* DB fetch results */
