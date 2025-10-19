@@ -38,6 +38,7 @@ int database_fetch(
     int *fetch_result
 )
 {
+    static int db_offset_warppad_requirements = 0;
     static int db_offset_rewards = 0;
     static int db_offset_settings = 0;
     int i = 0;
@@ -56,6 +57,13 @@ int database_fetch(
     {
         i = db_offset_rewards;
     }
+    else if (   (db_offset_warppad_requirements != 0)
+             && (   (db_key & DB_PREFIX_WARPPADUNLOCK_1) == DB_PREFIX_WARPPADUNLOCK_1
+                 || (db_key & DB_PREFIX_WARPPADUNLOCK_2) == DB_PREFIX_WARPPADUNLOCK_2)
+    )
+    {
+        i = db_offset_warppad_requirements;
+    }
 
     for (; rando_database[i] != DB_END; i += 2)
     {
@@ -73,6 +81,14 @@ int database_fetch(
         )
         {
             db_offset_settings = i;
+        }
+
+        if (   db_offset_warppad_requirements == 0
+            && (   (rando_database[i] & DB_PREFIX_WARPPADUNLOCK_1) == DB_PREFIX_WARPPADUNLOCK_1
+                || (rando_database[i] & DB_PREFIX_WARPPADUNLOCK_2) == DB_PREFIX_WARPPADUNLOCK_2)
+        )
+        {
+            db_offset_warppad_requirements = i;
         }
 
         // If we have found our value, set output
@@ -113,6 +129,11 @@ static int rando_database[] = {
     DB_PREFIX_LEVELIDS | RAMPAGE_RUINS,  RAMPAGE_RUINS,
     DB_PREFIX_LEVELIDS | ROCKY_ROAD,     ROCKY_ROAD,
     DB_PREFIX_LEVELIDS | NITRO_COURT,    NITRO_COURT,
+    DB_PREFIX_LEVELIDS | CUP_RED,        CUP_RED,
+    DB_PREFIX_LEVELIDS | CUP_GREEN,      CUP_GREEN,
+    DB_PREFIX_LEVELIDS | CUP_BLUE,       CUP_BLUE,
+    DB_PREFIX_LEVELIDS | CUP_YELLOW,     CUP_YELLOW,
+    DB_PREFIX_LEVELIDS | CUP_PURPLE,     CUP_PURPLE,
     /* RACE UNLOCK REQUIREMENTS */
     DB_PREFIX_WARPPADUNLOCK_1 | CRASH_COVE,     STATIC_TROPHY | (0 << 16),
     DB_PREFIX_WARPPADUNLOCK_2 | CRASH_COVE,     STATIC_KEY | (1 << 16),
