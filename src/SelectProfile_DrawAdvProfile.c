@@ -1,5 +1,6 @@
 #include <common.h>
 #include "saveslot_defines.h"
+#include "reward_enums.h"
 
 void SelectProfile_DrawAdvProfile(
     struct AdvProgress  *adv,
@@ -93,14 +94,13 @@ void SelectProfile_DrawAdvProfile(
             0,
             integerColor
         );
+        int relic_type = (gGT->timer / FPS_DOUBLE(0x3C)) % 3;
         SelectProfile_PrintInteger(
-            (  (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE)
-             + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
-             + (advSlot2->SLOT2_NUM_RELICS_GOLD)
-             + (advSlot3->SLOT2_NUM_RELICS_GOLD)
-             + (advSlot2->SLOT2_NUM_RELICS_PLATINUM)
-             + (advSlot3->SLOT2_NUM_RELICS_PLATINUM)
-            ),
+            (relic_type == RELIC_SAPPHIRE)
+            ? (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE) + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
+            : (relic_type == RELIC_GOLD)
+                ? (advSlot2->SLOT2_NUM_RELICS_GOLD) + (advSlot3->SLOT2_NUM_RELICS_GOLD)
+                : (advSlot2->SLOT2_NUM_RELICS_PLATINUM) + (advSlot3->SLOT2_NUM_RELICS_PLATINUM),
             local_posX + 0xb5,
             local_posY + 23,
             0,
@@ -110,7 +110,7 @@ void SelectProfile_DrawAdvProfile(
         // "%"
         DecalFont_DrawLine(&sdata->s_percent_sign, local_posX + 0x70, local_posY + 23, 1, percentColor);
 
-        // Draw instances of Trophy, Key and Relics
+        // Draw instances of Trophy (index 1), Key (index 2) and Relics (index 0)
         for (int i = 0; i < 3; i++)
         {
             struct Instance * inst = sdata->LoadSaveData[(slotIndex * 3) + i].inst;
@@ -118,6 +118,14 @@ void SelectProfile_DrawAdvProfile(
             inst->matrix.t[1] = SelectProfile_UI_ConvertY(local_posY + (i == 0 ? 0x1f : 0xd), 0x100);
             inst->matrix.t[2] = 0x100;
             inst->flags &= ~(HIDE_MODEL); // make visible
+            if (i == 0)
+            {
+                inst->colorRGBA = (relic_type == RELIC_SAPPHIRE)
+                    ? 0x20a5ff0
+                    : (relic_type == RELIC_GOLD)
+                        ? 0xd8d2090
+                        : 0xffede90;
+            }
         }
     }
 
