@@ -1,6 +1,11 @@
+/*
+This file houses code that would rather be in some other source files, but did
+not fit there due to missing space for original functions to expand.
+*/
 #include <common.h>
 
 #include "CTRRandomizer_database.h"
+#include "saveslot_defines.h"
 
 // rewards[3]
 #define REWARD_MASKHINT_WELCOMETOARENA  0x400000
@@ -27,6 +32,12 @@
 #define REWARD_MASKHINT_NEED10RELICS    0x40000
 #define REWARD_MASKHINT_RELICCHALLENGE  0x80000
 
+/*
+Outsourced from GAMEPROG_05_NewProfile_InsideAdv.c
+Sets initial character and hub values (moved from above file).
+Then checks the chosen setting value for the mask hints skip qol, and
+marks the hint flags if required.
+*/
 void randomizer_set_profile_defaults(struct AdvProgress* adv)
 {
     // no character selected
@@ -73,4 +84,34 @@ void randomizer_set_profile_defaults(struct AdvProgress* adv)
             REWARD_MASKHINT_RELICCHALLENGE
         );
     }
+}
+
+/*
+Outsourced from AH_Garage_ThTick.c
+Determines the boss ID for the current boss garage.
+Adjusted by the randomizer checking the relics for Oxide differently.
+*/
+int randomizer_garage_tick_get_bossID(
+    char  levelID,
+    char  hubID
+)
+{
+    int bossID;
+
+    struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
+    struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
+
+    if (
+        (levelID == GEM_STONE_VALLEY) &&
+        ((advSlot2->SLOT2_NUM_RELICS + advSlot3->SLOT2_NUM_RELICS) == 18))
+    {
+        // set string index (0-5) to "N Oxide's Final Challenge"
+        bossID = 5;
+    }
+    else
+    {
+        bossID = R232.bossIDs[hubID];
+    }
+
+    return bossID;
 }

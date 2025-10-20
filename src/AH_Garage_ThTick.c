@@ -2,6 +2,7 @@
 /* START Randomizer */
 #include "saveslot_defines.h"
 #include "CTRRandomizer_database.h"
+#include "CTRRandomizer_outsourcing.h"
 /* END Randomizer */
 
 void AH_Garage_Open(struct ScratchpadStruct *, struct Thread *);
@@ -328,17 +329,10 @@ LAB_800aede8:
         sdata->Loading.OnBegin.RemBitsConfig0 |= ADVENTURE_ARENA;
         sdata->Loading.OnBegin.AddBitsConfig0 |= ADVENTURE_BOSS;
 
-        if (
-            (levelID == GEM_STONE_VALLEY) &&
-            ((advSlot2->SLOT2_NUM_RELICS + advSlot3->SLOT2_NUM_RELICS) == 18))
-        {
-            // set string index (0-5) to "N Oxide's Final Challenge"
-            gGT->bossID = 5;
-        }
-        else
-        {
-            gGT->bossID = R232.bossIDs[hubID];
-        }
+        gGT->bossID = randomizer_garage_tick_get_bossID(
+            levelID,
+            hubID
+        );
 
         // new levelID
         levelID = R232.bossTracks[hubID];
