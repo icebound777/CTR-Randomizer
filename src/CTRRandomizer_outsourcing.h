@@ -6,5 +6,8 @@ int randomizer_garage_tick_get_bossID(
     char  levelID,
     char  hubID
 );
+int randomizer_get_num_relic(void);
+
+extern struct Instance *advhud_relic;
 
 #endif

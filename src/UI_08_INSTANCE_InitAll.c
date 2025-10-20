@@ -1,6 +1,7 @@
 #include <common.h>
 /* START RANDOMIZER */
 #include "CTRRandomizer_database.h"
+#include "CTRRandomizer_outsourcing.h"
 /* END RANDOMIZER */
 
 void DECOMP_UI_INSTANCE_InitAll(void)
@@ -39,7 +40,7 @@ void DECOMP_UI_INSTANCE_InitAll(void)
             #endif
 
             //is ignoring the return value of these calls intentional?
-            UI_INSTANCE_BirthWithThread(
+            advhud_relic = UI_INSTANCE_BirthWithThread(
                 0x61,
                 (int) UI_ThTick_Reward,
                 0xe,
