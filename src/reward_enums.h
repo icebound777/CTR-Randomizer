@@ -21,7 +21,8 @@ enum TokenColors {
 enum RelicColors {
     RELIC_SAPPHIRE,
     RELIC_GOLD,
-    RELIC_PLATINUM
+    RELIC_PLATINUM,
+    RELIC_ANY
 };
 
 #endif

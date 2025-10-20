@@ -128,11 +128,6 @@ void AH_WarpPad_LInB(struct Instance* inst)
     {
         unlockItem_numNeeded = GET_REQUIREMENT_COUNT(db_ret);
         unlockItem_modelID = GET_REQUIREMENT_TYPE(db_ret);
-    }
-
-    if (unlockItem_modelID == STATIC_TOKEN || unlockItem_modelID == STATIC_GEM)
-    {
-        // Have to check color
         unlockItem_color = GET_REQUIREMENT_COLOR(db_ret);
     }
 
@@ -147,10 +142,40 @@ void AH_WarpPad_LInB(struct Instance* inst)
             break;
 
         case STATIC_RELIC:
-            unlockItem_numOwned = (
-                (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE)
-                + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
-            );
+            switch (unlockItem_color)
+            {
+                case RELIC_SAPPHIRE:
+                    unlockItem_numOwned = (
+                        (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE)
+                        + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
+                    );
+                    break;
+
+                case RELIC_GOLD:
+                    unlockItem_numOwned = (
+                        (advSlot2->SLOT2_NUM_RELICS_GOLD)
+                        + (advSlot3->SLOT2_NUM_RELICS_GOLD)
+                    );
+                    break;
+
+                case RELIC_PLATINUM:
+                    unlockItem_numOwned = (
+                        (advSlot2->SLOT2_NUM_RELICS_PLATINUM)
+                        + (advSlot3->SLOT2_NUM_RELICS_PLATINUM)
+                    );
+                    break;
+
+                default: // case RELIC_ANY:
+                    unlockItem_numOwned = (
+                        (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE)
+                        + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
+                        + (advSlot2->SLOT2_NUM_RELICS_GOLD)
+                        + (advSlot3->SLOT2_NUM_RELICS_GOLD)
+                        + (advSlot2->SLOT2_NUM_RELICS_PLATINUM)
+                        + (advSlot3->SLOT2_NUM_RELICS_PLATINUM)
+                    );
+                    break;
+            }
             break;
 
         case STATIC_TOKEN:
@@ -538,7 +563,15 @@ SlideColTurboTrack:
         if (unlockItem_modelID == STATIC_RELIC)
         {
             // Relic blue color
-            newInst->colorRGBA = 0x20a5ff0;
+            if (unlockItem_color != RELIC_ANY)
+            {
+                newInst->colorRGBA = (unlockItem_color == RELIC_SAPPHIRE)
+                    ? 0x20a5ff0
+                    : (unlockItem_color == RELIC_GOLD)
+                        ? 0xd8d2090
+                        : 0xffede90
+                ;
+            }
 
             warppadObj->specLightRelic[0] = D232.specLightRelic[0];
             warppadObj->specLightRelic[1] = D232.specLightRelic[1];
