@@ -23,7 +23,7 @@ def commit_hash_main(stop_event: threading.Event):
             try:
                 with open("../../../build/ctr-u_CTR-Randomizer.bin", "rb") as in_file:
                     in_file.seek(0xE000)
-                    for _ in range(1000):
+                    for _ in range(0x2000):
                         chunk = int.from_bytes(in_file.read(4), "big")
                         if chunk == '':
                             break

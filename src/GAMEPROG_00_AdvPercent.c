@@ -52,8 +52,25 @@ void GAMEPROG_AdvPercent(struct AdvProgress* adv)
         break;
     }
 
+    // Find relic type with the highest number of relics acquired
+    int sapphire_relics = (
+        (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE)
+        + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
+    );
+    int gold_relics = (
+        (advSlot2->SLOT2_NUM_RELICS_GOLD)
+        + (advSlot3->SLOT2_NUM_RELICS_GOLD)
+    );
+    int platinum_relics = (
+        (advSlot2->SLOT2_NUM_RELICS_PLATINUM)
+        + (advSlot3->SLOT2_NUM_RELICS_PLATINUM)
+    );
+    int most_relics = sapphire_relics;
+    if (most_relics < gold_relics) most_relics = gold_relics;
+    if (most_relics < platinum_relics) most_relics = platinum_relics;
+
     percent += (
-        (advSlot2->SLOT2_NUM_RELICS + advSlot3->SLOT2_NUM_RELICS) * 2
+        (most_relics) * 2
         + (advSlot2->SLOT2_NUM_TROPHIES + advSlot3->SLOT2_NUM_TROPHIES) * 2
         + advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS
         + (advSlot2->SLOT2_NUM_TOKENS_RED) + (advSlot3->SLOT2_NUM_TOKENS_RED)

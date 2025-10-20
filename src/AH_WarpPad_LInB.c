@@ -147,7 +147,10 @@ void AH_WarpPad_LInB(struct Instance* inst)
             break;
 
         case STATIC_RELIC:
-            unlockItem_numOwned = (advSlot2->SLOT2_NUM_RELICS + advSlot3->SLOT2_NUM_RELICS);
+            unlockItem_numOwned = (
+                (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE)
+                + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
+            );
             break;
 
         case STATIC_TOKEN:

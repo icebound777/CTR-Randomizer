@@ -18,5 +18,10 @@ enum TokenColors {
     TOKEN_PURPLE,
     TOKEN_ANY = 10
 };
+enum RelicColors {
+    RELIC_SAPPHIRE,
+    RELIC_GOLD,
+    RELIC_PLATINUM
+};
 
 #endif

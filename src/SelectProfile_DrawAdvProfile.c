@@ -94,7 +94,13 @@ void SelectProfile_DrawAdvProfile(
             integerColor
         );
         SelectProfile_PrintInteger(
-            (advSlot2->SLOT2_NUM_RELICS + advSlot3->SLOT2_NUM_RELICS),
+            (  (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE)
+             + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
+             + (advSlot2->SLOT2_NUM_RELICS_GOLD)
+             + (advSlot3->SLOT2_NUM_RELICS_GOLD)
+             + (advSlot2->SLOT2_NUM_RELICS_PLATINUM)
+             + (advSlot3->SLOT2_NUM_RELICS_PLATINUM)
+            ),
             local_posX + 0xb5,
             local_posY + 23,
             0,

@@ -16,7 +16,7 @@ void DECOMP_UI_DrawNumRelic(short posX, short posY)
     DecalFont_DrawLine(&sdata->s_x[0], posX, posY+4, FONT_SMALL, ORANGE);
 
     gGT = sdata->gGT;
-    num = (advSlot2->SLOT2_NUM_RELICS + advSlot3->SLOT2_NUM_RELICS);
+    num = ((advSlot2->SLOT2_NUM_RELICS_SAPPHIRE) + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE));
     if ((gGT->gameMode2 & 0x1000000) != 0) num--;
 
     sprintf(&string[0], &sdata->s_longInt[0], num);

@@ -6,6 +6,7 @@ not fit there due to missing space for original functions to expand.
 
 #include "CTRRandomizer_database.h"
 #include "saveslot_defines.h"
+#include "reward_enums.h"
 
 // rewards[3]
 #define REWARD_MASKHINT_WELCOMETOARENA  0x400000
@@ -101,16 +102,31 @@ int randomizer_garage_tick_get_bossID(
     struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
     struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
 
-    if (
-        (levelID == GEM_STONE_VALLEY) &&
-        ((advSlot2->SLOT2_NUM_RELICS + advSlot3->SLOT2_NUM_RELICS) == 18))
+    bossID = R232.bossIDs[hubID];
+
+    if (levelID == GEM_STONE_VALLEY)
     {
-        // set string index (0-5) to "N Oxide's Final Challenge"
-        bossID = 5;
-    }
-    else
-    {
-        bossID = R232.bossIDs[hubID];
+        int oxide_relics_required = RELIC_SAPPHIRE; // default
+        int db_result = DB_VALUE_OK;
+        int db_ret = database_fetch(
+            DB_PREFIX_SETTINGS | SETTING_OXIDE_REQUIRED_RELICS,
+            &db_result
+        );
+        if (db_result == DB_VALUE_OK) oxide_relics_required = db_ret;
+
+        // If Oxide needs Sapphires, then just take the number of Sapphires,
+        // else add up Golds and Platinums and make sure they exceed 18
+        int num_relics = (oxide_relics_required == RELIC_SAPPHIRE)
+            ? (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE) + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
+            : (
+                (advSlot2->SLOT2_NUM_RELICS_GOLD)
+                + (advSlot3->SLOT2_NUM_RELICS_GOLD)
+                + (advSlot2->SLOT2_NUM_RELICS_PLATINUM)
+                + (advSlot3->SLOT2_NUM_RELICS_PLATINUM)
+            )
+        ;
+
+        if (num_relics >= 18) bossID = 5;
     }
 
     return bossID;
