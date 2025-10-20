@@ -3,7 +3,7 @@
 
 #include <common.h>
 
-#define GET_GEMANDTOKEN_COLOR(x) ((x >> 8) & 0xF)
+#define GET_REWARD_COLOR(x) ((x >> 8) & 0xF)
 #define GET_CLEAN_REWARD(x) (x & 0xFF)
 #define GET_REQUIREMENT_TYPE(x)  (x & 0xFF)
 #define GET_REQUIREMENT_COLOR(x) ((x >> 8) & 0xFF)

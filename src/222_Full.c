@@ -538,7 +538,7 @@ void AA_EndEvent_DrawMenu(void)
             adv,
             bitIndex,
             GET_CLEAN_REWARD(race_reward),
-            GET_GEMANDTOKEN_COLOR(race_reward)
+            GET_REWARD_COLOR(race_reward)
         );
 
         // go to podium with reward
@@ -566,7 +566,7 @@ void AA_EndEvent_DrawMenu(void)
             adv,
             bitIndex,
             GET_CLEAN_REWARD(race_reward),
-            GET_GEMANDTOKEN_COLOR(race_reward)
+            GET_REWARD_COLOR(race_reward)
         );
 
         // go to podium with reward

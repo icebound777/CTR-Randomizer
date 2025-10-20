@@ -80,7 +80,7 @@ void RR_EndEvent_UnlockAward(void)
                     adv,
                     -1,
                     GET_CLEAN_REWARD(race_reward),
-                    GET_GEMANDTOKEN_COLOR(race_reward)
+                    GET_REWARD_COLOR(race_reward)
                 );
                 gGT->podiumRewardID = race_reward;
             }

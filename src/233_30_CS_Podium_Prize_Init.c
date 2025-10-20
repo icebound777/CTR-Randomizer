@@ -38,7 +38,7 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
 
     /* START RANDOMIZER */
     int local_prizeModel = GET_CLEAN_REWARD(prizeModel);
-    int prizeColor = GET_GEMANDTOKEN_COLOR(prizeModel);
+    int prizeColor = GET_REWARD_COLOR(prizeModel);
     /* END RANDOMIZER */
 
     // create thread, get instance

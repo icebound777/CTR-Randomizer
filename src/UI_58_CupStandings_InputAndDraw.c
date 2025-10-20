@@ -568,7 +568,7 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
                                 adv,
                                 bitIndex,
                                 GET_CLEAN_REWARD(race_reward),
-                                GET_GEMANDTOKEN_COLOR(race_reward)
+                                GET_REWARD_COLOR(race_reward)
                             );
 
                             // Set podium reward

@@ -202,7 +202,7 @@ void CS_Camera_ThTick_Podium(struct Thread *th)
                     &db_result
                 );
                 if (db_result == DB_VALUE_OK) skip_mask_congrats = db_ret;
-                if (   GET_GEMANDTOKEN_COLOR(gGT->podiumRewardID) != 5
+                if (   GET_REWARD_COLOR(gGT->podiumRewardID) != 5
                     && !skip_mask_congrats
                 )
                 {
