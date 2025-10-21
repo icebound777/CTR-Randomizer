@@ -6,16 +6,14 @@ void GAMEPROG_AdvPercent(struct AdvProgress* adv)
 {
     int i;
     int percent;
-    int numGems;
     int bitIndex;
-    struct GameTracker* gGT;
+    struct GameTracker *gGT;
     struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
     struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
     gGT = sdata->gGT;
 
     // start counter
     percent = 0;
-    numGems = 0;
 
     // if beat oxide once, add 2% for first time (2-0=2%)
     // if beat oxide twice, add 1% for second time (2-1=1%)
@@ -23,33 +21,10 @@ void GAMEPROG_AdvPercent(struct AdvProgress* adv)
     {
         // first bit of beating oxide
         bitIndex = 0x73 + i;
-        if(CHECK_ADV_BIT(adv->rewards, bitIndex) != 0)
+        if (CHECK_ADV_BIT(adv->rewards, bitIndex) != 0)
         {
             percent += (2 - i);
         }
-    }
-
-    // assume all tracks have
-    // gold or platinum relic
-    percent += 1;
-
-    // check all tracks just for relics
-    for(i = 0; i < 18; i++)
-    {
-        // first bit of gold relic
-        bitIndex = 0x28 + i;
-        if(CHECK_ADV_BIT(adv->rewards, bitIndex) != 0)
-        {
-            // check next relic
-            continue;
-        }
-
-        // if relic is not unlocked,
-        // then extra 1% is not earned
-        percent -= 1;
-
-        // stop checking relics
-        break;
     }
 
     // Find relic type with the highest number of relics acquired
@@ -68,6 +43,14 @@ void GAMEPROG_AdvPercent(struct AdvProgress* adv)
     int most_relics = sapphire_relics;
     if (most_relics < gold_relics) most_relics = gold_relics;
     if (most_relics < platinum_relics) most_relics = platinum_relics;
+
+    // extra percent point for having 36+ total relics
+    // this guarantees we have at least 18 (gold+plat) relics
+    // in vanilla this was the "all golds or plats flags" check
+    if (sapphire_relics + gold_relics + platinum_relics >= 36)
+    {
+        percent++;
+    }
 
     percent += (
         (most_relics) * 2
