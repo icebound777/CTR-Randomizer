@@ -38,58 +38,58 @@ int database_fetch(
     int *fetch_result
 )
 {
-    static int db_offset_warppad_requirements = 0;
-    static int db_offset_rewards = 0;
-    static int db_offset_settings = 0;
+    //static int db_offset_warppad_requirements = 0;
+    //static int db_offset_rewards = 0;
+    //static int db_offset_settings = 0;
     int i = 0;
 
     // If we have db offsets from a previous fetch call, use them to skip
     // a bunch of entries
-    if (   (db_offset_settings != 0)
-        && (db_key & DB_PREFIX_SETTINGS) == DB_PREFIX_SETTINGS
-    )
-    {
-        i = db_offset_settings;
-    }
-    else if (   (db_offset_rewards != 0)
-             && (db_key & DB_PREFIX_REWARDS) == DB_PREFIX_REWARDS
-    )
-    {
-        i = db_offset_rewards;
-    }
-    else if (   (db_offset_warppad_requirements != 0)
-             && (   (db_key & DB_PREFIX_WARPPADUNLOCK_1) == DB_PREFIX_WARPPADUNLOCK_1
-                 || (db_key & DB_PREFIX_WARPPADUNLOCK_2) == DB_PREFIX_WARPPADUNLOCK_2)
-    )
-    {
-        i = db_offset_warppad_requirements;
-    }
-
+    //if (   (db_offset_settings != 0)
+    //    && (db_key & DB_PREFIX_SETTINGS) == DB_PREFIX_SETTINGS
+    //)
+    //{
+    //    i = db_offset_settings;
+    //}
+    //else if (   (db_offset_rewards != 0)
+    //         && (db_key & DB_PREFIX_REWARDS) == DB_PREFIX_REWARDS
+    //)
+    //{
+    //    i = db_offset_rewards;
+    //}
+    //else if (   (db_offset_warppad_requirements != 0)
+    //         && (   (db_key & DB_PREFIX_WARPPADUNLOCK_1) == DB_PREFIX_WARPPADUNLOCK_1
+    //             || (db_key & DB_PREFIX_WARPPADUNLOCK_2) == DB_PREFIX_WARPPADUNLOCK_2)
+    //)
+    //{
+    //    i = db_offset_warppad_requirements;
+    //}
+//
     for (; rando_database[i] != DB_END; i += 2)
     {
-        // If we have un-set db offsets, check if we have found the first
-        // matching entry and, if so, set the offset jump value
-        if (   db_offset_rewards == 0
-            && (rando_database[i] & DB_PREFIX_REWARDS) == DB_PREFIX_REWARDS
-        )
-        {
-            db_offset_rewards = i;
-        }
-
-        if (   db_offset_settings == 0
-            && (rando_database[i] & DB_PREFIX_SETTINGS) == DB_PREFIX_SETTINGS
-        )
-        {
-            db_offset_settings = i;
-        }
-
-        if (   db_offset_warppad_requirements == 0
-            && (   (rando_database[i] & DB_PREFIX_WARPPADUNLOCK_1) == DB_PREFIX_WARPPADUNLOCK_1
-                || (rando_database[i] & DB_PREFIX_WARPPADUNLOCK_2) == DB_PREFIX_WARPPADUNLOCK_2)
-        )
-        {
-            db_offset_warppad_requirements = i;
-        }
+        //// If we have un-set db offsets, check if we have found the first
+        //// matching entry and, if so, set the offset jump value
+        //if (   db_offset_rewards == 0
+        //    && (rando_database[i] & DB_PREFIX_REWARDS) == DB_PREFIX_REWARDS
+        //)
+        //{
+        //    db_offset_rewards = i;
+        //}
+//
+        //if (   db_offset_settings == 0
+        //    && (rando_database[i] & DB_PREFIX_SETTINGS) == DB_PREFIX_SETTINGS
+        //)
+        //{
+        //    db_offset_settings = i;
+        //}
+//
+        //if (   db_offset_warppad_requirements == 0
+        //    && (   (rando_database[i] & DB_PREFIX_WARPPADUNLOCK_1) == DB_PREFIX_WARPPADUNLOCK_1
+        //        || (rando_database[i] & DB_PREFIX_WARPPADUNLOCK_2) == DB_PREFIX_WARPPADUNLOCK_2)
+        //)
+        //{
+        //    db_offset_warppad_requirements = i;
+        //}
 
         // If we have found our value, set output
         if (rando_database[i] == db_key)
