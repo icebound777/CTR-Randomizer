@@ -580,23 +580,38 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
                             switch (i)
                             {
                                 case 0:
-                                    enqueue_unlock("Ripper Roo");
+                                    enqueue_message(
+                                        MSGTYPE_UNLOCK,
+                                        "Ripper Roo"
+                                    );
                                     break;
 
                                 case 1:
-                                    enqueue_unlock("Papu Papu");
+                                    enqueue_message(
+                                        MSGTYPE_UNLOCK,
+                                        "Papu Papu"
+                                    );
                                     break;
 
                                 case 2:
-                                    enqueue_unlock("Komodo Joe");
+                                    enqueue_message(
+                                        MSGTYPE_UNLOCK,
+                                        "Komodo Joe"
+                                    );
                                     break;
 
                                 case 3:
-                                    enqueue_unlock("Pinstripe");
+                                    enqueue_message(
+                                        MSGTYPE_UNLOCK,
+                                        "Pinstripe"
+                                    );
                                     break;
 
                                 default:
-                                    enqueue_unlock("Fake Crash");
+                                    enqueue_message(
+                                        MSGTYPE_UNLOCK,
+                                        "Fake Crash"
+                                    );
                                     break;
                             }
                             /* END RANDOMIZER */

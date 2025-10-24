@@ -4,6 +4,7 @@
 #include "CTRRandomizer_database.h"
 #include "messages_handler.h"
 #include "reward_enums.h"
+#include "CTRRandomizer_outsourcing.h"
 /* END RANDOMIZER */
 
 void RR_EndEvent_UnlockAward(void)
@@ -91,17 +92,15 @@ void RR_EndEvent_UnlockAward(void)
                         // unlock turbo track
                         sdata->gameProgress.unlocks[0] |= 2;
 
-                        enqueue_unlock("Turbo Track");
+                        enqueue_message(
+                            MSGTYPE_UNLOCK,
+                            "Turbo Track"
+                        );
                     }
                     continue; // if Sapphire skip storing relic time
                 }
 
-                // store relic time globally if reached Gold or Platinum
-                sdata->relicTime_1min = relicTime / 0xe100;
-                sdata->relicTime_10sec = (relicTime / 0x2580) % 6;
-                sdata->relicTime_1sec = (relicTime / 0x3c0) % 10;
-                sdata->relicTime_1ms = ((relicTime * 100) / 0x3c0) % 10;
-                sdata->relicTime_10ms = 0;
+                randomizer_store_relic_time(relicTime);
             }
         }
     }

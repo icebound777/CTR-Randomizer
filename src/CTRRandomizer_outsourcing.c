@@ -165,3 +165,16 @@ int randomizer_get_num_relic(void)
         return ((advSlot2->SLOT2_NUM_RELICS_PLATINUM) + (advSlot3->SLOT2_NUM_RELICS_PLATINUM));
     }
 }
+
+/*
+Outsourced from 223_RR_EndEvent_UnlockAward.c
+Store relic time globally if reached Gold or Platinum
+*/
+void randomizer_store_relic_time(int time)
+{
+    sdata->relicTime_1min = time / 0xe100;
+    sdata->relicTime_10sec = (time / 0x2580) % 6;
+    sdata->relicTime_1sec = (time / 0x3c0) % 10;
+    sdata->relicTime_1ms = ((time * 100) / 0x3c0) % 10;
+    sdata->relicTime_10ms = 0;
+}

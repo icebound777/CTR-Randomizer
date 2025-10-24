@@ -1,4 +1,5 @@
 #include <common.h>
+#include "messages_handler.h"
 
 #define EMPTY_MESSAGE1 " xxxxxx20characters1"
 #define EMPTY_MESSAGE2 " xxxxxx20characters2"
@@ -7,6 +8,8 @@
 #define MSG_POS_Y_LINE1 180
 #define MSG_POS_Y_LINE2 190
 #define MSG_POS_Y_LINE3 200
+#define LOCAL_MSG_SIZE 20
+#define LOCAL_MSG_BUF_SIZE 5
 
 static char ap_message_buffer_line1[] = EMPTY_MESSAGE1;
 static char ap_message_buffer_line2[] = EMPTY_MESSAGE2;
@@ -24,7 +27,14 @@ enum MessageTimers {
     TIMER_DISPLAY_DURATION = 120
 };
 
-static char *unlock_msg_queue[3] = {0};
+struct MessageMeta {
+    int  msg_type;
+    char msg[LOCAL_MSG_SIZE + 1];
+};
+
+static struct MessageMeta local_msg_ringbuf[LOCAL_MSG_BUF_SIZE] = {0};
+static short msg_ringbuf_write = 0;
+static short msg_ringbuf_read = 0;
 
 /* Handles all messages the randomizer wants to print */
 void messages_handler()
@@ -89,8 +99,6 @@ void messages_handler()
         else
         {
             ap_message_buffer_line1[0] = ' ';
-            ap_message_buffer_line2[0] = ' ';
-            ap_message_buffer_line3[0] = ' ';
             msg_mode = INTER_MESSAGE_DELAY;
             msg_timer = TIMER_INTER_MESSAGE_DELAY;
         }
@@ -99,15 +107,30 @@ void messages_handler()
     {
         if (msg_timer > 0)
         {
+            switch (local_msg_ringbuf[msg_ringbuf_read].msg_type)
+            {
+                case MSGTYPE_UNLOCK:
+                    DecalFont_DrawLine(
+                        "Unlocked:",
+                        MSG_POS_X,
+                        MSG_POS_Y_LINE2,
+                        FONT_SMALL,
+                        ORANGE
+                    );
+                    break;
+
+                case MSGTYPE_DBFETCH_ERROR:
+                    DecalFont_DrawLine(
+                        "DB-Fetch error:",
+                        MSG_POS_X,
+                        MSG_POS_Y_LINE2,
+                        FONT_SMALL,
+                        ORANGE
+                    );
+                    break;
+            }
             DecalFont_DrawLine(
-                "Unlocked:",
-                MSG_POS_X,
-                MSG_POS_Y_LINE2,
-                FONT_SMALL,
-                ORANGE
-            );
-            DecalFont_DrawLine(
-                unlock_msg_queue[0],
+                local_msg_ringbuf[msg_ringbuf_read].msg,
                 MSG_POS_X,
                 MSG_POS_Y_LINE3,
                 FONT_SMALL,
@@ -117,9 +140,10 @@ void messages_handler()
         }
         else
         {
-            unlock_msg_queue[0] = unlock_msg_queue[1];
-            unlock_msg_queue[1] = unlock_msg_queue[2];
-            unlock_msg_queue[2] = NULL;
+            local_msg_ringbuf[msg_ringbuf_read].msg_type = MSGTYPE_EMPTY;
+            msg_ringbuf_read++;
+            msg_ringbuf_read = msg_ringbuf_read % LOCAL_MSG_BUF_SIZE;
+
             msg_mode = INTER_MESSAGE_DELAY;
             msg_timer = TIMER_INTER_MESSAGE_DELAY;
         }
@@ -139,7 +163,7 @@ void messages_handler()
                 msg_mode = DISPLAYING_MESSAGE_AP;
                 msg_timer = TIMER_DISPLAY_DURATION;
             }
-            else if (unlock_msg_queue[0] != NULL)
+            else if (local_msg_ringbuf[msg_ringbuf_read].msg_type != MSGTYPE_EMPTY)
             {
                 // Internal message is queued
                 msg_mode = DISPLAYING_MESSAGE_INTERNAL;
@@ -153,22 +177,16 @@ void messages_handler()
     }
 }
 
-/* Add string pointed to by `msg_pointer` to the message handler queue for
-   internal messages. Silently fails if there are already 3 internal messages
-   in the queue.
+/* Add string pointed to by `msg_pointer` to the message handler ring buffer for
+   internal messages. Silently overwrites messages if the number of queued
+   messages exceeds the buffer size.
 */
-void enqueue_unlock(char *msg_pointer)
+void enqueue_message(
+    int   msg_type,
+    char *msg_pointer
+)
 {
-    if (unlock_msg_queue[0] == NULL)
-    {
-        unlock_msg_queue[0] = msg_pointer;
-    }
-    else if (unlock_msg_queue[1] == NULL)
-    {
-        unlock_msg_queue[1] = msg_pointer;
-    }
-    else if (unlock_msg_queue[2] == NULL)
-    {
-        unlock_msg_queue[2] = msg_pointer;
-    }
+    local_msg_ringbuf[msg_ringbuf_write].msg_type = msg_type;
+    strncpy(local_msg_ringbuf[msg_ringbuf_write].msg, msg_pointer, LOCAL_MSG_SIZE);
+    msg_ringbuf_write = ++msg_ringbuf_write % LOCAL_MSG_BUF_SIZE;
 }
