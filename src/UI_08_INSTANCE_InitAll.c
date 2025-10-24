@@ -4,6 +4,8 @@
 #include "CTRRandomizer_outsourcing.h"
 /* END RANDOMIZER */
 
+void store_relic_time(int relicTime);
+
 void DECOMP_UI_INSTANCE_InitAll(void)
 {
     struct GameTracker *gGT;
@@ -149,11 +151,7 @@ void DECOMP_UI_INSTANCE_InitAll(void)
             unsigned int relicTime = data.RelicTime[gGT->levelID*3 + relicType];
 
             // store globally for HUD to access later
-            sdata->relicTime_1min = relicTime / 0xe100;
-            sdata->relicTime_10sec = (relicTime / 0x2580) % 6;
-            sdata->relicTime_1sec = (relicTime / 0x3c0) % 10;
-            sdata->relicTime_10ms = ((relicTime * 100) / 0x3c0) % 10;
-            sdata->relicTime_1ms = ((relicTime * 1000) / 0x3c0) % 10;
+            store_relic_time(relicTime);
 
             return;
         }
@@ -298,4 +296,13 @@ void DECOMP_UI_INSTANCE_InitAll(void)
     // make Token invisible
     token->flags |= 0x80;
     return;
+}
+
+void store_relic_time(int relicTime)
+{
+    sdata->relicTime_1min = relicTime / 0xe100;
+    sdata->relicTime_10sec = (relicTime / 0x2580) % 6;
+    sdata->relicTime_1sec = (relicTime / 0x3c0) % 10;
+    sdata->relicTime_10ms = ((relicTime * 100) / 0x3c0) % 10;
+    sdata->relicTime_1ms = ((relicTime * 1000) / 0x3c0) % 10;
 }

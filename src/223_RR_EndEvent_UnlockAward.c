@@ -5,6 +5,8 @@
 #include "messages_handler.h"
 #include "reward_enums.h"
 #include "CTRRandomizer_outsourcing.h"
+
+#include "UI_08_INSTANCE_InitAll.h"
 /* END RANDOMIZER */
 
 void RR_EndEvent_UnlockAward(void)
@@ -100,7 +102,7 @@ void RR_EndEvent_UnlockAward(void)
                     continue; // if Sapphire skip storing relic time
                 }
 
-                randomizer_store_relic_time(relicTime);
+                store_relic_time(relicTime);
             }
         }
     }

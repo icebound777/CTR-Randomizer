@@ -7,7 +7,6 @@ int randomizer_garage_tick_get_bossID(
     char  hubID
 );
 int randomizer_get_num_relic(void);
-void randomizer_store_relic_time(int time);
 
 extern struct Instance *advhud_relic;
 
