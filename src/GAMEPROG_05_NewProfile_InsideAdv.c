@@ -1,7 +1,7 @@
 #include <common.h>
 
 /* START Randomizer */
-#include "CTRRandomizer_outsourcing.h"
+#include "GAMEPROG_00_AdvPercent.h"
 /* END Randomizer */
 
 void GAMEPROG_NewProfile_InsideAdv(struct AdvProgress* adv)
