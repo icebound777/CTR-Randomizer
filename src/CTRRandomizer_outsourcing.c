@@ -90,51 +90,6 @@ void randomizer_set_profile_defaults(struct AdvProgress* adv)
 }
 
 /*
-Outsourced from AH_Garage_ThTick.c
-Determines the boss ID for the current boss garage.
-Adjusted by the randomizer checking the relics for Oxide differently.
-*/
-int randomizer_garage_tick_get_bossID(
-    char  levelID,
-    char  hubID
-)
-{
-    int bossID;
-
-    struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
-    struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
-
-    bossID = R232.bossIDs[hubID];
-
-    if (levelID == GEM_STONE_VALLEY)
-    {
-        int oxide_relics_required = RELIC_SAPPHIRE; // default
-        int db_result = DB_VALUE_OK;
-        int db_ret = database_fetch(
-            DB_PREFIX_SETTINGS | SETTING_OXIDE_REQUIRED_RELICS,
-            &db_result
-        );
-        if (db_result == DB_VALUE_OK) oxide_relics_required = db_ret;
-
-        // If Oxide needs Sapphires, then just take the number of Sapphires,
-        // else add up Golds and Platinums and make sure they exceed 18
-        int num_relics = (oxide_relics_required == RELIC_SAPPHIRE)
-            ? (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE) + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
-            : (
-                (advSlot2->SLOT2_NUM_RELICS_GOLD)
-                + (advSlot3->SLOT2_NUM_RELICS_GOLD)
-                + (advSlot2->SLOT2_NUM_RELICS_PLATINUM)
-                + (advSlot3->SLOT2_NUM_RELICS_PLATINUM)
-            )
-        ;
-
-        if (num_relics >= 18) bossID = 5;
-    }
-
-    return bossID;
-}
-
-/*
 Outsourced from UI_34_DrawNumRelic.c
 Calculate the number of relics to display on the adventure hud, and also cycle
 the type of relic rendered.
