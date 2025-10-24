@@ -1,6 +1,7 @@
 #include <common.h>
 #include "CTRRandomizer_database.h"
 #include "reward_enums.h"
+#include "messages_handler.h"
 
 #ifndef FALSE
 #define FALSE  0
@@ -101,6 +102,12 @@ int database_fetch(
 
     // If we get here, then we didn't find what we were looking for
     *fetch_result = DB_VALUE_NOTFOUND;
+    char dbkey_as_text[8 + 1];
+    sprintf(dbkey_as_text, "%x", db_key);
+    enqueue_message(
+        MSGTYPE_DBFETCH_ERROR,
+        dbkey_as_text
+    );
     return db_key;
 }
 
