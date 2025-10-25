@@ -18,9 +18,9 @@ void AH_WarpPad_LInB(struct Instance* inst)
     struct GameTracker* gGT;
 
     int unlockItem_numOwned;
-    int unlockItem_numNeeded;
-    int unlockItem_modelID;
-    int unlockItem_color;
+    unsigned short unlockItem_numNeeded;
+    unsigned short unlockItem_modelID;
+    unsigned short unlockItem_color;
 
     int* arrTokenCount;
     struct Instance* newInst;
@@ -102,7 +102,7 @@ void AH_WarpPad_LInB(struct Instance* inst)
 
     warppadObj->levelID = levelID;
 
-    unlockItem_numNeeded = -1;
+    unlockItem_numNeeded = 0;
     unlockItem_numOwned = 0;
     unlockItem_modelID = STATIC_TROPHY;
     unlockItem_color = 0;
@@ -142,87 +142,92 @@ void AH_WarpPad_LInB(struct Instance* inst)
             break;
 
         case STATIC_RELIC:
+            int sapphires_owned = (
+                (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE)
+                + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
+            );
+            int golds_owned = (
+                (advSlot2->SLOT2_NUM_RELICS_GOLD)
+                + (advSlot3->SLOT2_NUM_RELICS_GOLD)
+            );
+            int platinums_owned = (
+                (advSlot2->SLOT2_NUM_RELICS_PLATINUM)
+                + (advSlot3->SLOT2_NUM_RELICS_PLATINUM)
+            );
             switch (unlockItem_color)
             {
                 case RELIC_SAPPHIRE:
-                    unlockItem_numOwned = (
-                        (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE)
-                        + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
-                    );
+                    unlockItem_numOwned = sapphires_owned;
                     break;
 
                 case RELIC_GOLD:
-                    unlockItem_numOwned = (
-                        (advSlot2->SLOT2_NUM_RELICS_GOLD)
-                        + (advSlot3->SLOT2_NUM_RELICS_GOLD)
-                    );
+                    unlockItem_numOwned = golds_owned;
                     break;
 
                 case RELIC_PLATINUM:
-                    unlockItem_numOwned = (
-                        (advSlot2->SLOT2_NUM_RELICS_PLATINUM)
-                        + (advSlot3->SLOT2_NUM_RELICS_PLATINUM)
-                    );
+                    unlockItem_numOwned = platinums_owned;
                     break;
 
                 default: // case RELIC_ANY:
                     unlockItem_numOwned = (
-                        (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE)
-                        + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
-                        + (advSlot2->SLOT2_NUM_RELICS_GOLD)
-                        + (advSlot3->SLOT2_NUM_RELICS_GOLD)
-                        + (advSlot2->SLOT2_NUM_RELICS_PLATINUM)
-                        + (advSlot3->SLOT2_NUM_RELICS_PLATINUM)
+                        sapphires_owned
+                        + golds_owned
+                        + platinums_owned
                     );
                     break;
             }
             break;
 
         case STATIC_TOKEN:
+            int redtokens_owned = (
+                (advSlot2->SLOT2_NUM_TOKENS_RED)
+                + (advSlot3->SLOT2_NUM_TOKENS_RED)
+            );
+            int greentokens_owned = (
+                (advSlot2->SLOT2_NUM_TOKENS_GREEN)
+                + (advSlot3->SLOT2_NUM_TOKENS_GREEN)
+            );
+            int bluetokens_owned = (
+                (advSlot2->SLOT2_NUM_TOKENS_BLUE)
+                + (advSlot3->SLOT2_NUM_TOKENS_BLUE)
+            );
+            int yellowtokens_owned = (
+                (advSlot2->SLOT2_NUM_TOKENS_YELLOW)
+                + (advSlot3->SLOT2_NUM_TOKENS_YELLOW)
+            );
+            int purpletokens_owned = (
+                (advSlot2->SLOT2_NUM_TOKENS_PURPLE)
+                + (advSlot3->SLOT2_NUM_TOKENS_PURPLE)
+            );
             switch (unlockItem_color)
             {
                 case TOKEN_RED:
-                    unlockItem_numOwned = (
-                        (advSlot2->SLOT2_NUM_TOKENS_RED)
-                        + (advSlot3->SLOT2_NUM_TOKENS_RED)
-                    );
+                    unlockItem_numOwned = redtokens_owned;
                     break;
 
                 case TOKEN_GREEN:
-                    unlockItem_numOwned = (
-                        (advSlot2->SLOT2_NUM_TOKENS_GREEN)
-                        + (advSlot3->SLOT2_NUM_TOKENS_GREEN)
-                    );
+                    unlockItem_numOwned = greentokens_owned;
                     break;
 
                 case TOKEN_BLUE:
-                    unlockItem_numOwned = (
-                        (advSlot2->SLOT2_NUM_TOKENS_BLUE)
-                        + (advSlot3->SLOT2_NUM_TOKENS_BLUE)
-                    );
+                    unlockItem_numOwned = bluetokens_owned;
                     break;
 
                 case TOKEN_YELLOW:
-                    unlockItem_numOwned = (
-                        (advSlot2->SLOT2_NUM_TOKENS_YELLOW)
-                        + (advSlot3->SLOT2_NUM_TOKENS_YELLOW)
-                    );
+                    unlockItem_numOwned = yellowtokens_owned;
                     break;
 
                 case TOKEN_PURPLE:
-                    unlockItem_numOwned = (
-                        (advSlot2->SLOT2_NUM_TOKENS_PURPLE)
-                        + (advSlot3->SLOT2_NUM_TOKENS_PURPLE)
-                    );
+                    unlockItem_numOwned = purpletokens_owned;
                     break;
 
                 default: //case TOKEN_ANY:
                     unlockItem_numOwned = (
-                        (advSlot2->SLOT2_NUM_TOKENS_RED) + (advSlot3->SLOT2_NUM_TOKENS_RED)
-                        + (advSlot2->SLOT2_NUM_TOKENS_GREEN) + (advSlot3->SLOT2_NUM_TOKENS_GREEN)
-                        + (advSlot2->SLOT2_NUM_TOKENS_BLUE) + (advSlot3->SLOT2_NUM_TOKENS_BLUE)
-                        + (advSlot2->SLOT2_NUM_TOKENS_YELLOW) + (advSlot3->SLOT2_NUM_TOKENS_YELLOW)
-                        + (advSlot2->SLOT2_NUM_TOKENS_PURPLE) + (advSlot3->SLOT2_NUM_TOKENS_PURPLE)
+                        redtokens_owned
+                        + greentokens_owned
+                        + bluetokens_owned
+                        + yellowtokens_owned
+                        + purpletokens_owned
                     );
                     break;
             }
