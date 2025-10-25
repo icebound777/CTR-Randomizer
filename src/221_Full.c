@@ -216,10 +216,10 @@ void DECOMP_CC_EndEvent_DrawMenu()
 
     // unlock token
     /* START RANDOMIZER */
-    int race_reward = (STATIC_TOKEN | (TOKEN_PURPLE << 8)); // default
+    unsigned short race_reward = (STATIC_TOKEN | (TOKEN_PURPLE << 8)); // default
     int db_fetch_result = DB_VALUE_NOTFOUND;
-    int item_type = database_fetch(
-        DB_PREFIX_REWARDS | (levelID << 8) | STATIC_TOKEN,
+    unsigned short item_type = database_fetch(
+        (DB_PREFIX_REWARDS | levelID) << 16 | STATIC_TOKEN,
         &db_fetch_result
     );
     if (db_fetch_result == DB_VALUE_OK) race_reward = item_type;
@@ -227,7 +227,7 @@ void DECOMP_CC_EndEvent_DrawMenu()
         adv,
         bitIndex,
         GET_CLEAN_REWARD(race_reward),
-        GET_GEMANDTOKEN_COLOR(race_reward)
+        GET_REWARD_COLOR(race_reward)
     );
     gGT->podiumRewardID = race_reward;
     /* END RANDOMIZER */

@@ -360,28 +360,16 @@ void DECOMP_AH_Pause_Draw(int pageID, int posX)
                 FONT_SMALL, 0);
         }
     }
-
     else
     {
         int count[3];
-        count[0] = 0;
-        count[1] = 0;
-        count[2] = 0;
-
-        for(int i = 0; i < 0x12; i++)
-        {
-            // platinum
-            if(CHECK_ADV_BIT(adv->rewards, (i+0x3a)) != 0)
-                count[2]++;
-
-            // gold
-            else if(CHECK_ADV_BIT(adv->rewards, (i+0x28)) != 0)
-                count[1]++;
-
-            // sapphire
-            else if(CHECK_ADV_BIT(adv->rewards, (i+0x16)) != 0)
-                count[0]++;
-        }
+        /* START Randomizer */
+        struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
+        struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
+        count[0] = (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE) + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE);
+        count[1] = (advSlot2->SLOT2_NUM_RELICS_GOLD) + (advSlot3->SLOT2_NUM_RELICS_GOLD);
+        count[2] = (advSlot2->SLOT2_NUM_RELICS_PLATINUM) + (advSlot3->SLOT2_NUM_RELICS_PLATINUM);
+        /* END Randomizer */
 
         for(int i = 0; i < 3; i++)
         {

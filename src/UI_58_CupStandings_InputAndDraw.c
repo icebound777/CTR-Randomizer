@@ -557,10 +557,10 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
                         if (CHECK_ADV_BIT(sdata->advProgress.rewards, bitIndex) == 0)
                         {
                             /* START RANDOMIZER */
-                            int race_reward = (STATIC_GEM | (gGT->levelID << 8)); // default
+                            unsigned short race_reward = (STATIC_GEM | (gGT->levelID << 8)); // default
                             int db_fetch_result = DB_VALUE_NOTFOUND;
-                            int item_type = database_fetch(
-                                DB_PREFIX_REWARDS | (gGT->levelID << 8) | STATIC_GEM,
+                            unsigned short item_type = database_fetch(
+                                (DB_PREFIX_REWARDS | gGT->levelID) << 16 | STATIC_GEM,
                                 &db_fetch_result
                             );
                             if (db_fetch_result == DB_VALUE_OK) race_reward = item_type;
@@ -568,7 +568,7 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
                                 adv,
                                 bitIndex,
                                 GET_CLEAN_REWARD(race_reward),
-                                GET_GEMANDTOKEN_COLOR(race_reward)
+                                GET_REWARD_COLOR(race_reward)
                             );
 
                             // Set podium reward
@@ -580,23 +580,38 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
                             switch (i)
                             {
                                 case 0:
-                                    enqueue_unlock("Ripper Roo");
+                                    enqueue_message(
+                                        MSGTYPE_UNLOCK,
+                                        "Ripper Roo"
+                                    );
                                     break;
 
                                 case 1:
-                                    enqueue_unlock("Papu Papu");
+                                    enqueue_message(
+                                        MSGTYPE_UNLOCK,
+                                        "Papu Papu"
+                                    );
                                     break;
 
                                 case 2:
-                                    enqueue_unlock("Komodo Joe");
+                                    enqueue_message(
+                                        MSGTYPE_UNLOCK,
+                                        "Komodo Joe"
+                                    );
                                     break;
 
                                 case 3:
-                                    enqueue_unlock("Pinstripe");
+                                    enqueue_message(
+                                        MSGTYPE_UNLOCK,
+                                        "Pinstripe"
+                                    );
                                     break;
 
                                 default:
-                                    enqueue_unlock("Fake Crash");
+                                    enqueue_message(
+                                        MSGTYPE_UNLOCK,
+                                        "Fake Crash"
+                                    );
                                     break;
                             }
                             /* END RANDOMIZER */

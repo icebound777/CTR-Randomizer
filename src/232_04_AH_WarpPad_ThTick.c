@@ -247,6 +247,16 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
         // Relic
         if (modelID == STATIC_RELIC)
         {
+            if (modelcolorID == RELIC_ANY)
+            {
+                i = (gGT->timer / FPS_DOUBLE(0x3C)) % 3;
+
+                InstArr0->colorRGBA = (i == RELIC_SAPPHIRE)
+                    ? 0x20a5ff0
+                    : (i == RELIC_GOLD)
+                        ? 0xd8d2090
+                        : 0xffede90;
+            }
             Vector_SpecLightSpin3D(
                 InstArr0,
                 &warppadObj->spinRot_Prize[0],

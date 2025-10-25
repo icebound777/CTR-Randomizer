@@ -122,10 +122,10 @@ void CS_Camera_ThTick_Podium(struct Thread *th)
         && (sdata->ptrActiveMenu == NULL)
     )
     {
-        int auto_skip_podium = false; // default
+        unsigned short auto_skip_podium = false; // default
         int db_result = DB_VALUE_NOTFOUND;
-        int db_ret = database_fetch(
-            DB_PREFIX_SETTINGS | SETTING_QOL_SKIP_PODIUM,
+        unsigned short db_ret = database_fetch(
+            (DB_PREFIX_SETTINGS | SETTING_QOL_SKIP_PODIUM) << 16,
             &db_result
         );
         if (db_result == DB_VALUE_OK) auto_skip_podium = db_ret;
@@ -195,14 +195,14 @@ void CS_Camera_ThTick_Podium(struct Thread *th)
 
                 // If the gem color is == 5 then we have a multiworld item gem.
                 // In this case, or if we always skip the hints here: no hint
-                int skip_mask_congrats = false; // default
+                unsigned short skip_mask_congrats = false; // default
                 int db_result = DB_VALUE_NOTFOUND;
-                int db_ret = database_fetch(
-                    DB_PREFIX_SETTINGS | SETTING_QOL_SKIP_CONGRATS,
+                unsigned short db_ret = database_fetch(
+                    (DB_PREFIX_SETTINGS | SETTING_QOL_SKIP_CONGRATS) << 16,
                     &db_result
                 );
                 if (db_result == DB_VALUE_OK) skip_mask_congrats = db_ret;
-                if (   GET_GEMANDTOKEN_COLOR(gGT->podiumRewardID) != 5
+                if (   GET_REWARD_COLOR(gGT->podiumRewardID) != 5
                     && !skip_mask_congrats
                 )
                 {
