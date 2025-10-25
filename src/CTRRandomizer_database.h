@@ -45,7 +45,7 @@ enum BossGarageOpening {
 };
 
 unsigned short database_fetch(
-    int db_key,
+    unsigned int db_key,
     int *fetch_result
 );
 

@@ -35,7 +35,7 @@ faster. However, this requires the settings to be grouped by types, instead
 of being randomly arranged.
 */
 unsigned short database_fetch(
-    int db_key,
+    unsigned int db_key,
     int *fetch_result
 )
 {
@@ -44,7 +44,7 @@ unsigned short database_fetch(
     for (; rando_database[i] != DB_END; i += 3)
     {
         // If we have found our value, set output
-        if ((rando_database[i] << 16) | rando_database[i + 1] == db_key)
+        if ((unsigned int)((rando_database[i] << 16) | rando_database[i + 1]) == db_key)
         {
             *fetch_result = DB_VALUE_OK;
             return rando_database[i + 2];
