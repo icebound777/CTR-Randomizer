@@ -515,7 +515,7 @@ LAB_8004f84c:
     int required_difficulty = RELICDIFF_SAPPHIRE; // default
     int db_fetch_result = DB_VALUE_NOTFOUND;
     int db_ret = database_fetch(
-        DB_PREFIX_SETTINGS | SETTING_RELIC_DIFFICULTY,
+        (DB_PREFIX_SETTINGS | SETTING_RELIC_DIFFICULTY) << 16,
         &db_fetch_result
     );
     if (db_fetch_result == DB_VALUE_OK) required_difficulty = db_ret;

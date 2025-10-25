@@ -219,7 +219,7 @@ void DECOMP_CC_EndEvent_DrawMenu()
     int race_reward = (STATIC_TOKEN | (TOKEN_PURPLE << 8)); // default
     int db_fetch_result = DB_VALUE_NOTFOUND;
     int item_type = database_fetch(
-        DB_PREFIX_REWARDS | (levelID << 8) | STATIC_TOKEN,
+        (DB_PREFIX_REWARDS | levelID) << 16 | STATIC_TOKEN,
         &db_fetch_result
     );
     if (db_fetch_result == DB_VALUE_OK) race_reward = item_type;

@@ -163,7 +163,7 @@ LAB_800aeb6c:
         int garage_requirement_logic = GARAGE_OPENING_VANILLA_WARPPADS; // default
         int db_fetch_result = DB_VALUE_NOTFOUND;
         int db_ret = database_fetch(
-            DB_PREFIX_SETTINGS | SETTING_BOSS_GARAGE_OPENING,
+            (DB_PREFIX_SETTINGS | SETTING_BOSS_GARAGE_OPENING) << 16,
             &db_fetch_result
         );
         if (db_fetch_result == DB_VALUE_OK) garage_requirement_logic = db_ret;
@@ -207,7 +207,7 @@ LAB_800aeb6c:
                     // Adjust check to look at the warp pads in the current hub
                     // compensating for any warp pad randomization
                     int randomized_LevelID = database_fetch(
-                        DB_PREFIX_LEVELIDS | levelID_to_check,
+                        (DB_PREFIX_LEVELIDS | levelID_to_check) << 16,
                         &db_fetch_result
                     );
                     if (db_fetch_result == DB_VALUE_OK) levelID_to_check = randomized_LevelID;
@@ -336,7 +336,7 @@ LAB_800aede8:
             int oxide_relics_required = RELIC_SAPPHIRE; // default
             int db_result = DB_VALUE_OK;
             int db_ret = database_fetch(
-                DB_PREFIX_SETTINGS | SETTING_OXIDE_REQUIRED_RELICS,
+                (DB_PREFIX_SETTINGS | SETTING_OXIDE_REQUIRED_RELICS) << 16,
                 &db_result
             );
             if (db_result == DB_VALUE_OK) oxide_relics_required = db_ret;

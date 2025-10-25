@@ -125,7 +125,7 @@ void CS_Camera_ThTick_Podium(struct Thread *th)
         int auto_skip_podium = false; // default
         int db_result = DB_VALUE_NOTFOUND;
         int db_ret = database_fetch(
-            DB_PREFIX_SETTINGS | SETTING_QOL_SKIP_PODIUM,
+            (DB_PREFIX_SETTINGS | SETTING_QOL_SKIP_PODIUM) << 16,
             &db_result
         );
         if (db_result == DB_VALUE_OK) auto_skip_podium = db_ret;
@@ -198,7 +198,7 @@ void CS_Camera_ThTick_Podium(struct Thread *th)
                 int skip_mask_congrats = false; // default
                 int db_result = DB_VALUE_NOTFOUND;
                 int db_ret = database_fetch(
-                    DB_PREFIX_SETTINGS | SETTING_QOL_SKIP_CONGRATS,
+                    (DB_PREFIX_SETTINGS | SETTING_QOL_SKIP_CONGRATS) << 16,
                     &db_result
                 );
                 if (db_result == DB_VALUE_OK) skip_mask_congrats = db_ret;

@@ -35,7 +35,7 @@ void RR_EndEvent_UnlockAward(void)
     require_perfect = 0; // default: FALSE
     db_fetch_result = DB_VALUE_NOTFOUND;
     db_ret = database_fetch(
-        DB_PREFIX_SETTINGS | SETTING_RELIC_NEEDS_PERFECT,
+        (DB_PREFIX_SETTINGS | SETTING_RELIC_NEEDS_PERFECT) << 16,
         &db_fetch_result
     );
     if (db_fetch_result == DB_VALUE_OK) require_perfect = db_ret;
@@ -47,7 +47,7 @@ void RR_EndEvent_UnlockAward(void)
         int required_difficulty = RELICDIFF_SAPPHIRE; // default
         db_fetch_result = DB_VALUE_NOTFOUND;
         db_ret = database_fetch(
-            DB_PREFIX_SETTINGS | SETTING_RELIC_DIFFICULTY,
+            (DB_PREFIX_SETTINGS | SETTING_RELIC_DIFFICULTY) << 16,
             &db_fetch_result
         );
         if (db_fetch_result == DB_VALUE_OK) required_difficulty = db_ret;
@@ -75,7 +75,7 @@ void RR_EndEvent_UnlockAward(void)
                 int race_reward = STATIC_RELIC | (i << 16); // default
                 db_fetch_result = DB_VALUE_NOTFOUND;
                 db_ret = database_fetch(
-                    DB_PREFIX_REWARDS | (levelID << 8) | STATIC_RELIC | (i << 16),
+                    (DB_PREFIX_REWARDS | levelID) << 16 | STATIC_RELIC | (i << 8),
                     &db_fetch_result
                 );
                 if (db_fetch_result == DB_VALUE_OK) race_reward = db_ret;

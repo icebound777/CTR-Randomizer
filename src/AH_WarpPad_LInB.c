@@ -96,7 +96,7 @@ void AH_WarpPad_LInB(struct Instance* inst)
     }
 
     /* START Randomizer */
-    db_ret = database_fetch(DB_PREFIX_LEVELIDS | levelID, &db_fetch_result);
+    db_ret = database_fetch((DB_PREFIX_LEVELIDS | levelID) << 16, &db_fetch_result);
     if (db_fetch_result == DB_VALUE_OK) levelID = db_ret;
     /* END Randomizer */
 
@@ -112,14 +112,14 @@ void AH_WarpPad_LInB(struct Instance* inst)
     )
     {
         db_ret = database_fetch(
-            DB_PREFIX_WARPPADUNLOCK_2 | levelID,
+            (DB_PREFIX_WARPPADUNLOCK_2 | levelID) << 16,
             &db_fetch_result
         );
     }
     else // Trophy Track + Trophy owned, Turbo&Slide, Battle maps, Gem Cups
     {
         db_ret = database_fetch(
-            DB_PREFIX_WARPPADUNLOCK_1 | levelID,
+            (DB_PREFIX_WARPPADUNLOCK_1 | levelID) << 16,
             &db_fetch_result
         );
     }

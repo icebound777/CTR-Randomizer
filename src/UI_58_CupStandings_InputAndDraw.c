@@ -560,7 +560,7 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
                             int race_reward = (STATIC_GEM | (gGT->levelID << 8)); // default
                             int db_fetch_result = DB_VALUE_NOTFOUND;
                             int item_type = database_fetch(
-                                DB_PREFIX_REWARDS | (gGT->levelID << 8) | STATIC_GEM,
+                                (DB_PREFIX_REWARDS | gGT->levelID) << 16 | STATIC_GEM,
                                 &db_fetch_result
                             );
                             if (db_fetch_result == DB_VALUE_OK) race_reward = item_type;

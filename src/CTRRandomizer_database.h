@@ -11,11 +11,11 @@
 
 /* Key type defines via prefixes */
 enum DB_Prefixes {
-    DB_PREFIX_LEVELIDS        = 0xA0000000,
-    DB_PREFIX_REWARDS         = 0xA1000000,
-    DB_PREFIX_WARPPADUNLOCK_1 = 0xA2000000,
-    DB_PREFIX_WARPPADUNLOCK_2 = 0xA3000000,
-    DB_PREFIX_SETTINGS        = 0xAF000000
+    DB_PREFIX_LEVELIDS        = 0xA000,
+    DB_PREFIX_REWARDS         = 0xA100,
+    DB_PREFIX_WARPPADUNLOCK_1 = 0xA200,
+    DB_PREFIX_WARPPADUNLOCK_2 = 0xA300,
+    DB_PREFIX_SETTINGS        = 0xAF00
 };
 
 /* DB fetch results */
