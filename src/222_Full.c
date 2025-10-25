@@ -527,10 +527,10 @@ void AA_EndEvent_DrawMenu(void)
     )
     {
         /* START RANDOMIZER */
-        int race_reward = (gGT->podiumRewardID | (token_color << 8)); // default
+        unsigned short race_reward = (gGT->podiumRewardID | (token_color << 8)); // default
         int db_fetch_result = DB_VALUE_NOTFOUND;
-        int item_type = database_fetch(
-            DB_PREFIX_REWARDS | (gGT->levelID << 8) | gGT->podiumRewardID,
+        unsigned short item_type = database_fetch(
+            (DB_PREFIX_REWARDS | gGT->levelID) << 16 | gGT->podiumRewardID,
             &db_fetch_result
         );
         if (db_fetch_result == DB_VALUE_OK) race_reward = item_type;
@@ -555,10 +555,10 @@ void AA_EndEvent_DrawMenu(void)
     {
         // unlock trophy
         /* START RANDOMIZER */
-        int race_reward = STATIC_TROPHY; // default
+        unsigned short race_reward = STATIC_TROPHY; // default
         int db_fetch_result = DB_VALUE_NOTFOUND;
-        int item_type = database_fetch(
-            DB_PREFIX_REWARDS | (gGT->levelID << 8) | STATIC_TROPHY,
+        unsigned short item_type = database_fetch(
+            (DB_PREFIX_REWARDS | gGT->levelID) << 16 | STATIC_TROPHY,
             &db_fetch_result
         );
         if (db_fetch_result == DB_VALUE_OK) race_reward = item_type;

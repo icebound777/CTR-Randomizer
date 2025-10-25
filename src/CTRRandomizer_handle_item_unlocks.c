@@ -90,30 +90,32 @@ void handle_item_unlocks(
     }
     else if (item_type == STATIC_GEM)
     {
-        switch (item_color)
-        {
-            case GEM_RED:
-                advSlot2->rewards[5]++;
-                advSlot2->rewards[5] |= 0x100;
-                break;
-            case GEM_GREEN:
-                advSlot2->rewards[5]++;
-                advSlot2->rewards[5] |= 0x200;
-                break;
-            case GEM_BLUE:
-                advSlot2->rewards[5]++;
-                advSlot2->rewards[5] |= 0x400;
-                break;
-            case GEM_YELLOW:
-                advSlot2->rewards[5]++;
-                advSlot2->rewards[5] |= 0x800;
-                break;
-            case GEM_PURPLE:
-                advSlot2->rewards[5]++;
-                advSlot2->rewards[5] |= 0x1000;
-                break;
-            default:
-                ;
-        }
+        advSlot2->rewards[5]++;
+        advSlot2->rewards[5] |= (0x100 << item_color);
+        //switch (item_color)
+        //{
+        //    case GEM_RED:
+        //        advSlot2->rewards[5]++;
+        //        advSlot2->rewards[5] |= 0x100;
+        //        break;
+        //    case GEM_GREEN:
+        //        advSlot2->rewards[5]++;
+        //        advSlot2->rewards[5] |= 0x200;
+        //        break;
+        //    case GEM_BLUE:
+        //        advSlot2->rewards[5]++;
+        //        advSlot2->rewards[5] |= 0x400;
+        //        break;
+        //    case GEM_YELLOW:
+        //        advSlot2->rewards[5]++;
+        //        advSlot2->rewards[5] |= 0x800;
+        //        break;
+        //    case GEM_PURPLE:
+        //        advSlot2->rewards[5]++;
+        //        advSlot2->rewards[5] |= 0x1000;
+        //        break;
+        //    default:
+        //        ;
+        //}
     }
 }

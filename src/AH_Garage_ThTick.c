@@ -1,8 +1,8 @@
 #include <common.h>
 /* START Randomizer */
 #include "saveslot_defines.h"
+#include "reward_enums.h"
 #include "CTRRandomizer_database.h"
-#include "CTRRandomizer_outsourcing.h"
 /* END Randomizer */
 
 void AH_Garage_Open(struct ScratchpadStruct *, struct Thread *);
@@ -160,10 +160,10 @@ LAB_800aeb6c:
     }
     else // If you're not in Gemstone Valley
     {
-        int garage_requirement_logic = GARAGE_OPENING_VANILLA_WARPPADS; // default
+        unsigned short garage_requirement_logic = GARAGE_OPENING_VANILLA_WARPPADS; // default
         int db_fetch_result = DB_VALUE_NOTFOUND;
-        int db_ret = database_fetch(
-            DB_PREFIX_SETTINGS | SETTING_BOSS_GARAGE_OPENING,
+        unsigned short db_ret = database_fetch(
+            (DB_PREFIX_SETTINGS | SETTING_BOSS_GARAGE_OPENING) << 16,
             &db_fetch_result
         );
         if (db_fetch_result == DB_VALUE_OK) garage_requirement_logic = db_ret;
@@ -206,8 +206,8 @@ LAB_800aeb6c:
                 {
                     // Adjust check to look at the warp pads in the current hub
                     // compensating for any warp pad randomization
-                    int randomized_LevelID = database_fetch(
-                        DB_PREFIX_LEVELIDS | levelID_to_check,
+                    unsigned short randomized_LevelID = database_fetch(
+                        (DB_PREFIX_LEVELIDS | levelID_to_check) << 16,
                         &db_fetch_result
                     );
                     if (db_fetch_result == DB_VALUE_OK) levelID_to_check = randomized_LevelID;
@@ -329,10 +329,32 @@ LAB_800aede8:
         sdata->Loading.OnBegin.RemBitsConfig0 |= ADVENTURE_ARENA;
         sdata->Loading.OnBegin.AddBitsConfig0 |= ADVENTURE_BOSS;
 
-        gGT->bossID = randomizer_garage_tick_get_bossID(
-            levelID,
-            hubID
-        );
+        gGT->bossID = R232.bossIDs[hubID];
+
+        if (levelID == GEM_STONE_VALLEY)
+        {
+            unsigned short oxide_relics_required = RELIC_SAPPHIRE; // default
+            int db_result = DB_VALUE_OK;
+            unsigned short db_ret = database_fetch(
+                (DB_PREFIX_SETTINGS | SETTING_OXIDE_REQUIRED_RELICS) << 16,
+                &db_result
+            );
+            if (db_result == DB_VALUE_OK) oxide_relics_required = db_ret;
+
+            // If Oxide needs Sapphires, then just take the number of Sapphires,
+            // else add up Golds and Platinums and make sure they exceed 18
+            int num_relics = (oxide_relics_required == RELIC_SAPPHIRE)
+                ? (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE) + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
+                : (
+                    (advSlot2->SLOT2_NUM_RELICS_GOLD)
+                    + (advSlot3->SLOT2_NUM_RELICS_GOLD)
+                    + (advSlot2->SLOT2_NUM_RELICS_PLATINUM)
+                    + (advSlot3->SLOT2_NUM_RELICS_PLATINUM)
+                )
+            ;
+
+            if (num_relics >= 18) gGT->bossID = 5;
+        }
 
         // new levelID
         levelID = R232.bossTracks[hubID];

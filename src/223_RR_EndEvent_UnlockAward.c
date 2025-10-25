@@ -5,6 +5,8 @@
 #include "messages_handler.h"
 #include "reward_enums.h"
 #include "CTRRandomizer_outsourcing.h"
+
+#include "UI_08_INSTANCE_InitAll.h"
 /* END RANDOMIZER */
 
 void RR_EndEvent_UnlockAward(void)
@@ -20,8 +22,8 @@ void RR_EndEvent_UnlockAward(void)
     bool all_time_crates;
 
     int db_fetch_result;
-    int db_ret;
-    int require_perfect;
+    unsigned short db_ret;
+    unsigned short require_perfect;
 
     driver = gGT->drivers[0];
     levelID = gGT->levelID;
@@ -33,7 +35,7 @@ void RR_EndEvent_UnlockAward(void)
     require_perfect = 0; // default: FALSE
     db_fetch_result = DB_VALUE_NOTFOUND;
     db_ret = database_fetch(
-        DB_PREFIX_SETTINGS | SETTING_RELIC_NEEDS_PERFECT,
+        (DB_PREFIX_SETTINGS | SETTING_RELIC_NEEDS_PERFECT) << 16,
         &db_fetch_result
     );
     if (db_fetch_result == DB_VALUE_OK) require_perfect = db_ret;
@@ -42,10 +44,10 @@ void RR_EndEvent_UnlockAward(void)
     // did do a perfect run
     if (all_time_crates || !require_perfect)
     {
-        int required_difficulty = RELICDIFF_SAPPHIRE; // default
+        unsigned short required_difficulty = RELICDIFF_SAPPHIRE; // default
         db_fetch_result = DB_VALUE_NOTFOUND;
         db_ret = database_fetch(
-            DB_PREFIX_SETTINGS | SETTING_RELIC_DIFFICULTY,
+            (DB_PREFIX_SETTINGS | SETTING_RELIC_DIFFICULTY) << 16,
             &db_fetch_result
         );
         if (db_fetch_result == DB_VALUE_OK) required_difficulty = db_ret;
@@ -70,10 +72,10 @@ void RR_EndEvent_UnlockAward(void)
 
                 gGT->gameModeEnd |= NEW_RELIC;
 
-                int race_reward = STATIC_RELIC | (i << 16); // default
+                unsigned short race_reward = STATIC_RELIC | (i << 16); // default
                 db_fetch_result = DB_VALUE_NOTFOUND;
                 db_ret = database_fetch(
-                    DB_PREFIX_REWARDS | (levelID << 8) | STATIC_RELIC | (i << 16),
+                    (DB_PREFIX_REWARDS | levelID) << 16 | STATIC_RELIC | (i << 8),
                     &db_fetch_result
                 );
                 if (db_fetch_result == DB_VALUE_OK) race_reward = db_ret;
@@ -100,7 +102,7 @@ void RR_EndEvent_UnlockAward(void)
                     continue; // if Sapphire skip storing relic time
                 }
 
-                randomizer_store_relic_time(relicTime);
+                store_relic_time(relicTime);
             }
         }
     }
