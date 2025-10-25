@@ -1,5 +1,6 @@
 #include <common.h>
 #include "messages_handler.h"
+#include "reward_enums.h"
 
 #define EMPTY_MESSAGE1 " xxxxxx20characters1"
 #define EMPTY_MESSAGE2 " xxxxxx20characters2"
@@ -128,6 +129,36 @@ void messages_handler()
                         ORANGE
                     );
                     break;
+
+                case MSGTYPE_SAPPHIRE_TIME:
+                    DecalFont_DrawLine(
+                        "Sapphire Time Reward",
+                        MSG_POS_X,
+                        MSG_POS_Y_LINE2,
+                        FONT_SMALL,
+                        TROPY_LIGHT_BLUE
+                    );
+                    break;
+
+                case MSGTYPE_GOLD_TIME:
+                    DecalFont_DrawLine(
+                        "Gold Time Reward",
+                        MSG_POS_X,
+                        MSG_POS_Y_LINE2,
+                        FONT_SMALL,
+                        PAPU_YELLOW
+                    );
+                    break;
+
+                case MSGTYPE_PLATINUM_TIME:
+                    DecalFont_DrawLine(
+                        "Platinum Time Reward",
+                        MSG_POS_X,
+                        MSG_POS_Y_LINE2,
+                        FONT_SMALL,
+                        SILVER
+                    );
+                    break;
             }
             DecalFont_DrawLine(
                 local_msg_ringbuf[msg_ringbuf_read].msg,
@@ -189,4 +220,64 @@ void enqueue_message(
     local_msg_ringbuf[msg_ringbuf_write].msg_type = msg_type;
     strncpy(local_msg_ringbuf[msg_ringbuf_write].msg, msg_pointer, LOCAL_MSG_SIZE);
     msg_ringbuf_write = ++msg_ringbuf_write % LOCAL_MSG_BUF_SIZE;
+}
+
+void enqueue_reward_message(
+    int  msg_type,
+    int  reward
+)
+{
+    char *msg_pointer;
+    switch (reward)
+    {
+        case STATIC_TROPHY:
+            msg_pointer = &("Trophy");
+            break;
+        case STATIC_RELIC | (RELIC_SAPPHIRE << 8):
+            msg_pointer = &("Sapphire Relic");
+            break;
+        case STATIC_RELIC | (RELIC_GOLD << 8):
+            msg_pointer = &("Gold Relic");
+            break;
+        case STATIC_RELIC | (RELIC_PLATINUM << 8):
+            msg_pointer = &("Platinum Relic");
+            break;
+        case STATIC_TOKEN | (TOKEN_RED << 8):
+            msg_pointer = &("CTR Token Red");
+            break;
+        case STATIC_TOKEN | (TOKEN_GREEN << 8):
+            msg_pointer = &("CTR Token Green");
+            break;
+        case STATIC_TOKEN | (TOKEN_BLUE << 8):
+            msg_pointer = &("CTR Token Blue");
+            break;
+        case STATIC_TOKEN | (TOKEN_YELLOW << 8):
+            msg_pointer = &("CTR Token Yellow");
+            break;
+        case STATIC_TOKEN | (TOKEN_PURPLE << 8):
+            msg_pointer = &("CTR Token Purple");
+            break;
+        case STATIC_KEY:
+            msg_pointer = &("Boss Key");
+            break;
+        case STATIC_GEM | (GEM_RED << 8):
+            msg_pointer = &("Red Gem");
+            break;
+        case STATIC_GEM | (GEM_GREEN << 8):
+            msg_pointer = &("Green Gem");
+            break;
+        case STATIC_GEM | (GEM_BLUE << 8):
+            msg_pointer = &("Blue Gem");
+            break;
+        case STATIC_GEM | (GEM_YELLOW << 8):
+            msg_pointer = &("Yellow Gem");
+            break;
+        case STATIC_GEM | (GEM_PURPLE << 8):
+            msg_pointer = &("Purple Gem");
+            break;
+        default:
+            msg_pointer = &("Unknown item");
+            break;
+    }
+    enqueue_message(msg_type, msg_pointer);
 }

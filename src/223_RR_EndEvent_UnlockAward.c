@@ -87,6 +87,15 @@ void RR_EndEvent_UnlockAward(void)
                 );
                 gGT->podiumRewardID = race_reward;
 
+                enqueue_reward_message(
+                    (i == RELICDIFF_SAPPHIRE)
+                    ? MSGTYPE_SAPPHIRE_TIME
+                    : (i == RELICDIFF_GOLD)
+                        ? MSGTYPE_GOLD_TIME
+                        : MSGTYPE_PLATINUM_TIME,
+                    race_reward
+                );
+
                 if (i == 0)
                 {
                     if (levelID == TURBO_TRACK)
