@@ -557,9 +557,9 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
                         if (CHECK_ADV_BIT(sdata->advProgress.rewards, bitIndex) == 0)
                         {
                             /* START RANDOMIZER */
-                            int race_reward = (STATIC_GEM | (gGT->levelID << 8)); // default
+                            unsigned short race_reward = (STATIC_GEM | (gGT->levelID << 8)); // default
                             int db_fetch_result = DB_VALUE_NOTFOUND;
-                            int item_type = database_fetch(
+                            unsigned short item_type = database_fetch(
                                 (DB_PREFIX_REWARDS | gGT->levelID) << 16 | STATIC_GEM,
                                 &db_fetch_result
                             );

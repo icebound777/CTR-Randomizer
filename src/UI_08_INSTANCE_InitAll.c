@@ -120,10 +120,10 @@ void DECOMP_UI_INSTANCE_InitAll(void)
             }
 
             // Get Relic Time to put in HUD
-            int required_difficulty = RELICDIFF_SAPPHIRE; // default
+            unsigned short required_difficulty = RELICDIFF_SAPPHIRE; // default
             /* START RANDOMIZER */
             int db_fetch_result = DB_VALUE_NOTFOUND;
-            int db_ret = database_fetch(
+            unsigned short db_ret = database_fetch(
                 (DB_PREFIX_SETTINGS | SETTING_RELIC_DIFFICULTY) << 16,
                 &db_fetch_result
             );

@@ -216,9 +216,9 @@ void DECOMP_CC_EndEvent_DrawMenu()
 
     // unlock token
     /* START RANDOMIZER */
-    int race_reward = (STATIC_TOKEN | (TOKEN_PURPLE << 8)); // default
+    unsigned short race_reward = (STATIC_TOKEN | (TOKEN_PURPLE << 8)); // default
     int db_fetch_result = DB_VALUE_NOTFOUND;
-    int item_type = database_fetch(
+    unsigned short item_type = database_fetch(
         (DB_PREFIX_REWARDS | levelID) << 16 | STATIC_TOKEN,
         &db_fetch_result
     );

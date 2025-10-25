@@ -6,8 +6,8 @@
 #define GET_REWARD_COLOR(x) ((x >> 8) & 0xF)
 #define GET_CLEAN_REWARD(x) (x & 0xFF)
 #define GET_REQUIREMENT_TYPE(x)  (x & 0xFF)
-#define GET_REQUIREMENT_COLOR(x) ((x >> 8) & 0xFF)
-#define GET_REQUIREMENT_COUNT(x) ((x >> 16) & 0xFF)
+#define GET_REQUIREMENT_COLOR(x) ((x >> 8) & 0xF)
+#define GET_REQUIREMENT_COUNT(x) ((x >> 12) & 0xF)
 
 /* Key type defines via prefixes */
 enum DB_Prefixes {
@@ -44,7 +44,7 @@ enum BossGarageOpening {
     GARAGE_OPENING_TROPHIES
 };
 
-int database_fetch(
+unsigned short database_fetch(
     int db_key,
     int *fetch_result
 );

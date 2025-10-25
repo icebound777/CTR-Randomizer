@@ -22,8 +22,8 @@ void RR_EndEvent_UnlockAward(void)
     bool all_time_crates;
 
     int db_fetch_result;
-    int db_ret;
-    int require_perfect;
+    unsigned short db_ret;
+    unsigned short require_perfect;
 
     driver = gGT->drivers[0];
     levelID = gGT->levelID;
@@ -44,7 +44,7 @@ void RR_EndEvent_UnlockAward(void)
     // did do a perfect run
     if (all_time_crates || !require_perfect)
     {
-        int required_difficulty = RELICDIFF_SAPPHIRE; // default
+        unsigned short required_difficulty = RELICDIFF_SAPPHIRE; // default
         db_fetch_result = DB_VALUE_NOTFOUND;
         db_ret = database_fetch(
             (DB_PREFIX_SETTINGS | SETTING_RELIC_DIFFICULTY) << 16,
@@ -72,7 +72,7 @@ void RR_EndEvent_UnlockAward(void)
 
                 gGT->gameModeEnd |= NEW_RELIC;
 
-                int race_reward = STATIC_RELIC | (i << 16); // default
+                unsigned short race_reward = STATIC_RELIC | (i << 16); // default
                 db_fetch_result = DB_VALUE_NOTFOUND;
                 db_ret = database_fetch(
                     (DB_PREFIX_REWARDS | levelID) << 16 | STATIC_RELIC | (i << 8),

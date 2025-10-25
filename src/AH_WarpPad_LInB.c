@@ -32,7 +32,7 @@ void AH_WarpPad_LInB(struct Instance* inst)
     struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
     struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
 
-    int db_ret;
+    unsigned short db_ret;
     int db_fetch_result;
     /* END Randomizer */
 

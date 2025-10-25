@@ -102,9 +102,9 @@ void randomizer_set_profile_defaults(struct AdvProgress *adv)
     adv->HubLevYouSavedOn = 0x1a;
 
     /* START Randomizer */
-    int skip_mask_hints = false; // default
+    unsigned short skip_mask_hints = false; // default
     int db_result = DB_VALUE_NOTFOUND;
-    int db_ret = database_fetch(
+    unsigned short db_ret = database_fetch(
         (DB_PREFIX_SETTINGS | SETTING_QOL_SKIP_MASKHINTS) << 16,
         &db_result
     );
