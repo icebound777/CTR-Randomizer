@@ -11,7 +11,7 @@
 #define TRUE  1
 #endif
 
-#define DB_END -1
+#define DB_END 0xFFFF
 #define DB_RAMMARKER_START 0xDADB, 0x0D00, 0xDADB
 #define DB_RAMMARKER_END 0xDADB, 0x0DAA, 0xDADB
 
