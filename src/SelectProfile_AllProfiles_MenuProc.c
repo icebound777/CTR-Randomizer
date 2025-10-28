@@ -1158,7 +1158,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     // DAT_8008d878 + 0x340
                     // ...DATA ON MEMORY CARD IS OUT OF DATE...
                     DecalFont_DrawLine(
-                        sdata->lngStrings[0x340],
+                        sdata->lngStrings[0xD0],
                         0x100,
                         0xc3,
                         FONT_SMALL,
@@ -1221,7 +1221,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                         // DAT_8008d878 + 0x340
                         // ...DATA ON MEMORY CARD IS OUT OF DATE...
                         DecalFont_DrawLine(
-                            sdata->lngStrings[0x340],
+                            sdata->lngStrings[0xD0],
                             0x100,
                             0xc3,
                             FONT_SMALL,
@@ -1242,8 +1242,8 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     }
                     if (*(short *)(iVar10 + -0x7ff7a4fa) == 0)  // 0x80085B06
                     {
-                        DecalFont_DrawLine(              // really just uVar19 * 4
-                            *(char *)(((int)((unsigned int)uVar19 << 0x10) >> 0xe) + sdata->lngStrings),
+                        DecalFont_DrawLine(
+                            sdata->lngStrings[uVar19],
                             0x108,
                             0x12,
                             FONT_BIG,
@@ -1315,7 +1315,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                 // DAT_8008d878 + 0x4f4
                 // SAVE COMPLETED.
                 DecalFont_DrawLine(
-                    sdata->lngStrings[0x4f4],
+                    sdata->lngStrings[0x13D],
                     0x108,
                     100,
                     FONT_BIG,
