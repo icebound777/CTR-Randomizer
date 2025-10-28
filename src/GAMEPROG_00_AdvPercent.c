@@ -34,8 +34,17 @@ void GAMEPROG_AdvPercent(struct AdvProgress* adv)
     int percent;
     int bitIndex;
     struct GameTracker *gGT;
-    struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
+    // If we are currently counting percent for curAdvProgress, use local items from slot 1 (+0x50)
+    // But if we are currently counting percent for save slot 0, instead use local items
+    // from slot 3 (+ another 0xA0)
+    // If we are currently drawing curAdvProgress, use local items from slot 1 (+0x50)
+    // But if we are currently drawing save slot 0, instead use local items from slot 3 (+ another 0xA0)
+    struct AdvProgress *advSlotLocalItems = ((int) adv != (int) sdata->ptrToMemcardBuffer2 + 4)
+        ? ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4)) // slot 1
+        : ((struct AdvProgress*) (sdata->memcardBytes + 0xF0 + 4)) // slot 3
+    ;
     struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
+
     gGT = sdata->gGT;
 
     // start counter
@@ -55,15 +64,15 @@ void GAMEPROG_AdvPercent(struct AdvProgress* adv)
 
     // Find relic type with the highest number of relics acquired
     int sapphire_relics = (
-        (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE)
+        (advSlotLocalItems->SLOT2_NUM_RELICS_SAPPHIRE)
         + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
     );
     int gold_relics = (
-        (advSlot2->SLOT2_NUM_RELICS_GOLD)
+        (advSlotLocalItems->SLOT2_NUM_RELICS_GOLD)
         + (advSlot3->SLOT2_NUM_RELICS_GOLD)
     );
     int platinum_relics = (
-        (advSlot2->SLOT2_NUM_RELICS_PLATINUM)
+        (advSlotLocalItems->SLOT2_NUM_RELICS_PLATINUM)
         + (advSlot3->SLOT2_NUM_RELICS_PLATINUM)
     );
     int most_relics = sapphire_relics;
@@ -80,14 +89,14 @@ void GAMEPROG_AdvPercent(struct AdvProgress* adv)
 
     percent += (
         (most_relics) * 2
-        + (advSlot2->SLOT2_NUM_TROPHIES + advSlot3->SLOT2_NUM_TROPHIES) * 2
-        + advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS
-        + (advSlot2->SLOT2_NUM_TOKENS_RED) + (advSlot3->SLOT2_NUM_TOKENS_RED)
-        + (advSlot2->SLOT2_NUM_TOKENS_GREEN) + (advSlot3->SLOT2_NUM_TOKENS_GREEN)
-        + (advSlot2->SLOT2_NUM_TOKENS_BLUE) + (advSlot3->SLOT2_NUM_TOKENS_BLUE)
-        + (advSlot2->SLOT2_NUM_TOKENS_YELLOW) + (advSlot3->SLOT2_NUM_TOKENS_YELLOW)
-        + (advSlot2->SLOT2_NUM_TOKENS_PURPLE) + (advSlot3->SLOT2_NUM_TOKENS_PURPLE)
-        + (advSlot2->SLOT2_NUM_GEMS) + (advSlot3->SLOT2_NUM_GEMS)
+        + (advSlotLocalItems->SLOT2_NUM_TROPHIES + advSlot3->SLOT2_NUM_TROPHIES) * 2
+        + advSlotLocalItems->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS
+        + (advSlotLocalItems->SLOT2_NUM_TOKENS_RED) + (advSlot3->SLOT2_NUM_TOKENS_RED)
+        + (advSlotLocalItems->SLOT2_NUM_TOKENS_GREEN) + (advSlot3->SLOT2_NUM_TOKENS_GREEN)
+        + (advSlotLocalItems->SLOT2_NUM_TOKENS_BLUE) + (advSlot3->SLOT2_NUM_TOKENS_BLUE)
+        + (advSlotLocalItems->SLOT2_NUM_TOKENS_YELLOW) + (advSlot3->SLOT2_NUM_TOKENS_YELLOW)
+        + (advSlotLocalItems->SLOT2_NUM_TOKENS_PURPLE) + (advSlot3->SLOT2_NUM_TOKENS_PURPLE)
+        + (advSlotLocalItems->SLOT2_NUM_GEMS) + (advSlot3->SLOT2_NUM_GEMS)
     );
 
     gGT->currAdvProfile.completionPercent = percent;
@@ -100,6 +109,14 @@ void randomizer_set_profile_defaults(struct AdvProgress *adv)
 
     // N Sane Beach
     adv->HubLevYouSavedOn = 0x1a;
+
+    struct AdvProgress *memAdvProgressSlot1 = &((struct MemcardProfile *) sdata->ptrToMemcardBuffer2)->advProgress[1];
+    memAdvProgressSlot1->rewards[0] = 0;
+    memAdvProgressSlot1->rewards[1] = 0;
+    memAdvProgressSlot1->rewards[2] = 0;
+    memAdvProgressSlot1->rewards[3] = 0;
+    memAdvProgressSlot1->rewards[3] = 0;
+    memAdvProgressSlot1->rewards[5] = 0;
 
     /* START Randomizer */
     unsigned short skip_mask_hints = false; // default

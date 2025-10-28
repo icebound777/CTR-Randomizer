@@ -23,8 +23,14 @@ void SelectProfile_DrawAdvProfile(
     u_int isGreenLoadMenu = (menuFlag & 0x10);
 
     /* START RANDOMIZER*/
-    struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
-    struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
+    // If we are currently drawing curAdvProgress, use local items from slot 1 (+0x50)
+    // But if we are currently drawing save slot 0, instead use local items from slot 3 (+ another 0xA0)
+    struct AdvProgress *advSlotLocalItems = ((int) adv != (int) sdata->ptrToMemcardBuffer2 + 4)
+        ? ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4)) // slot 1
+        : ((struct AdvProgress*) (sdata->memcardBytes + 0xF0 + 4)) // slot 3
+    ;
+    struct AdvProgress *advSlotAP = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
+
     /* If we are trying to draw more than one profile, just draw slot 0 and
        center it.
     */
@@ -81,14 +87,14 @@ void SelectProfile_DrawAdvProfile(
         // Print the numbers
         SelectProfile_PrintInteger(gGT->currAdvProfile.completionPercent, local_posX + 0x6a, local_posY + 23, 0, integerColor);
         SelectProfile_PrintInteger(
-            (advSlot2->SLOT2_NUM_TROPHIES + advSlot3->SLOT2_NUM_TROPHIES),
+            (advSlotLocalItems->SLOT2_NUM_TROPHIES + advSlotAP->SLOT2_NUM_TROPHIES),
             local_posX + 0x6a,
             local_posY + 5,
             0,
             integerColor
         );
         SelectProfile_PrintInteger(
-            (advSlot2->SLOT2_NUM_KEYS + advSlot3->SLOT2_NUM_KEYS),
+            (advSlotLocalItems->SLOT2_NUM_KEYS + advSlotAP->SLOT2_NUM_KEYS),
             local_posX + 0xb5,
             local_posY + 5,
             0,
@@ -97,10 +103,10 @@ void SelectProfile_DrawAdvProfile(
         int relic_type = (gGT->timer / FPS_DOUBLE(0x3C)) % 3;
         SelectProfile_PrintInteger(
             (relic_type == RELIC_SAPPHIRE)
-            ? (advSlot2->SLOT2_NUM_RELICS_SAPPHIRE) + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE)
+            ? (advSlotLocalItems->SLOT2_NUM_RELICS_SAPPHIRE) + (advSlotAP->SLOT2_NUM_RELICS_SAPPHIRE)
             : (relic_type == RELIC_GOLD)
-                ? (advSlot2->SLOT2_NUM_RELICS_GOLD) + (advSlot3->SLOT2_NUM_RELICS_GOLD)
-                : (advSlot2->SLOT2_NUM_RELICS_PLATINUM) + (advSlot3->SLOT2_NUM_RELICS_PLATINUM),
+                ? (advSlotLocalItems->SLOT2_NUM_RELICS_GOLD) + (advSlotAP->SLOT2_NUM_RELICS_GOLD)
+                : (advSlotLocalItems->SLOT2_NUM_RELICS_PLATINUM) + (advSlotAP->SLOT2_NUM_RELICS_PLATINUM),
             local_posX + 0xb5,
             local_posY + 23,
             0,
@@ -149,5 +155,5 @@ void SelectProfile_DrawAdvProfile(
     box.y = local_posY;
     box.w = 220;
     box.h = 61;
-    RECTMENU_DrawInnerRect(&box, menuFlag, gGT->backBuffer->otMem.startPlusFour[0xC]);
+    RECTMENU_DrawInnerRect(&box, menuFlag, &gGT->backBuffer->otMem.startPlusFour[0xC]);
 }
