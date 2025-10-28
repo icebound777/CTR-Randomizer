@@ -115,7 +115,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                 {
                     OtherFX_Play(MENU_FX_SELECT, 1);
 
-                    if (sdata->buttonTapPerPlayer[0] == 0) bVar2 = true;
+                    if (data.menuOverwriteAdv.rowSelected == 0) bVar2 = true;
                 }
                 else // If you press Square or Triangle
                 {
