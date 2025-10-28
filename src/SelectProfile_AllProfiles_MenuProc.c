@@ -10,7 +10,7 @@ enum OtherFX_Menu {
     MENU_FX_CHANGE_SELECTION = 0,
     MENU_FX_SELECT = 1,
     MENU_FX_EXIT = 2,
-    MENU_FX_5 = 5
+    MENU_FX_ERROR = 5
 };
 
 #define BTNS_CONFIRM (BTN_CROSS_one | BTN_CIRCLE)
@@ -556,7 +556,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
             }
         }
 
-        OtherFX_Play(MENU_FX_5, 1);
+        OtherFX_Play(MENU_FX_ERROR, 1);
     }
     else // if 2 or 3 (delete or exit)
     {
