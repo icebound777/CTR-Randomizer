@@ -737,6 +737,12 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
             } while (curAdvProgress != &(sdata->GhostRecording.ptrGhost)); // end of advProgress
             #endif
 
+            // RANDOMIZER
+            struct AdvProgress *memAdvProgressSlot1 = &((struct MemcardProfile *) sdata->ptrToMemcardBuffer2)->advProgress[1];
+            struct AdvProgress *memAdvProgressSlot3 = &((struct MemcardProfile *) sdata->ptrToMemcardBuffer2)->advProgress[3];
+            memcpy(memAdvProgressSlot3, memAdvProgressSlot1, sizeof(struct AdvProgress));
+            // RANDOMIZER
+
             // 8008d474 is ptr to memcard data
             struct GameProgress *memGameProgress = &(((struct MemcardProfile*) sdata->ptrToMemcardBuffer2)->gameProgress);
             struct GameProgress *curGameProgress = &(sdata->gameProgress);
