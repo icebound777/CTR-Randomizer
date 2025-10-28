@@ -1318,7 +1318,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
             }
             else
             {
-                int str_flags = 0xffff8000 | WHITE;
+                unsigned int str_flags = 0xffff8000 | WHITE;
                 if ((sdata->frameCounter & 4) == 0) str_flags = 0xffff8000 | ORANGE;
 
                 // DAT_8008d878 + 0x4f4
