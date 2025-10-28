@@ -1262,26 +1262,26 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                         uVar24 = (unsigned int)text_color;
                         iVar10 = 0;
                         char *stringPtr;
+                        short font;
 
-                        for (iVar23 = 0; iVar23 * 0x10000 >> 0x10 < 9; iVar23++)
+                        for (iVar23 = 0; iVar23 < 9; iVar23++)
                         {
-                            iVar10 = iVar10 >> 0x10;
-                            stringPtr = *(char *)(((short)uVar19 + iVar10) * 4 + sdata->lngStrings);
+                            stringPtr = sdata->lngStrings[uVar19 + iVar23];
                             iVar8 = strlen(stringPtr);
                             if (iVar8 != 0)
                             {
-                                iVar8 = 2;
-                                if (iVar10 != 0) iVar8 = 4;
-                                iVar12 = iVar10 * ((int)*(short *)(&(data.font_charPixHeight[0]) + iVar8) + 2);
+                                iVar8 = 1;
+                                if (iVar23 != 0) iVar8 = 2;
+                                iVar12 = iVar23 * (data.font_charPixHeight[iVar8] + 2);
                                 iVar8 = iVar12 + 0x26;
-                                if (0 < iVar10) iVar8 = iVar12 + 0x2e;
+                                if (0 < iVar23) iVar8 = iVar12 + 0x2e;
 
                                 // Draw big string
-                                short font = FONT_BIG;
+                                font = FONT_BIG;
 
                                 uVar21 = uVar24 | 0xffff8000;
 
-                                if ((short)iVar23 == 0)
+                                if (iVar23 == 0)
                                 {
                                     if ((sdata->frameCounter & 4) == 0)
                                     {
@@ -1302,7 +1302,6 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                                     uVar21
                                 );
                             }
-                            iVar10 = iVar23 * 0x10000;
                         }
                     }
 
