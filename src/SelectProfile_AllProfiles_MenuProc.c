@@ -47,6 +47,33 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
     unsigned short num_ghostprofiles_saved;
     short canChooseEmptySlot;
 
+    // MainGameEnd_SoloRaceSaveHighScore
+    void (*FUN_8003a2b4)() = 0x8003a2b4;
+
+    // SelectProfile_Init
+    void (*FUN_800485cc)(unsigned int) = 0x800485cc;
+
+    void (*FUN_8003d4e4)(short param_1) = 0x8003d4e4;
+    void (*FUN_80047198)(short param_1) = 0x80047198;
+    // draw menu
+    void (*FUN_80045db0)(
+        short *param_1,
+        int param_2,
+        short param_3,
+        unsigned short param_4
+    ) = 0x80045db0;
+    // SelectProfile_DrawGhostProfile
+    void (*FUN_80048a30)(
+        int param_1,
+        short param_2,
+        short param_3,
+        short param_4,
+        short param_5,
+        unsigned short param_6,
+        short param_7,
+        short param_8
+    ) = 0x80048a30;
+
     text_color = ORANGE;
     if ((menu->drawStyle & 0x10) != 0)
     {
@@ -232,7 +259,6 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                 {
                     // MainGameEnd_SoloRaceSaveHighScore
                     //FUN_8003a2b4();
-                    void (*FUN_8003a2b4)() = 0x8003a2b4;
                     (*FUN_8003a2b4)(0);
                 }
 
@@ -260,7 +286,6 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
 
                 // (MC_START_LOAD_MAIN)
                 //FUN_80047198(7);
-                void (*FUN_80047198)(short param_1) = 0x80047198;
                 (*FUN_80047198)(7);
 
                 iVar10 = 0;
@@ -288,7 +313,6 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                 {
                     // MainGameEnd_SoloRaceSaveHighScore
                     //FUN_8003a2b4();
-                    void (*FUN_8003a2b4)() = 0x8003a2b4;
                     (*FUN_8003a2b4)(0);
                 }
 
@@ -331,12 +355,10 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
 
                 // MEMCARD_SetIcon to CrashHead
                 //FUN_8003d4e4(0);
-                void (*FUN_8003d4e4)(short param_1) = 0x8003d4e4;
                 (*FUN_8003d4e4)(0);
 
                 // (MC_START_SAVE_MAIN)
                 //FUN_80047198(3);
-                void (*FUN_80047198)(short param_1) = 0x80047198;
                 (*FUN_80047198)(3);
 
                 sdata->unk_memcardRelated_8008d928[0] = 1;
@@ -401,7 +423,6 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
     {
         // (MC_START_LOAD_MAIN)
         //FUN_80047198(7);
-        void (*FUN_80047198)(short param_1) = 0x80047198;
         (*FUN_80047198)(7);
 
         goto LAB_800499e4;
@@ -478,7 +499,6 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
 
                 // (MC_START_LOAD_GHOST)
                 //FUN_80047198(5);
-                void (*FUN_80047198)(short param_1) = 0x80047198;
                 (*FUN_80047198)(5);
 
                 goto LAB_800499e0;
@@ -580,12 +600,10 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
 
         // MEMCARD_SetIcon to CrashHead
         //FUN_8003d4e4(0);
-        void (*FUN_8003d4e4)(short param_1) = 0x8003d4e4;
         (*FUN_8003d4e4)(0);
 
         // (MC_START_SAVE_MAIN)
         //FUN_80047198(3);
-        void (*FUN_80047198)(short param_1) = 0x80047198;
         (*FUN_80047198)(6);
 
         sdata->unk_memcardRelated_8008d928[0] = 1;
@@ -656,12 +674,10 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
 
             // MEMCARD_SetIcon to GhostIcon
             //FUN_8003d4e4(1);
-            void (*FUN_8003d4e4)(short param_1) = 0x8003d4e4;
             (*FUN_8003d4e4)(1);
 
             // (MC_START_SAVE_GHOST)
             //FUN_80047198(6);
-            void (*FUN_80047198)(short param_1) = 0x80047198;
             (*FUN_80047198)(6);
 
             sdata->data10_bbb[1] = 1;
@@ -734,12 +750,10 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
 
             // MEMCARD_SetIcon to CrashHead
             //FUN_8003d4e4(0);
-            void (*FUN_8003d4e4)(short param_1) = 0x8003d4e4;
             (*FUN_8003d4e4)(0);
 
             // save main CTR save file (3 = main file)
             //FUN_80047198(3);
-            void (*FUN_80047198)(short param_1) = 0x80047198;
             (*FUN_80047198)(3);
 
             sdata->unk_memcardRelated_8008d928[0] = 1;
@@ -974,16 +988,6 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                         //    (unsigned int)(sdata->memcardAction == 0), // If you are loading
                         //    uVar18
                         //);
-                        void (*FUN_80048a30)(
-                            int param_1,
-                            short param_2,
-                            short param_3,
-                            short param_4,
-                            short param_5,
-                            unsigned short param_6,
-                            short param_7,
-                            short param_8
-                        ) = 0x80048a30;
                         (*FUN_80048a30)(
                             curGhostProfile,
                             iVar8,
@@ -1010,13 +1014,6 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     RECTMENU_GetWidth(&(data.menuOverwriteGhost), local_56, 1);
 
                     // draw menu
-                    //FUN_80045db0(
-                    //    &(data.menuOverwriteGhost),
-                    //    0,
-                    //    0,
-                    //    (int)local_56[0]
-                    //);
-                    void (*FUN_80045db0)(short *param_1,int param_2,short param_3,unsigned short param_4) = 0x80045db0;
                     (*FUN_80045db0)(
                         &(data.menuOverwriteGhost),
                         0,
@@ -1035,16 +1032,6 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     //    0,
                     //    0
                     //);
-                    void (*FUN_80048a30)(
-                        int param_1,
-                        short param_2,
-                        short param_3,
-                        short param_4,
-                        short param_5,
-                        unsigned short param_6,
-                        short param_7,
-                        short param_8
-                    ) = 0x80048a30;
                     (*FUN_80048a30)(
                         &(sdata->ghostProfile_memcard[0])
                         + (int)sdata->ghostProfile_rowSelect * 0x34,
@@ -1144,8 +1131,6 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     RECTMENU_GetWidth(&(data.menuOverwriteAdv),&local_58,1);
 
                     // draw menu
-                    //FUN_80045db0(&(data.menuOverwriteAdv),0,0,(int)local_58);
-                    void (*FUN_80045db0)(short *param_1,int param_2,short param_3,unsigned short param_4) = 0x80045db0;
                     (*FUN_80045db0)(&(data.menuOverwriteAdv),0,0,(int)local_58);
 
                     // 8008d474 is ptr to memcard data
