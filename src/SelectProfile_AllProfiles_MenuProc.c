@@ -83,13 +83,13 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
     if (sdata->data10_bbb[4] != 0)
     {
         // If you press D-pad or Cross, Square, Triangle, Circle
-        if (sdata->buttonTapPerPlayer[0] & (
-                (BTN_UP | BTN_DOWN | BTN_LEFT | BTN_RIGHT | (BTNS_CONFIRM) | (BTNS_ABORT))
+        if ((sdata->buttonTapPerPlayer[0] & (
+                (BTN_UP | BTN_DOWN | BTN_LEFT | BTN_RIGHT | (BTNS_CONFIRM) | (BTNS_ABORT)))
             ) != 0
         )
         {
             // If you press Up
-            if (sdata->buttonTapPerPlayer[0] & BTN_UP != 0)
+            if ((sdata->buttonTapPerPlayer[0] & BTN_UP) != 0)
             {
                 // If there is room to move up
                 if (0 < data.menuOverwriteAdv.rowSelected)
@@ -100,7 +100,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     data.menuOverwriteAdv.rowSelected--;
                 }
             }
-            else if (sdata->buttonTapPerPlayer[0] & BTN_DOWN != 0)
+            else if ((sdata->buttonTapPerPlayer[0] & BTN_DOWN) != 0)
             {
                 if (data.menuOverwriteAdv.rowSelected < 1)
                 {
@@ -109,7 +109,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     data.menuOverwriteAdv.rowSelected++;
                 }
             }
-            else
+            else if ((sdata->buttonTapPerPlayer[0] & (BTNS_CONFIRM | BTNS_ABORT)) != 0)
             {
                 if ((sdata->buttonTapPerPlayer[0] & (BTNS_CONFIRM)) != 0)
                 {
