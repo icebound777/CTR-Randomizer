@@ -61,26 +61,26 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
 
     if (sdata->mcScreenText == MC_SCREEN_WARNING_NOCARD)
     {
-        sdata->data10_bbb[8] = 0;
+        sdata->data10_bbb[4] = 0;
     }
 
     // NO CARD, UNFORMATTED, or FORMATTING
     if (sdata->mcScreenText < 2)
     {
-        sdata->data10_bbb[2] = 0;
+        sdata->data10_bbb[1] = 0;
     }
 
     SelectProfile_UnMuteCursors();
 
-    if (   sdata->data10_bbb[4] != 0
-        || sdata->data10_bbb[6] != 0
-        || sdata->data10_bbb[2] != 0
+    if (   sdata->data10_bbb[2] != 0
+        || sdata->data10_bbb[3] != 0
+        || sdata->data10_bbb[1] != 0
     )
     {
         SelectProfile_MuteCursors();
     }
 
-    if (sdata->data10_bbb[8] != 0)
+    if (sdata->data10_bbb[4] != 0)
     {
         // If you press D-pad or Cross, Square, Triangle, Circle
         if (sdata->buttonTapPerPlayer[0] & (
@@ -122,7 +122,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     OtherFX_Play(MENU_FX_EXIT, 1);
                 }
 
-                sdata->data10_bbb[8] = 0;
+                sdata->data10_bbb[4] = 0;
             }
 
             RECTMENU_ClearInput();
@@ -186,9 +186,9 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
         }
     }
 
-    if (sdata->data10_bbb[2] != 0) goto LAB_800499e4;
+    if (sdata->data10_bbb[1] != 0) goto LAB_800499e4;
     iVar10 = 0;
-    if ((sdata->data10_bbb[0] == 0x30) && (sdata->data10_bbb[8] == 0))
+    if ((sdata->data10_bbb[0] == 0x30) && (sdata->data10_bbb[4] == 0))
     {
         iVar10 = (int)(short)uVar24;
         iVar23 = 0;
@@ -238,8 +238,8 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
 
                 RECTMENU_ClearInput();
 
+                sdata->data10_bbb[1] = 1;
                 sdata->data10_bbb[2] = 1;
-                sdata->data10_bbb[4] = 1;
                 iVar10 = 0;
                 goto LAB_800495b0;
             }
@@ -340,7 +340,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                 (*FUN_80047198)(3);
 
                 sdata->unk_memcardRelated_8008d928[0] = 1;
-                sdata->data10_bbb[2] = 1;
+                sdata->data10_bbb[1] = 1;
                 iVar10 = 0;
             }
         }
@@ -351,8 +351,8 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
     bVar1 = true;
     if (menu->rowSelected == -1)
     {
+        sdata->data10_bbb[1] = 1;
         sdata->data10_bbb[2] = 1;
-        sdata->data10_bbb[4] = 1;
         goto LAB_800499e4;
     }
 
@@ -364,8 +364,8 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
         // MC_START_SAVE_MAIN
         if (sdata->memcardAction == 1)
         {
-            sdata->data10_bbb[2] = sdata->memcardAction;
-            sdata->data10_bbb[6] = sdata->memcardAction;
+            sdata->data10_bbb[1] = sdata->memcardAction;
+            sdata->data10_bbb[3] = sdata->memcardAction;
             goto LAB_80049624;
         }
 
@@ -419,7 +419,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
             if (menu->rowSelected < (short)sdata->numGhostProfilesSaved)
             {
                 data.menuOverwriteAdv.rowSelected = 1;
-                sdata->data10_bbb[8] = 1;
+                sdata->data10_bbb[4] = 1;
                 data.menuOverwriteGhost.rowSelected = 1;
                 sdata->ghostProfile_rowSelect = menu->rowSelected;
                 goto LAB_800499e4;
@@ -427,11 +427,11 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
         }
         else // if you are handling adventure data
         {
-            if (   sdata->data10_bbb[10] == 0
+            if (   sdata->data10_bbb[5] == 0
                 && sdata->mcScreenText == MC_SCREEN_ERROR_TIMEOUT
             )
             {
-                sdata->data10_bbb[10] = 1;
+                sdata->data10_bbb[5] = 1;
                 goto LAB_800499e4;
             }
 
@@ -442,7 +442,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
             {
                 data.menuOverwriteAdv.rowSelected = 1;
                 data.menuOverwriteGhost.rowSelected = 1;
-                sdata->data10_bbb[8] = 1;
+                sdata->data10_bbb[4] = 1;
                 goto LAB_800499e4;
             }
         }
@@ -461,8 +461,8 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
         {
             if ((int)(short)uVar24 + -1 <= (int)menu->rowSelected)
             {
-                sdata->data10_bbb[2] = 1;
-                sdata->data10_bbb[6] = 1;
+                sdata->data10_bbb[1] = 1;
+                sdata->data10_bbb[3] = 1;
                 memset(sdata->ptrGhostTapePlaying, 0, sizeof(struct GhostHeader));
                 goto LAB_800499e4;
             }
@@ -488,8 +488,8 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
         {
             if (sdata->mcScreenText == MC_SCREEN_ERROR_TIMEOUT)
             {
+                sdata->data10_bbb[1] = 1;
                 sdata->data10_bbb[2] = 1;
-                sdata->data10_bbb[4] = 1;
                 goto LAB_800499e4;
             }
 
@@ -550,8 +550,8 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                 #endif
 
                 sdata->unk_8008d73C_relatedToRowHighlighted = menu->rowSelected;
-                sdata->data10_bbb[2] = 1;
-                sdata->data10_bbb[6] = 1;
+                sdata->data10_bbb[1] = 1;
+                sdata->data10_bbb[3] = 1;
                 goto LAB_800499e4;
             }
         }
@@ -590,7 +590,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
 
         sdata->unk_memcardRelated_8008d928[0] = 1;
         LAB_800499e0:
-        sdata->data10_bbb[2] = 1;
+        sdata->data10_bbb[1] = 1;
     }
 
     LAB_800499e4:
@@ -599,19 +599,19 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
         (
             (sdata->mcScreenText == MC_SCREEN_ERROR_TIMEOUT) &&
 
-            (sdata->data10_bbb[4] == 0)
+            (sdata->data10_bbb[2] == 0)
         ) &&
 
-        (sdata->data10_bbb[6] == 0)
+        (sdata->data10_bbb[3] == 0)
     )
     {
-        sdata->data10_bbb[2] = 0;
-        sdata->data10_bbb[8] = 0;
+        sdata->data10_bbb[1] = 0;
+        sdata->data10_bbb[4] = 0;
     }
 
     if (bVar2)
     {
-        sdata->data10_bbb[10] = 0;
+        sdata->data10_bbb[5] = 0;
         if (sdata->data10_bbb[0] == 0x30)
         {
             int racetime = 0x8ca00; // 10 minutes
@@ -664,7 +664,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
             void (*FUN_80047198)(short param_1) = 0x80047198;
             (*FUN_80047198)(6);
 
-            sdata->data10_bbb[2] = 1;
+            sdata->data10_bbb[1] = 1;
             sdata->gGT->gameModeEnd |= PLAYER_GHOST_BEAT;
         }
         else
@@ -743,17 +743,17 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
             (*FUN_80047198)(3);
 
             sdata->unk_memcardRelated_8008d928[0] = 1;
-            sdata->data10_bbb[2] = 1;
+            sdata->data10_bbb[1] = 1;
         }
 
         // timerSaveComplete
-        sdata->data10_bbb[12] = 0x3c;
+        sdata->data10_bbb[6] = 0x3c;
     }
 
     if (*(short *)(menu + 0x1e) == 1)
     {
         bVar1 = false;
-        if (   (   (sdata->data10_bbb[2] == 0)
+        if (   (   (sdata->data10_bbb[1] == 0)
                 && (sdata->unk8008d95c != 0)
                )
             && ((   sdata->unk_memcardRelated_8008d928[0] != 0
@@ -828,7 +828,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
             }
 
             // MC_SCREEN_ERROR_TIMEOUT
-            if ((uVar14 == 7) && (sdata->data10_bbb[10] != 0))
+            if ((uVar14 == 7) && (sdata->data10_bbb[5] != 0))
             {
                 bVar1 = true;
             }
@@ -836,12 +836,12 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
 
         SelectProfile_Init((int)*(short *)(menu + 0x14));
 
-        if ((bVar1) && (sdata->data10_bbb[2] == 0))
+        if ((bVar1) && (sdata->data10_bbb[1] == 0))
         {
             // if this is ghost data
             if (sdata->data10_bbb[0] == 0x30)
             {
-                if (sdata->data10_bbb[8] == 0)
+                if (sdata->data10_bbb[4] == 0)
                 {
                     uVar21 = 0;
                     //iVar10 = strlen();
@@ -1060,7 +1060,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
             }
             else // if this is adventure data
             {
-                if (sdata->data10_bbb[8] == 0)
+                if (sdata->data10_bbb[4] == 0)
                 {
                     //iVar10 = strlen();
                     iVar10 = 1;
@@ -1178,14 +1178,14 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
         }
         else
         {
-            sdata->data10_bbb[8] = 0;
+            sdata->data10_bbb[4] = 0;
 
-            if (   (   (sdata->data10_bbb[2] == 0)
+            if (   (   (sdata->data10_bbb[1] == 0)
                     || ((   (   sdata->unk8008d964 == 0
-                             || (sdata->data10_bbb[4] != 0))
-                         || (sdata->data10_bbb[6] != 0))))
+                             || (sdata->data10_bbb[2] != 0))
+                         || (sdata->data10_bbb[3] != 0))))
                 || // timerSaveComplete
-                   (sdata->data10_bbb[12] == 0)
+                   (sdata->data10_bbb[6] == 0)
             )
             {
                 // mcScreenText
@@ -1199,14 +1199,14 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     uVar19 = 0xffff;
                 }
                 iVar23 = (unsigned int)uVar19 << 0x10;
-                if (   (sdata->data10_bbb[2] != 0)
+                if (   sdata->data10_bbb[1] != 0
                     && (iVar23 = (unsigned int)uVar19 << 0x10, sdata->unk8008d964 != 0)
                 )
                 {
                     uVar19 = 0xffff;
                     iVar23 = -0x10000;
                 }
-                if ((-1 < iVar23 >> 0x10) && (sdata->data10_bbb[6] == 0))
+                if ((-1 < iVar23 >> 0x10) && (sdata->data10_bbb[3] == 0))
                 {
                     if (   (iVar23 >> 0x10 == 0x10f)
                         && // If you are saving data
@@ -1335,23 +1335,23 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
     }
 
     // timerSaveComplete
-    sVar22 = sdata->data10_bbb[12];
+    sVar22 = sdata->data10_bbb[6];
 
-    if (   (   sdata->data10_bbb[2] != 0
+    if (   (   sdata->data10_bbb[1] != 0
             && sdata->boolError != 0
             && (   sdata->unk8008d964 != 0
-                || sdata->data10_bbb[4] != 0
-                || sdata->data10_bbb[6] != 0
+                || sdata->data10_bbb[2] != 0
+                || sdata->data10_bbb[3] != 0
                )
            )
-        && ((   sdata->data10_bbb[2] == 0
+        && ((   sdata->data10_bbb[1] == 0
              || ((   (   sdata->unk8008d964 == 0
-                      || sdata->data10_bbb[4] != 0
-                      || sdata->data10_bbb[6] != 0
+                      || sdata->data10_bbb[2] != 0
+                      || sdata->data10_bbb[3] != 0
                      )
                   || (// timerSaveComplete
-                      sVar22 = sdata->data10_bbb[12] - 1,
-                      sdata->data10_bbb[12] == 0
+                      sVar22 = sdata->data10_bbb[6] - 1,
+                      sdata->data10_bbb[6] == 0
                      )
                  ))
             )
@@ -1371,7 +1371,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
         // If you are handling Adventure Profiles
         if (sdata->data10_bbb[0] == 0x20)
         {
-            if (   (sdata->data10_bbb[4] == 0)
+            if (   (sdata->data10_bbb[2] == 0)
                 && (sdata->advProfileIndex = menu->rowSelected,
                     // If you are loading data
                     sdata->memcardAction == 0)
@@ -1394,7 +1394,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                 data.menuGreenLoadSave.rowSelected = 3;
 
                 // timerSaveComplete
-                sVar22 = sdata->data10_bbb[12];
+                sVar22 = sdata->data10_bbb[6];
             }
             else
             {
@@ -1404,7 +1404,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                 data.menuGreenLoadSave.rowSelected = 3;
 
                 // timerSaveComplete
-                sVar22 = sdata->data10_bbb[12];
+                sVar22 = sdata->data10_bbb[6];
             }
         }
         else
@@ -1413,7 +1413,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
             {
                 if (sdata->data10_bbb[0] == 0)
                 {
-                    if (sdata->data10_bbb[4] != 0)
+                    if (sdata->data10_bbb[2] != 0)
                     {
                         // Change active Menu to OSK
                         sdata->ptrDesiredMenu = &data.menuSubmitName;
@@ -1440,7 +1440,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     {
                         return;
                     }
-                    if (sdata->data10_bbb[4] != 0)
+                    if (sdata->data10_bbb[2] != 0)
                     {
                         // TransitionTo_MainMenu_Returning
                         //FUN_800b4334();
@@ -1507,7 +1507,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     }
                     else
                     {
-                        if (sdata->data10_bbb[4] != 0)
+                        if (sdata->data10_bbb[2] != 0)
                         {
                             // Change active Menu to
                             // "Save Game?" "Yes/No"
@@ -1526,7 +1526,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                 // if you are saving data
                 if (sdata->memcardAction == 1)
                 {
-                    if (sdata->data10_bbb[4] != 0)
+                    if (sdata->data10_bbb[2] != 0)
                     {
                         // Change active Menu to
                         // end of race menu with "Save Ghost" option
@@ -1541,7 +1541,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     sdata->ptrDesiredMenu = (void (*)(struct RectMenu*)) 0x800a04a4;
                     return;
                 }
-                if (sdata->data10_bbb[4] != 0)
+                if (sdata->data10_bbb[2] != 0)
                 {
                     // Erase ghost of previous race from RAM
                     //FUN_80028410();
@@ -1571,12 +1571,12 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
             sdata->ptrDesiredMenu = &data.menuQueueLoadTrack;
 
             // timerSaveComplete
-            sVar22 = sdata->data10_bbb[12];
+            sVar22 = sdata->data10_bbb[6];
         }
     }
 
     // timerSaveComplete
-    sdata->data10_bbb[12] = sVar22;
+    sdata->data10_bbb[6] = sVar22;
 
     return;
 }
