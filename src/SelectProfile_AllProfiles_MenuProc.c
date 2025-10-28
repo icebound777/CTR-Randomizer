@@ -335,7 +335,11 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                 struct GameProgress *memGameProgress = (struct GameProgress *) ((char*) sdata->ptrToMemcardBuffer2 + 0x144);
                 struct GameProgress *curGameProgress = &(sdata->gameProgress);
 
-                memcpy(memGameProgress, curGameProgress, sizeof(struct GameProgress));
+                memcpy(
+                    memGameProgress,
+                    curGameProgress,
+                    sizeof(struct GameProgress) + sizeof(struct GameOptions)
+                );
                 #if 0
                 do {
                     puVar11 = curGameProgress;
@@ -727,15 +731,18 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
             #endif
 
             // 8008d474 is ptr to memcard data
-            struct GameProgress* memProgressPtr = &(((struct MemcardProfile*) sdata->ptrToMemcardBuffer2)->gameProgress);
-
+            struct GameProgress *memGameProgress = &(((struct MemcardProfile*) sdata->ptrToMemcardBuffer2)->gameProgress);
             struct GameProgress *curGameProgress = &(sdata->gameProgress);
 
-            memcpy(memProgressPtr, curGameProgress, sizeof(struct GameProgress));
+            memcpy(
+                memGameProgress,
+                curGameProgress,
+                sizeof(struct GameProgress) + sizeof(struct GameOptions)
+            );
             #if 0
             do {
                 puVar11 = curGameProgress;
-                puVar6 = memProgressPtr;
+                puVar6 = memGameProgress;
                 uVar15 = puVar11[1];
                 uVar16 = puVar11[2];
                 uVar17 = puVar11[3];
@@ -743,7 +750,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                 puVar6[1] = uVar15;
                 puVar6[2] = uVar16;
                 puVar6[3] = uVar17;
-                memProgressPtr = puVar6 + 4;
+                memGameProgress = puVar6 + 4;
                 curGameProgress = puVar11 + 4;
             } while (puVar11 + 4 != (short *)((int)&(sdata->gameOptions.rwd[3].deadZone) + 2));
             uVar15 = puVar11[5];
