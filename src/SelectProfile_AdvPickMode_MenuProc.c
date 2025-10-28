@@ -1,5 +1,12 @@
 #include <common.h>
 
+enum SaveLoadMenuRow {
+    ROW_LOAD = 0,
+    ROW_SAVE = 1,
+    ROW_DELETE = 2,
+    ROW_EXIT = 3
+};
+
 void DECOMP_SelectProfile_AdvPickMode_MenuProc(struct RectMenu* menu)
 {
     // if have not chosen any option
@@ -16,8 +23,7 @@ void DECOMP_SelectProfile_AdvPickMode_MenuProc(struct RectMenu* menu)
     // get value of row selected
     short row = menu->rowSelected;
 
-    // if submenu row is less than 3 and not -1
-    if (row < 3 && row >= 0)
+    if (row < ROW_EXIT && row >= ROW_LOAD)
     {
         // Set Load/Save to "Green" mode, remembering the last selected row
         SelectProfile_ToggleMode((row | 0x20));
@@ -27,15 +33,12 @@ void DECOMP_SelectProfile_AdvPickMode_MenuProc(struct RectMenu* menu)
         return;
     }
 
-    // if row is not 3, invalid row
-    if (row != 3)
+    if (row == ROW_EXIT)
     {
-        return;
+        // make Menu invisible
+        RECTMENU_Hide(menu);
+
+        // SelectProfile_Destroy
+        SelectProfile_Destroy();
     }
-
-    // make Menu invisible
-    RECTMENU_Hide(menu);
-
-    // SelectProfile_Destroy
-    SelectProfile_Destroy();
 }

@@ -47,3 +47,8 @@ common, 233, CS_Camera_ThTick_Podium, 0x0, src/233_23_CS_Camera_ThTick_Podium.c
 // Update relic timer to skip non-required relic difficulties
 common, exe, UI_INSTANCE_InitAll, 0x0, src/UI_08_INSTANCE_InitAll.c
 common, exe, UI_DrawRaceClock, 0x0, src/UI_23_DrawRaceClock.c
+
+// Change saving and loading to also move data between adv slots 1 and 3
+common, exe, SelectProfile_AllProfiles_MenuProc, 0x0, src/SelectProfile_AllProfiles_MenuProc.c
+// Disable deleting adv saves
+common, exe, SelectProfile_AdvPickMode_MenuProc, 0x0, src/SelectProfile_AdvPickMode_MenuProc.c
