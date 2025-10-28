@@ -50,6 +50,9 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
     // MainGameEnd_SoloRaceSaveHighScore
     void (*FUN_8003a2b4)() = 0x8003a2b4;
 
+    // RaceConfig_SaveGameOptions();
+    void (*FUN_80043d24)() = 0x80043d24;
+
     // SelectProfile_Init
     void (*FUN_800485cc)(unsigned int) = 0x800485cc;
 
@@ -316,7 +319,8 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     (*FUN_8003a2b4)(0);
                 }
 
-                RaceConfig_SaveGameOptions();
+                //RaceConfig_SaveGameOptions();
+                (*FUN_80043d24)();
 
                 GAMEPROG_SaveCupProgress();
 
@@ -687,7 +691,8 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
         {
             sdata->unk_8008d73C_relatedToRowHighlighted = menu->rowSelected;
 
-            RaceConfig_SaveGameOptions();
+            // RaceConfig_SaveGameOptions();
+            (*FUN_80043d24)();
 
             GAMEPROG_SaveCupProgress();
 
