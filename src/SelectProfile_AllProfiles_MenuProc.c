@@ -853,7 +853,8 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
             }
         }
 
-        SelectProfile_Init((int)*(short *)(menu + 0x14));
+        // SelectProfile_Init
+        (*FUN_800485cc)(menu->drawStyle);
 
         if ((bVar1) && (sdata->data10_bbb[1] == 0))
         {
