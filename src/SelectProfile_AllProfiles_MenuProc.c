@@ -561,6 +561,13 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     puVar13 = puVar13 + 4;
                 } while (memAdvProgress != (undefined4 *)(memcrd_profile + 0x54));
                 #endif
+
+                // RANDOMIZER
+                struct AdvProgress *memAdvProgressSlot1 = &((struct MemcardProfile *) sdata->ptrToMemcardBuffer2)->advProgress[1];
+                struct AdvProgress *memAdvProgressSlot3 = &((struct MemcardProfile *) sdata->ptrToMemcardBuffer2)->advProgress[3];
+                memcpy(memAdvProgressSlot1, memAdvProgressSlot3, sizeof(struct AdvProgress));
+                // RANDOMIZER
+
                 // DAT_8008fbce is the Icon ID of the character you want
                 // for the adventure mode character
 
