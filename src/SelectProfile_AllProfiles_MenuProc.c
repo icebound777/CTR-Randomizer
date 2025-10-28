@@ -776,7 +776,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
         sdata->data10_bbb[6] = 0x3c;
     }
 
-    if (*(short *)(menu + 0x1e) == 1)
+    if (menu->unk1e == 1)
     {
         bVar1 = false;
         if (   (   (sdata->data10_bbb[1] == 0)
