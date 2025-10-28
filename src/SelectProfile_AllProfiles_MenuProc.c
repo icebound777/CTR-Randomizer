@@ -1198,7 +1198,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                 }
                 iVar23 = (unsigned int)uVar19 << 0x10;
                 if (   sdata->data10_bbb[1] != 0
-                    && (iVar23 = (unsigned int)uVar19 << 0x10, sdata->unk8008d964 != 0)
+                    && sdata->unk8008d964 != 0
                 )
                 {
                     uVar19 = 0xffff;
