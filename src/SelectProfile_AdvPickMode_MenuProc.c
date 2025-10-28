@@ -25,12 +25,19 @@ void DECOMP_SelectProfile_AdvPickMode_MenuProc(struct RectMenu* menu)
 
     if (row < ROW_EXIT && row >= ROW_LOAD)
     {
-        // Set Load/Save to "Green" mode, remembering the last selected row
-        SelectProfile_ToggleMode((row | 0x20));
+        if (row == ROW_DELETE)
+        {
+            OtherFX_Play(5, 1); // play menu error sound
+        }
+        else
+        {
+            // Set Load/Save to "Green" mode, remembering the last selected row
+            SelectProfile_ToggleMode((row | 0x20));
 
-        // Set Menu to a menu box that draws four adv profiles
-        sdata->ptrDesiredMenu = &data.menuFourAdvProfiles;
-        return;
+            // Set Menu to a menu box that draws four adv profiles
+            sdata->ptrDesiredMenu = &data.menuFourAdvProfiles;
+            return;
+        }
     }
 
     if (row == ROW_EXIT)
