@@ -7,7 +7,7 @@ enum GemColors {
     GEM_BLUE,
     GEM_YELLOW,
     GEM_PURPLE,
-    GEM_ANY = 10
+    GEM_ANY = 7
 };
 enum TokenColors {
     TOKEN_NONE,
@@ -16,13 +16,13 @@ enum TokenColors {
     TOKEN_BLUE,
     TOKEN_YELLOW,
     TOKEN_PURPLE,
-    TOKEN_ANY = 10
+    TOKEN_ANY = 7
 };
 enum RelicColors {
     RELIC_SAPPHIRE,
     RELIC_GOLD,
     RELIC_PLATINUM,
-    RELIC_ANY
+    RELIC_ANY = 7
 };
 
 #endif
