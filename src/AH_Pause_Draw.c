@@ -185,22 +185,26 @@ void DECOMP_AH_Pause_Draw(int pageID, int posX)
             // 5 gems
             for(int i = 0; i < 5; i++)
             {
-                struct Instance* inst =
-                    ptrPauseObject->PauseMember[2+i].inst;
+                struct Instance* inst = ptrPauseObject->PauseMember[2+i].inst;
+                /* START Randomizer */
+                struct AdvProgress *advSlot2 = ((struct AdvProgress*) (sdata->memcardBytes + 0x50 + 4));
+                struct AdvProgress *advSlot3 = ((struct AdvProgress*) (sdata->memcardBytes + 0xA0 + 4));
+                /* END Randomizer */
 
                 // Remove SelectProfile with regular UI variant
-                inst->matrix.t[0] =
-                    UI_ConvertX_2(posX + 0x100 + (i-2)*60, 0x100);
+                inst->matrix.t[0] = UI_ConvertX_2(posX + 0x100 + (i-2)*60, 0x100);
 
-                inst->matrix.t[1] =
-                    UI_ConvertY_2(((i&1)<<4)|0x6a, 0x100);
+                inst->matrix.t[1] = UI_ConvertY_2(((i&1)<<4)|0x6a, 0x100);
 
                 // gem color
                 ptrPauseObject->PauseMember[2+i].indexAdvPauseInst = i;
 
                 // unlock gem
-                ptrPauseObject->PauseMember[2+i].unlockFlag |=
-                    CHECK_ADV_BIT(adv->rewards, (i+0x6a));
+                ptrPauseObject->PauseMember[2+i].unlockFlag |= CHECK_ADV_BIT(adv->rewards, (i+0x6a));
+                ptrPauseObject->PauseMember[2+i].unlockFlag |= (
+                    (advSlot2->rewards[5] & (0x100 << i))
+                    || (advSlot3->rewards[5] & (0x100 << i))
+                );
             }
         }
 
