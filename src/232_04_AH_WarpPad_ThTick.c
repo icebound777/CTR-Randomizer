@@ -433,20 +433,19 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
                 // visible
                 instArr[WPIS_OPEN_PRIZE1 + i]->flags &= ~(0x80);
 
-                // token
+                // token & gem
                 rewardScale2 = 0x2000;
 
-                // not token
-                if (modelID != STATIC_TOKEN)
+                // not token or gem
+                switch (modelID)
                 {
-                    // trophy
-                    rewardScale2 = 0x2800;
-
-                    // relic
-                    if (modelID == STATIC_RELIC)
-                    {
+                    case STATIC_RELIC:
+                    case STATIC_KEY:
                         rewardScale2 = 0x1800;
-                    }
+                        break;
+                    case STATIC_TROPHY:
+                        rewardScale2 = 0x2800;
+                        break;
                 }
 
                 rewardScale2 = (unsigned int)(rewardScale2 * rewardScale) >> 8;

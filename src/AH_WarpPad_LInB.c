@@ -7,6 +7,11 @@
 
 void AH_WarpPad_ThTick(struct Thread *t);
 void AH_WarpPad_ThDestroy(struct Thread *t);
+void randomizer_set_instance_data(
+    struct Instance* inst,
+    unsigned short modelID,
+    unsigned short modelColor
+);
 
 void AH_WarpPad_LInB(struct Instance* inst)
 {
@@ -352,15 +357,25 @@ void AH_WarpPad_LInB(struct Instance* inst)
                 // open for trophy
                 t->modelIndex = 1;
 
+                short reward = STATIC_TROPHY;
+                short reward_color = 0;
+                db_ret = database_fetch(
+                    ((DB_PREFIX_REWARDS | levelID) << 16) | STATIC_TROPHY,
+                    &db_fetch_result
+                );
+                if (db_fetch_result == DB_VALUE_OK)
+                {
+                    reward = GET_CLEAN_REWARD(db_ret);
+                    reward_color = GET_REWARD_COLOR(db_ret);
+                }
+
                 newInst = INSTANCE_Birth3D(
-                    gGT->modelPtr[STATIC_TROPHY],
+                    gGT->modelPtr[reward],
                     0,
                     t
                 );
 
-                newInst->scale[0] = 0x2800;
-                newInst->scale[1] = 0x2800;
-                newInst->scale[2] = 0x2800;
+                randomizer_set_instance_data(newInst, reward, reward_color);
 
                 warppadObj->inst[WPIS_OPEN_PRIZE1] = newInst;
             }
@@ -375,27 +390,26 @@ void AH_WarpPad_LInB(struct Instance* inst)
                     t->modelIndex = 3;
                 }
 BattleTrack:
+
+                short reward = STATIC_TOKEN;
+                short reward_color = data.metaDataLEV[levelID].ctrTokenGroupID;
+                db_ret = database_fetch(
+                    ((DB_PREFIX_REWARDS | levelID) << 16) | STATIC_TOKEN,
+                    &db_fetch_result
+                );
+                if (db_fetch_result == DB_VALUE_OK)
+                {
+                    reward = GET_CLEAN_REWARD(db_ret);
+                    reward_color = GET_REWARD_COLOR(db_ret);
+                }
+
                 newInst = INSTANCE_Birth3D(
-                    gGT->modelPtr[STATIC_TOKEN],
+                    gGT->modelPtr[reward],
                     0,
                     t
                 );
 
-                // specular lighting
-                newInst->flags |= 0x30000;
-
-                newInst->scale[0] = 0x2000;
-                newInst->scale[1] = 0x2000;
-                newInst->scale[2] = 0x2000;
-
-                i = data.metaDataLEV[levelID].ctrTokenGroupID;
-
-                // token color
-                newInst->colorRGBA = (
-                    ((unsigned int)data.AdvCups[i].color[0] << 0x14)
-                    | ((unsigned int)data.AdvCups[i].color[1] << 0xc)
-                    | ((unsigned int)data.AdvCups[i].color[2] << 0x4)
-                );
+                randomizer_set_instance_data(newInst, reward, reward_color);
 
                 // === Naughty Dog Bug ===
                 // They made an array where every token color
@@ -431,21 +445,25 @@ SlideColTurboTrack:
                     t->modelIndex = 3;
                 }
 
+                short reward = STATIC_RELIC;
+                short reward_color = RELIC_SAPPHIRE;
+                db_ret = database_fetch(
+                    ((DB_PREFIX_REWARDS | levelID) << 16) | STATIC_RELIC,
+                    &db_fetch_result
+                );
+                if (db_fetch_result == DB_VALUE_OK)
+                {
+                    reward = GET_CLEAN_REWARD(db_ret);
+                    reward_color = GET_REWARD_COLOR(db_ret);
+                }
+
                 newInst = INSTANCE_Birth3D(
-                    gGT->modelPtr[STATIC_RELIC],
+                    gGT->modelPtr[reward],
                     0,
                     t
                 );
 
-                // relic blue
-                newInst->colorRGBA = 0x20a5ff0;
-
-                // specular lighting
-                newInst->flags |= 0x20000;
-
-                newInst->scale[0] = 0x1800;
-                newInst->scale[1] = 0x1800;
-                newInst->scale[2] = 0x1800;
+                randomizer_set_instance_data(newInst, reward, reward_color);
 
                 warppadObj->inst[WPIS_OPEN_PRIZE3] = newInst;
             }
@@ -506,23 +524,25 @@ SlideColTurboTrack:
             // rainbow color
             t->modelIndex = 4;
 
+            short reward = STATIC_GEM;
+            short reward_color = levelID - ADV_CUP;
+            db_ret = database_fetch(
+                ((DB_PREFIX_REWARDS | levelID) << 16) | STATIC_GEM,
+                &db_fetch_result
+            );
+                if (db_fetch_result == DB_VALUE_OK)
+                {
+                    reward = GET_CLEAN_REWARD(db_ret);
+                    reward_color = GET_REWARD_COLOR(db_ret);
+                }
+
             newInst = INSTANCE_Birth3D(
-                gGT->modelPtr[STATIC_GEM],
+                gGT->modelPtr[reward],
                 0,
                 t
             );
 
-            // specular lighting
-            newInst->flags |= 0x20000;
-
-            i = levelID - ADV_CUP;
-
-            // token color
-            newInst->colorRGBA = (
-                ((unsigned int)data.AdvCups[i].color[0] << 0x14)
-                | ((unsigned int)data.AdvCups[i].color[1] << 0xc)
-                | ((unsigned int)data.AdvCups[i].color[2] << 0x4)
-            );
+            randomizer_set_instance_data(newInst, reward, reward_color);
 
             warppadObj->inst[WPIS_OPEN_PRIZE1] = newInst;
 
@@ -727,4 +747,70 @@ SlideColTurboTrack:
         newInst->model->headers[i].flags |= 1;
 
     warppadObj->inst[WPIS_CLOSED_1S] = newInst;
+}
+
+void randomizer_set_instance_data(
+    struct Instance* inst,
+    unsigned short modelID,
+    unsigned short modelColor
+)
+{
+    // Setting the scale in this module is literally useless, because it gets
+    // overwritten in WardPad ThTick every frame anyway
+    inst->scale[0] = 1;
+    inst->scale[1] = 1;
+    inst->scale[2] = 1;
+    switch (modelID)
+    {
+        case STATIC_TROPHY:
+            //inst->scale[0] = 0x2800;
+            //inst->scale[1] = 0x2800;
+            //inst->scale[2] = 0x2800;
+            break;
+
+        case STATIC_TOKEN:
+            inst->flags |= 0x30000; // specular lighting
+           // inst->scale[0] = 0x2000;
+           // inst->scale[1] = 0x2000;
+           // inst->scale[2] = 0x2000;
+            inst->colorRGBA = (
+                ((unsigned int)data.AdvCups[modelColor - 1].color[0] << 0x14)
+                | ((unsigned int)data.AdvCups[modelColor - 1].color[1] << 0xc)
+                | ((unsigned int)data.AdvCups[modelColor - 1].color[2] << 0x4)
+            );
+            break;
+
+        case STATIC_RELIC:
+            inst->flags |= 0x20000; // specular lighting
+          //  inst->scale[0] = 0x1800;
+          //  inst->scale[1] = 0x1800;
+          //  inst->scale[2] = 0x1800;
+            inst->colorRGBA = 0x20a5ff0; // relic blue
+            break;
+
+        case STATIC_GEM:
+            inst->flags |= 0x20000;
+            if (modelColor < 5)
+            {
+                inst->colorRGBA = (
+                    ((unsigned int)data.AdvCups[modelColor].color[0] << 0x14)
+                    | ((unsigned int)data.AdvCups[modelColor].color[1] << 0xc)
+                    | ((unsigned int)data.AdvCups[modelColor].color[2] << 0x4)
+                );
+            }
+            else
+            {
+                // Gem with prizeColor == 5: our tag for multiworld-item
+                // Make gem bright white
+                inst->colorRGBA = 0xe0e0e00;
+            }
+            break;
+
+        case STATIC_KEY:
+         //   inst->scale[0] = 0x1000;
+         //   inst->scale[1] = 0x1000;
+         //   inst->scale[2] = 0x1000;
+            inst->colorRGBA = 0xdca6000;
+            break;
+    }
 }
