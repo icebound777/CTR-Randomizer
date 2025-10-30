@@ -595,6 +595,10 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
     }
     else // if 2 or 3 (delete or exit)
     {
+        // skip deletion
+        goto LAB_800499e4;
+        #if 0 /* REMOVED BECAUSE RANDO DISABLES DELETING */
+
         if (   (   (sdata->memcardAction != 2) // if you are not erasing data
                 || (sdata->data10_bbb[0] == 0x30) // if this is time trial ghost data
                )
@@ -622,6 +626,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
         (*FUN_80047198)(6);
 
         sdata->unk_memcardRelated_8008d928[0] = 1;
+        #endif
         LAB_800499e0:
         sdata->data10_bbb[1] = 1;
     }
@@ -1589,4 +1594,68 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
     sdata->data10_bbb[6] = sVar22;
 
     return;
+}
+
+/*
+Outsourced from `message_handler.c` to save on rdata_free space.
+Should only be called while we're not in a loading screen.
+Checks for the current game mode being the credits, and if so draws
+mod author names and tools used into the top right corner (roughly).
+*/
+void randomizer_draw_credits(void)
+{
+    int xpos = 350;
+    short font = FONT_SMALL;
+    if ((sdata->gGT->gameMode2 & CREDITS) != 0)
+    {
+        DecalFont_DrawLine(
+            "CTR Randomizer",
+            xpos,
+            4,
+            font,
+            (JUSTIFY_CENTER | ORANGE)
+        );
+        DecalFont_DrawLine(
+            "a mod by",
+            xpos,
+            14,
+            font,
+            (JUSTIFY_CENTER | ORANGE)
+        );
+        DecalFont_DrawLine(
+            "Wiz_Taor",
+            xpos,
+            21,
+            font,
+            (JUSTIFY_CENTER | N_GIN_PURPLE)
+        );
+        DecalFont_DrawLine(
+            "Icebound777",
+            xpos,
+            28,
+            font,
+            (JUSTIFY_CENTER | TROPY_LIGHT_BLUE)
+        );
+        DecalFont_DrawLine(
+            "made using",
+            xpos,
+            38,
+            font,
+            (JUSTIFY_CENTER | ORANGE)
+        );
+        DecalFont_DrawLine(
+            "CTR ModSDK",
+            xpos,
+            45,
+            font,
+            (JUSTIFY_CENTER | ORANGE)
+        );
+        DecalFont_DrawLine(
+            "PSX Modding Toolchain",
+            xpos,
+            52,
+            font,
+            (JUSTIFY_CENTER | ORANGE)
+        );
+    }
 }
