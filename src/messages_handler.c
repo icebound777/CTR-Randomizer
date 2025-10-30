@@ -1,6 +1,7 @@
 #include <common.h>
 #include "messages_handler.h"
 #include "reward_enums.h"
+#include "SelectProfile_AllProfiles_MenuProc.h"
 
 #define EMPTY_MESSAGE1 " xxxxxx20characters1"
 #define EMPTY_MESSAGE2 " xxxxxx20characters2"
@@ -48,6 +49,8 @@ void messages_handler()
         msg_timer = TIMER_DISPLAY_DURATION;
         return;
     }
+
+    randomizer_draw_credits();
 
     // Print the version of the randomizer into the bottom-left corner,
     // if we're not currently printing an unlock message

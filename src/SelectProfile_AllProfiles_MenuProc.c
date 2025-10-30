@@ -1595,3 +1595,67 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
 
     return;
 }
+
+/*
+Outsourced from `message_handler.c` to save on rdata_free space.
+Should only be called while we're not in a loading screen.
+Checks for the current game mode being the credits, and if so draws
+mod author names and tools used into the top right corner (roughly).
+*/
+void randomizer_draw_credits(void)
+{
+    int xpos = 350;
+    short font = FONT_SMALL;
+    if ((sdata->gGT->gameMode2 & CREDITS) != 0)
+    {
+        DecalFont_DrawLine(
+            "CTR Randomizer",
+            xpos,
+            4,
+            font,
+            (JUSTIFY_CENTER | ORANGE)
+        );
+        DecalFont_DrawLine(
+            "a mod by",
+            xpos,
+            14,
+            font,
+            (JUSTIFY_CENTER | ORANGE)
+        );
+        DecalFont_DrawLine(
+            "Wiz_Taor",
+            xpos,
+            21,
+            font,
+            (JUSTIFY_CENTER | N_GIN_PURPLE)
+        );
+        DecalFont_DrawLine(
+            "Icebound777",
+            xpos,
+            28,
+            font,
+            (JUSTIFY_CENTER | TROPY_LIGHT_BLUE)
+        );
+        DecalFont_DrawLine(
+            "made using",
+            xpos,
+            38,
+            font,
+            (JUSTIFY_CENTER | ORANGE)
+        );
+        DecalFont_DrawLine(
+            "CTR ModSDK",
+            xpos,
+            45,
+            font,
+            (JUSTIFY_CENTER | ORANGE)
+        );
+        DecalFont_DrawLine(
+            "PSX Modding Toolchain",
+            xpos,
+            52,
+            font,
+            (JUSTIFY_CENTER | ORANGE)
+        );
+    }
+}
