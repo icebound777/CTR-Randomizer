@@ -595,6 +595,10 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
     }
     else // if 2 or 3 (delete or exit)
     {
+        // skip deletion
+        goto LAB_800499e4;
+        #if 0 /* REMOVED BECAUSE RANDO DISABLES DELETING */
+
         if (   (   (sdata->memcardAction != 2) // if you are not erasing data
                 || (sdata->data10_bbb[0] == 0x30) // if this is time trial ghost data
                )
@@ -622,6 +626,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
         (*FUN_80047198)(6);
 
         sdata->unk_memcardRelated_8008d928[0] = 1;
+        #endif
         LAB_800499e0:
         sdata->data10_bbb[1] = 1;
     }
