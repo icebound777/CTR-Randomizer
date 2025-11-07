@@ -832,7 +832,12 @@ void randomizer_set_instance_data(
           //  inst->scale[0] = 0x1800;
           //  inst->scale[1] = 0x1800;
           //  inst->scale[2] = 0x1800;
-            inst->colorRGBA = 0x20a5ff0; // relic blue
+            inst->colorRGBA = (modelColor == RELIC_SAPPHIRE)
+                ? 0x20a5ff0 // relic blue
+                : (modelColor == RELIC_GOLD)
+                    ? 0xd8d2090 // relic gold
+                    : 0xffede90 // relic platinum
+            ;
             break;
 
         case STATIC_GEM:
