@@ -246,22 +246,22 @@ void enqueue_reward_message(
             msg_pointer = &("Platinum Relic");
             break;
         case STATIC_TOKEN | (TOKEN_RED << 8):
-            msg_pointer = &("CTR Token Red");
+            msg_pointer = &("Red CTR Token");
             break;
         case STATIC_TOKEN | (TOKEN_GREEN << 8):
-            msg_pointer = &("CTR Token Green");
+            msg_pointer = &("Green CTR Token");
             break;
         case STATIC_TOKEN | (TOKEN_BLUE << 8):
-            msg_pointer = &("CTR Token Blue");
+            msg_pointer = &("Blue CTR Token");
             break;
         case STATIC_TOKEN | (TOKEN_YELLOW << 8):
-            msg_pointer = &("CTR Token Yellow");
+            msg_pointer = &("Yellow CTR Token");
             break;
         case STATIC_TOKEN | (TOKEN_PURPLE << 8):
-            msg_pointer = &("CTR Token Purple");
+            msg_pointer = &("Purple CTR Token");
             break;
         case STATIC_KEY:
-            msg_pointer = &("Boss Key");
+            msg_pointer = &("Key");
             break;
         case STATIC_GEM | (GEM_RED << 8):
             msg_pointer = &("Red Gem");

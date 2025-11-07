@@ -7,6 +7,11 @@
 
 void AH_WarpPad_ThTick(struct Thread *t);
 void AH_WarpPad_ThDestroy(struct Thread *t);
+void randomizer_set_instance_data(
+    struct Instance* inst,
+    unsigned short modelID,
+    unsigned short modelColor
+);
 
 void AH_WarpPad_LInB(struct Instance* inst)
 {
@@ -347,46 +352,64 @@ void AH_WarpPad_LInB(struct Instance* inst)
             t->modelIndex = 2;
 
             // if trophy not owned
-            if(CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 6)) == 0)
+            if (CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 6)) == 0)
             {
                 // open for trophy
                 t->modelIndex = 1;
 
-                newInst = INSTANCE_Birth3D(gGT->modelPtr[STATIC_TROPHY], 0, t);
+                short reward = STATIC_TROPHY;
+                short reward_color = 0;
+                db_ret = database_fetch(
+                    ((DB_PREFIX_REWARDS | levelID) << 16) | STATIC_TROPHY,
+                    &db_fetch_result
+                );
+                if (db_fetch_result == DB_VALUE_OK)
+                {
+                    reward = GET_CLEAN_REWARD(db_ret);
+                    reward_color = GET_REWARD_COLOR(db_ret);
+                }
 
-                newInst->scale[0] = 0x2800;
-                newInst->scale[1] = 0x2800;
-                newInst->scale[2] = 0x2800;
+                newInst = INSTANCE_Birth3D(
+                    gGT->modelPtr[reward],
+                    0,
+                    t
+                );
+
+                randomizer_set_instance_data(newInst, reward, reward_color);
 
                 warppadObj->inst[WPIS_OPEN_PRIZE1] = newInst;
             }
 
             // if token not owned
-            if(CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x4c)) == 0)
+            if (CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x4c)) == 0)
             {
                 // not open for trophy
-                if(t->modelIndex != 1)
+                if (t->modelIndex != 1)
                 {
                     // open for relic/token
                     t->modelIndex = 3;
                 }
 BattleTrack:
-                newInst = INSTANCE_Birth3D(gGT->modelPtr[STATIC_TOKEN], 0, t);
 
-                // specular lighting
-                newInst->flags |= 0x30000;
+                short reward = STATIC_TOKEN;
+                short reward_color = data.metaDataLEV[levelID].ctrTokenGroupID;
+                db_ret = database_fetch(
+                    ((DB_PREFIX_REWARDS | levelID) << 16) | STATIC_TOKEN,
+                    &db_fetch_result
+                );
+                if (db_fetch_result == DB_VALUE_OK)
+                {
+                    reward = GET_CLEAN_REWARD(db_ret);
+                    reward_color = GET_REWARD_COLOR(db_ret);
+                }
 
-                newInst->scale[0] = 0x2000;
-                newInst->scale[1] = 0x2000;
-                newInst->scale[2] = 0x2000;
+                newInst = INSTANCE_Birth3D(
+                    gGT->modelPtr[reward],
+                    0,
+                    t
+                );
 
-                i = data.metaDataLEV[levelID].ctrTokenGroupID;
-
-                // token color
-                newInst->colorRGBA =
-                    ((unsigned int)data.AdvCups[i].color[0] << 0x14) |
-                    ((unsigned int)data.AdvCups[i].color[1] << 0xc) |
-                    ((unsigned int)data.AdvCups[i].color[2] << 0x4);
+                randomizer_set_instance_data(newInst, reward, reward_color);
 
                 // === Naughty Dog Bug ===
                 // They made an array where every token color
@@ -408,37 +431,81 @@ BattleTrack:
 SlideColTurboTrack:
 
             // if relic not owned
-            if(levelID < NITRO_COURT) // check this cause of "goto BattleTrack"
-            if(CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x16)) == 0)
+            if (levelID < NITRO_COURT) // check this cause of "goto BattleTrack"
+            if (   CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x16)) == 0 // Sapphire
+                || CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x28)) == 0 // Gold
+                || CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x3A)) == 0 // Platinum
+            )
             {
                 // SlideCol/TurboTrack
-                if(levelID>=SLIDE_COLISEUM)
+                if (levelID >= SLIDE_COLISEUM)
+                {
                     t->modelIndex = 4;
-
-                // open for token/relic
-                else if(t->modelIndex != 1)
+                }
+                else if (t->modelIndex != 1)
+                {
+                    // open for token/relic
                     t->modelIndex = 3;
+                }
 
-                newInst = INSTANCE_Birth3D(gGT->modelPtr[STATIC_RELIC], 0, t);
+                /* Set up not only the vanilla sapphire relic on instance slot
+                   WPIS_OPEN_PRIZE3, but also the gold relic on unused instance
+                   slot WPIS_CLOSED_ITEM and the platinum relic on unused
+                   instance slot WPIS_CLOSED_X.
+                   These also need special handling in WarpPad_ThTick.
+                */
+                short reward = STATIC_RELIC;
+                short reward_color;
+                short inst_index;
+                for (short i = 0; i < 3; i++)
+                {
+                    // Only setup models for rewards not unlocked yet
+                    if (CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x16 + (0x12 * i))) == 0)
+                    {
+                        reward_color = i; // SAPPHIRE, GOLD, PLATINUM
+                        db_ret = database_fetch(
+                            ((DB_PREFIX_REWARDS | levelID) << 16) | STATIC_RELIC | (reward_color << 8),
+                            &db_fetch_result
+                        );
+                        if (db_fetch_result == DB_VALUE_OK)
+                        {
+                            reward = GET_CLEAN_REWARD(db_ret);
+                            reward_color = GET_REWARD_COLOR(db_ret);
+                        }
 
-                // relic blue
-                newInst->colorRGBA = 0x20a5ff0;
+                        newInst = INSTANCE_Birth3D(
+                            gGT->modelPtr[reward],
+                            0,
+                            t
+                        );
 
-                // specular lighting
-                newInst->flags |= 0x20000;
+                        randomizer_set_instance_data(newInst, reward, reward_color);
 
-                newInst->scale[0] = 0x1800;
-                newInst->scale[1] = 0x1800;
-                newInst->scale[2] = 0x1800;
-
-                warppadObj->inst[WPIS_OPEN_PRIZE3] = newInst;
+                        inst_index = (i == 0)
+                            ? WPIS_OPEN_PRIZE3
+                            : (i == 1)
+                                ? WPIS_CLOSED_ITEM
+                                : WPIS_CLOSED_X
+                        ;
+                        warppadObj->inst[inst_index] = newInst;
+                    }
+                }
             }
 
-            for(i = 0; i < 3; i++)
+            for (i = 0; i < 5; i++)
             {
-                newInst = warppadObj->inst[WPIS_OPEN_PRIZE1+i];
+                /* Special handling for the new gold relic reward on
+                   instance slot WPIS_CLOSED_ITEM and the new platinum relic
+                   reward on instance slot WPIS_CLOSED_X
+                */
+                newInst = (i < 3)
+                    ? warppadObj->inst[WPIS_OPEN_PRIZE1 + i]
+                    : (i == 3)
+                        ? warppadObj->inst[WPIS_CLOSED_ITEM]
+                        : warppadObj->inst[WPIS_CLOSED_X]
+                ;
 
-                if(newInst == 0) continue;
+                if (newInst == 0) continue;
 
                 // copy matrix
                 *(int*)((int)&newInst->matrix + 0x0) = *(int*)((int)&inst->matrix + 0x0);
@@ -451,25 +518,21 @@ SlideColTurboTrack:
                 newInst->matrix.t[2] = inst->matrix.t[2];
             }
         }
-
-        // slide col, turbo track
-        else if(levelID < NITRO_COURT)
+        else if(levelID < NITRO_COURT) // slide col, turbo track
         {
             // already unlocked
             t->modelIndex = 2;
 
             goto SlideColTurboTrack;
         }
-
-        // battle tracks
-        else if(levelID < GEM_STONE_VALLEY)
+        else if (levelID < GEM_STONE_VALLEY) // battle tracks
         {
             i = R232.battleTrackArr[levelID - NITRO_COURT] + 0x6f;
 
             // already unlocked
             t->modelIndex = 2;
 
-            if(CHECK_ADV_BIT(sdata->advProgress.rewards, i) == 0)
+            if (CHECK_ADV_BIT(sdata->advProgress.rewards, i) == 0)
             {
                 // rainbow
                 t->modelIndex = 4;
@@ -477,15 +540,13 @@ SlideColTurboTrack:
                 goto BattleTrack;
             }
         }
-
-        // gemstone valley
-        else
+        else // gemstone valley
         {
             // bit index of gem
             i = (levelID - ADV_CUP) + 0x6a;
 
             // if gem is already unlocked, quit
-            if(CHECK_ADV_BIT(sdata->advProgress.rewards, i) != 0)
+            if (CHECK_ADV_BIT(sdata->advProgress.rewards, i) != 0)
             {
                 // beaten
                 t->modelIndex = 2;
@@ -496,18 +557,25 @@ SlideColTurboTrack:
             // rainbow color
             t->modelIndex = 4;
 
-            newInst = INSTANCE_Birth3D(gGT->modelPtr[STATIC_GEM], 0, t);
+            short reward = STATIC_GEM;
+            short reward_color = levelID - ADV_CUP;
+            db_ret = database_fetch(
+                ((DB_PREFIX_REWARDS | levelID) << 16) | STATIC_GEM,
+                &db_fetch_result
+            );
+                if (db_fetch_result == DB_VALUE_OK)
+                {
+                    reward = GET_CLEAN_REWARD(db_ret);
+                    reward_color = GET_REWARD_COLOR(db_ret);
+                }
 
-            // specular lighting
-            newInst->flags |= 0x20000;
+            newInst = INSTANCE_Birth3D(
+                gGT->modelPtr[reward],
+                0,
+                t
+            );
 
-            i = levelID - ADV_CUP;
-
-            // token color
-            newInst->colorRGBA =
-                ((unsigned int)data.AdvCups[i].color[0] << 0x14) |
-                ((unsigned int)data.AdvCups[i].color[1] << 0xc) |
-                ((unsigned int)data.AdvCups[i].color[2] << 0x4);
+            randomizer_set_instance_data(newInst, reward, reward_color);
 
             warppadObj->inst[WPIS_OPEN_PRIZE1] = newInst;
 
@@ -527,12 +595,11 @@ SlideColTurboTrack:
 
     // === if locked ===
 
-    if(unlockItem_numNeeded < 10)
+    if (unlockItem_numNeeded < 10)
     {
         warppadObj->digit10s = 0;
         warppadObj->digit1s = unlockItem_numNeeded;
     }
-
     else
     {
         warppadObj->digit10s = 1;
@@ -713,4 +780,75 @@ SlideColTurboTrack:
         newInst->model->headers[i].flags |= 1;
 
     warppadObj->inst[WPIS_CLOSED_1S] = newInst;
+}
+
+void randomizer_set_instance_data(
+    struct Instance* inst,
+    unsigned short modelID,
+    unsigned short modelColor
+)
+{
+    // Setting the scale in this module is literally useless, because it gets
+    // overwritten in WardPad ThTick every frame anyway
+    inst->scale[0] = 1;
+    inst->scale[1] = 1;
+    inst->scale[2] = 1;
+    switch (modelID)
+    {
+        case STATIC_TROPHY:
+            //inst->scale[0] = 0x2800;
+            //inst->scale[1] = 0x2800;
+            //inst->scale[2] = 0x2800;
+            break;
+
+        case STATIC_TOKEN:
+            inst->flags |= 0x30000; // specular lighting
+           // inst->scale[0] = 0x2000;
+           // inst->scale[1] = 0x2000;
+           // inst->scale[2] = 0x2000;
+            inst->colorRGBA = (
+                ((unsigned int)data.AdvCups[modelColor - 1].color[0] << 0x14)
+                | ((unsigned int)data.AdvCups[modelColor - 1].color[1] << 0xc)
+                | ((unsigned int)data.AdvCups[modelColor - 1].color[2] << 0x4)
+            );
+            break;
+
+        case STATIC_RELIC:
+            inst->flags |= 0x20000; // specular lighting
+          //  inst->scale[0] = 0x1800;
+          //  inst->scale[1] = 0x1800;
+          //  inst->scale[2] = 0x1800;
+            inst->colorRGBA = (modelColor == RELIC_SAPPHIRE)
+                ? 0x20a5ff0 // relic blue
+                : (modelColor == RELIC_GOLD)
+                    ? 0xd8d2090 // relic gold
+                    : 0xffede90 // relic platinum
+            ;
+            break;
+
+        case STATIC_GEM:
+            inst->flags |= 0x20000;
+            if (modelColor < 5)
+            {
+                inst->colorRGBA = (
+                    ((unsigned int)data.AdvCups[modelColor].color[0] << 0x14)
+                    | ((unsigned int)data.AdvCups[modelColor].color[1] << 0xc)
+                    | ((unsigned int)data.AdvCups[modelColor].color[2] << 0x4)
+                );
+            }
+            else
+            {
+                // Gem with prizeColor == 5: our tag for multiworld-item
+                // Make gem bright white
+                inst->colorRGBA = 0xe0e0e00;
+            }
+            break;
+
+        case STATIC_KEY:
+         //   inst->scale[0] = 0x1000;
+         //   inst->scale[1] = 0x1000;
+         //   inst->scale[2] = 0x1000;
+            inst->colorRGBA = 0xdca6000;
+            break;
+    }
 }
