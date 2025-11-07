@@ -466,11 +466,58 @@ SlideColTurboTrack:
                 randomizer_set_instance_data(newInst, reward, reward_color);
 
                 warppadObj->inst[WPIS_OPEN_PRIZE3] = newInst;
+
+                reward_color = RELIC_GOLD;
+                db_ret = database_fetch(
+                    ((DB_PREFIX_REWARDS | levelID) << 16) | STATIC_RELIC | (RELIC_GOLD << 8),
+                    &db_fetch_result
+                );
+                if (db_fetch_result == DB_VALUE_OK)
+                {
+                    reward = GET_CLEAN_REWARD(db_ret);
+                    reward_color = GET_REWARD_COLOR(db_ret);
+                }
+
+                newInst = INSTANCE_Birth3D(
+                    gGT->modelPtr[reward],
+                    0,
+                    t
+                );
+
+                randomizer_set_instance_data(newInst, reward, reward_color);
+
+                warppadObj->inst[WPIS_CLOSED_ITEM] = newInst;
+
+                reward_color = RELIC_PLATINUM;
+                db_ret = database_fetch(
+                    ((DB_PREFIX_REWARDS | levelID) << 16) | STATIC_RELIC | (RELIC_PLATINUM << 8),
+                    &db_fetch_result
+                );
+                if (db_fetch_result == DB_VALUE_OK)
+                {
+                    reward = GET_CLEAN_REWARD(db_ret);
+                    reward_color = GET_REWARD_COLOR(db_ret);
+                }
+
+                newInst = INSTANCE_Birth3D(
+                    gGT->modelPtr[reward],
+                    0,
+                    t
+                );
+
+                randomizer_set_instance_data(newInst, reward, reward_color);
+
+                warppadObj->inst[WPIS_CLOSED_X] = newInst;
             }
 
-            for (i = 0; i < 3; i++)
+            for (i = 0; i < 5; i++)
             {
-                newInst = warppadObj->inst[WPIS_OPEN_PRIZE1 + i];
+                newInst = (i < 3)
+                    ? warppadObj->inst[WPIS_OPEN_PRIZE1 + i]
+                    : (i == 3)
+                        ? warppadObj->inst[WPIS_CLOSED_ITEM]
+                        : warppadObj->inst[WPIS_CLOSED_X]
+                ;
 
                 if (newInst == 0) continue;
 

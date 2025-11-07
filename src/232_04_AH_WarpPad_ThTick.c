@@ -407,31 +407,41 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
         rewardScale = ((((0x900000 * 2) - dist) * 0x100) / 0x900000);
     }
 
-    for (i = 0; i < 3; i++)
+    struct Instance *itemInst;
+    for (i = 0; i < 5; i++)
     {
         warppadObj->spinRot_Prize[2] = 0x155;
 
-        if(instArr[WPIS_OPEN_PRIZE1 + i] != 0)
+        itemInst = (i < 3)
+            ? instArr[WPIS_OPEN_PRIZE1 + i]
+            : (i == 3)
+                ? instArr[WPIS_CLOSED_ITEM]
+                : instArr[WPIS_CLOSED_X]
+        ;
+
+        if (itemInst != 0)
         {
             AH_WarpPad_SpinRewards(
-                instArr[WPIS_OPEN_PRIZE1 + i],
-                warppadObj, i,
+                itemInst,
+                warppadObj, (i < 3) ? i : 2,
                 warppadInst->matrix.t[0],
                 warppadInst->matrix.t[1],
                 warppadInst->matrix.t[2]
             );
 
-            modelID = instArr[WPIS_OPEN_PRIZE1 + i]->model->id;
+            modelID = itemInst->model->id;
 
-            if (rewardScale == 0)
+            if (   rewardScale == 0
+                || (i >= 2 && ((gGT->timer / FPS_DOUBLE(30)) % 3) != i-2)
+            )
             {
                 // invisible
-                instArr[WPIS_OPEN_PRIZE1 + i]->flags |= 0x80;
+                itemInst->flags |= 0x80;
             }
             else
             {
                 // visible
-                instArr[WPIS_OPEN_PRIZE1 + i]->flags &= ~(0x80);
+                itemInst->flags &= ~(0x80);
 
                 // token & gem
                 rewardScale2 = 0x2000;
@@ -449,13 +459,13 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
                 }
 
                 rewardScale2 = (unsigned int)(rewardScale2 * rewardScale) >> 8;
-                instArr[WPIS_OPEN_PRIZE1+i]->scale[0] = (short)rewardScale2;
-                instArr[WPIS_OPEN_PRIZE1+i]->scale[1] = (short)rewardScale2;
-                instArr[WPIS_OPEN_PRIZE1+i]->scale[2] = (short)rewardScale2;
+                itemInst->scale[0] = (short)rewardScale2;
+                itemInst->scale[1] = (short)rewardScale2;
+                itemInst->scale[2] = (short)rewardScale2;
             }
         }
 
-        warppadObj->thirds[i] += FPS_HALF(0x20);
+        if (i < 3) warppadObj->thirds[i] += FPS_HALF(0x20);
         warppadObj->spinRot_Rewards[1] += FPS_HALF(0x4);
     }
 
