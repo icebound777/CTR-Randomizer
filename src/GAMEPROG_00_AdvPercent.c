@@ -115,7 +115,7 @@ void randomizer_set_profile_defaults(struct AdvProgress *adv)
     memAdvProgressSlot1->rewards[1] = 0;
     memAdvProgressSlot1->rewards[2] = 0;
     memAdvProgressSlot1->rewards[3] = 0;
-    memAdvProgressSlot1->rewards[3] = 0;
+    memAdvProgressSlot1->rewards[4] = 0;
     memAdvProgressSlot1->rewards[5] = 0;
 
     /* START Randomizer */
