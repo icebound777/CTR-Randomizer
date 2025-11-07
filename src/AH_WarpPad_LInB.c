@@ -432,7 +432,10 @@ SlideColTurboTrack:
 
             // if relic not owned
             if (levelID < NITRO_COURT) // check this cause of "goto BattleTrack"
-            if (CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x16)) == 0)
+            if (   CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x16)) == 0 // Sapphire
+                || CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x2C)) == 0 // Gold
+                || CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x42)) == 0 // Platinum
+            )
             {
                 // SlideCol/TurboTrack
                 if (levelID >= SLIDE_COLISEUM)
