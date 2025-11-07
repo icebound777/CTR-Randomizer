@@ -470,11 +470,13 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
             }
         }
 
-        // Do not touch thirds if current index is of custom gold or platinum
-        // relic models
-        if (i < 3) warppadObj->thirds[i] += FPS_HALF(0x20);
-
-        warppadObj->spinRot_Rewards[1] += FPS_HALF(0x4);
+        // Do not touch thirds or spinRot if current index is of custom gold or
+        // platinum relic models
+        if (i < 3)
+        {
+            warppadObj->thirds[i] += FPS_HALF(0x20);
+            warppadObj->spinRot_Rewards[1] += FPS_HALF(0x4);
+        }
     }
 
     // if flag is on-screen, loading has already been finalized
