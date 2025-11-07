@@ -459,32 +459,36 @@ SlideColTurboTrack:
                 short inst_index;
                 for (short i = 0; i < 3; i++)
                 {
-                    reward_color = i; // SAPPHIRE, GOLD, PLATINUM
-                    db_ret = database_fetch(
-                        ((DB_PREFIX_REWARDS | levelID) << 16) | STATIC_RELIC | (reward_color << 8),
-                        &db_fetch_result
-                    );
-                    if (db_fetch_result == DB_VALUE_OK)
+                    // Only setup models for rewards not unlocked yet
+                    if (CHECK_ADV_BIT(sdata->advProgress.rewards, (levelID + 0x16 + (0x12 * i))) == 0)
                     {
-                        reward = GET_CLEAN_REWARD(db_ret);
-                        reward_color = GET_REWARD_COLOR(db_ret);
+                        reward_color = i; // SAPPHIRE, GOLD, PLATINUM
+                        db_ret = database_fetch(
+                            ((DB_PREFIX_REWARDS | levelID) << 16) | STATIC_RELIC | (reward_color << 8),
+                            &db_fetch_result
+                        );
+                        if (db_fetch_result == DB_VALUE_OK)
+                        {
+                            reward = GET_CLEAN_REWARD(db_ret);
+                            reward_color = GET_REWARD_COLOR(db_ret);
+                        }
+
+                        newInst = INSTANCE_Birth3D(
+                            gGT->modelPtr[reward],
+                            0,
+                            t
+                        );
+
+                        randomizer_set_instance_data(newInst, reward, reward_color);
+
+                        inst_index = (i == 0)
+                            ? WPIS_OPEN_PRIZE3
+                            : (i == 1)
+                                ? WPIS_CLOSED_ITEM
+                                : WPIS_CLOSED_X
+                        ;
+                        warppadObj->inst[inst_index] = newInst;
                     }
-
-                    newInst = INSTANCE_Birth3D(
-                        gGT->modelPtr[reward],
-                        0,
-                        t
-                    );
-
-                    randomizer_set_instance_data(newInst, reward, reward_color);
-
-                    inst_index = (i == 0)
-                        ? WPIS_OPEN_PRIZE3
-                        : (i == 1)
-                            ? WPIS_CLOSED_ITEM
-                            : WPIS_CLOSED_X
-                    ;
-                    warppadObj->inst[inst_index] = newInst;
                 }
             }
 
