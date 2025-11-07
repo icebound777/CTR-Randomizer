@@ -412,6 +412,10 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     {
         warppadObj->spinRot_Prize[2] = 0x155;
 
+        /* Special handling for the new gold relic reward on
+           instance slot WPIS_CLOSED_ITEM and the new platinum relic
+           reward on instance slot WPIS_CLOSED_X
+        */
         itemInst = (i < 3)
             ? instArr[WPIS_OPEN_PRIZE1 + i]
             : (i == 3)
@@ -423,7 +427,8 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
         {
             AH_WarpPad_SpinRewards(
                 itemInst,
-                warppadObj, (i < 3) ? i : 2,
+                warppadObj,
+                (i < 3) ? i : 2, // apply spin of sapphire relics to custom relic models as well
                 warppadInst->matrix.t[0],
                 warppadInst->matrix.t[1],
                 warppadInst->matrix.t[2]
@@ -432,7 +437,7 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
             modelID = itemInst->model->id;
 
             if (   rewardScale == 0
-                || (i >= 2 && ((gGT->timer / FPS_DOUBLE(30)) % 3) != i-2)
+                || (i >= 2 && ((gGT->timer / FPS_DOUBLE(30)) % 3) != i-2) // cycle relic rewards
             )
             {
                 // invisible
@@ -465,7 +470,10 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
             }
         }
 
+        // Do not touch thirds if current index is of custom gold or platinum
+        // relic models
         if (i < 3) warppadObj->thirds[i] += FPS_HALF(0x20);
+
         warppadObj->spinRot_Rewards[1] += FPS_HALF(0x4);
     }
 

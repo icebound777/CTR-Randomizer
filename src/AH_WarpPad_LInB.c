@@ -448,6 +448,12 @@ SlideColTurboTrack:
                     t->modelIndex = 3;
                 }
 
+                /* Set up not only the vanilla sapphire relic on instance slot
+                   WPIS_OPEN_PRIZE3, but also the gold relic on unused instance
+                   slot WPIS_CLOSED_ITEM and the platinum relic on unused
+                   instance slot WPIS_CLOSED_X.
+                   These also need special handling in WarpPad_ThTick.
+                */
                 short reward = STATIC_RELIC;
                 short reward_color;
                 short inst_index;
@@ -484,6 +490,10 @@ SlideColTurboTrack:
 
             for (i = 0; i < 5; i++)
             {
+                /* Special handling for the new gold relic reward on
+                   instance slot WPIS_CLOSED_ITEM and the new platinum relic
+                   reward on instance slot WPIS_CLOSED_X
+                */
                 newInst = (i < 3)
                     ? warppadObj->inst[WPIS_OPEN_PRIZE1 + i]
                     : (i == 3)
