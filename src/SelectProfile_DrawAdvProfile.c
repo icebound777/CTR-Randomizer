@@ -155,5 +155,10 @@ void SelectProfile_DrawAdvProfile(
     box.y = local_posY;
     box.w = 220;
     box.h = 61;
-    RECTMENU_DrawInnerRect(&box, menuFlag, &gGT->backBuffer->otMem.startPlusFour[0xC]);
+    RECTMENU_DrawInnerRect(
+        &box,
+        menuFlag,
+        //gGT->backBuffer->otMem.startPlusFour[0xC]
+        *(int *)(*(int *)((int)gGT + 0x10) + 0xa0) + 0xc
+    );
 }
