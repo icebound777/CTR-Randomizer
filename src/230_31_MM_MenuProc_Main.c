@@ -3,14 +3,6 @@
 // byte budget
 // 840/1108
 
-#ifdef USE_HIGHMP
-extern struct MenuRow rowsOnlyVsBattle[3];
-#endif
-
-#if defined(USE_LEVELDEV) || defined(USE_LEVELDISC)
-extern struct MenuRow rowsOnlyTT[2];
-#endif
-
 void DECOMP_MM_MenuProc_Main(struct RectMenu *mainMenu)
 {
     short choose;
@@ -22,14 +14,28 @@ void DECOMP_MM_MenuProc_Main(struct RectMenu *mainMenu)
         mainMenu->rows = &D230.rowsMainMenuWithScrapbook[0];
     }
 
-    DECOMP_MM_ParseCheatCodes();
-    DECOMP_MM_ToggleRows_Difficulty();
-    DECOMP_MM_ToggleRows_PlayerCount();
+    //DECOMP_MM_ParseCheatCodes();
+    //DECOMP_MM_ToggleRows_Difficulty();
+    //DECOMP_MM_ToggleRows_PlayerCount();
+    /* Let's rather use non-decomp for now ... */
+    // MM_ParseCheatCodes
+    void (*FUN_800aceb4)() = 0x800aceb4;
+    (*FUN_800aceb4)();
+    // MM_ToggleRows_Difficulty
+    void (*FUN_800ad678)() = 0x800ad678;
+    (*FUN_800ad678)();
+    // MM_ToggleRows_PlayerCount
+    void (*FUN_800ad448)() = 0x800ad448;
+    (*FUN_800ad448)();
 
     // If you are at the highest hierarchy level of main menu
     if (mainMenu->unk1e == 1)
     {
-        DECOMP_MM_Title_MenuUpdate();
+        //DECOMP_MM_Title_MenuUpdate();
+        /* Let's rather use non-decomp for now ... */
+        // MM_ParseCheatCodes
+        void (*FUN_800abcac)() = 0x800abcac;
+        (*FUN_800abcac)();
 
         if (   (D230.MM_State == 1) // main menu
             && (D230.titleObj != NULL) // "title" exists
@@ -37,7 +43,18 @@ void DECOMP_MM_MenuProc_Main(struct RectMenu *mainMenu)
         )
         {
             // "TM" trademark string
-            DECOMP_DecalFont_DrawLineOT(
+            //DECOMP_DecalFont_DrawLineOT(
+            /* Let's rather use non-decomp for now ... */
+            // DecalFont_DrawLineOT
+            void (*FUN_800228c4)(
+                char *str,
+                int posX,
+                int poxY,
+                short fontType,
+                int flags,
+                u_long *ot
+            ) = 0x800228c4;
+            (*FUN_800228c4)(
                 sdata->lngStrings[0x244],
                 0x10e,
                 0x9c,
@@ -75,7 +92,11 @@ void DECOMP_MM_MenuProc_Main(struct RectMenu *mainMenu)
         }
     }
 
-    DECOMP_MM_Title_Init();
+    //DECOMP_MM_Title_Init();
+    /* Let's rather use non-decomp for now ... */
+    // MM_Title_Init
+    void (*FUN_800ac6dc)() = 0x800ac6dc;
+    (*FUN_800ac6dc)();
 
     // if drawing ptrNextBox_InHierarchy
     if ((mainMenu->state & DRAW_NEXT_MENU_IN_HIERARCHY) != 0)
@@ -185,8 +206,7 @@ void DECOMP_MM_MenuProc_Main(struct RectMenu *mainMenu)
         gGT->numLaps = 1;
     }
 
-    // Arcade Mode
-    if (choose == 0x4e)
+    if (choose == 0x4e) // Arcade Mode
     {
         // set game mode to Arcade Mode
         gGT->gameMode1 |= ARCADE_MODE;
@@ -194,20 +214,14 @@ void DECOMP_MM_MenuProc_Main(struct RectMenu *mainMenu)
         // set next menu
         mainMenu->ptrNextBox_InHierarchy = &D230.menuRaceType;
         mainMenu->state |= DRAW_NEXT_MENU_IN_HIERARCHY;
-        return;
     }
-
-    // Versus
-    if (choose == 0x4f)
+    else if (choose == 0x4f) // Versus
     {
         // next menu is choosing single+cup
         mainMenu->ptrNextBox_InHierarchy = &D230.menuRaceType;
         mainMenu->state |= DRAW_NEXT_MENU_IN_HIERARCHY;
-        return;
     }
-
-    // Battle
-    if (choose == 0x50)
+    else if (choose == 0x50) // Battle
     {
         D230.characterSelect_transitionState = 2;
 
@@ -217,30 +231,21 @@ void DECOMP_MM_MenuProc_Main(struct RectMenu *mainMenu)
         // set next menu to 2P,3P,4P
         mainMenu->ptrNextBox_InHierarchy = &D230.menuPlayers2P3P4P;
         mainMenu->state |= DRAW_NEXT_MENU_IN_HIERARCHY;
-        return;
     }
-
-    // High Score
-    if (choose == 0x51)
+    else if (choose == 0x51) // High Score
     {
         // Set next stage to high score menu
         D230.desiredMenuIndex = 3;
 
         // Leave main menu hierarchy
         D230.MM_State = 2;
-
-        return;
     }
-
-    // Scrapbook
-    if (choose == 0x234)
+    else if (choose == 0x234) // Scrapbook
     {
         // Set next stage to Scrapbook
         D230.desiredMenuIndex = 5;
 
         // Leave main menu hierarchy
         D230.MM_State = 2;
-
-        return;
     }
 }
