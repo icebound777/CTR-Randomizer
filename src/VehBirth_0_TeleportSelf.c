@@ -1,5 +1,7 @@
 #include <common.h>
 
+#include "CTRRandomizer_database.h"
+
 void DECOMP_VehBirth_TeleportSelf(struct Driver *d, u_char spawnFlag, int spawnPosY)
 {
     short posTop[3];
@@ -397,5 +399,78 @@ void DECOMP_VehBirth_TeleportSelf(struct Driver *d, u_char spawnFlag, int spawnP
         dInst->flags |= GHOST_DRAW_TRANSPARENT;
 
         d->invisibleTimer = 0x2d00;
+    }
+}
+
+/*
+Outsourced from MM_MenuProc_Main for lack of bytes in that function.
+Prints four character icons on the main menu screen as a seed hash, identifying
+this seed to make it easier to check if two or more players are on the same
+seeded game.
+If we do not invoke any randomization, and only use the randomizer mod for some
+of its other features, then we don't draw the seed hash at all. This is, by
+convention, signaled by a seed hash of 0x00000000, which has to made sure by
+the external tool generating the seed.
+*/
+void randomizer_print_seedhash()
+{
+    struct GameTracker *gGT = sdata->gGT;
+
+    unsigned int icon_color = sdata->greyColor;
+    short posX = 200;
+
+    // Print the 4 icons back to front
+    unsigned short seed_hash1 = 0; // default
+    unsigned short seed_hash2 = 0; // default
+    int db_fetch_result;
+    unsigned short db_ret;
+
+    db_fetch_result = DB_VALUE_NOTFOUND;
+    db_ret = database_fetch(
+        (DB_PREFIX_SETTINGS | SETTING_SEEDHASH_1) << 16,
+        &db_fetch_result
+    );
+    if (db_fetch_result == DB_VALUE_OK) seed_hash1 = db_ret;
+
+    db_fetch_result = DB_VALUE_NOTFOUND;
+    db_ret = database_fetch(
+        (DB_PREFIX_SETTINGS | SETTING_SEEDHASH_2) << 16,
+        &db_fetch_result
+    );
+    if (db_fetch_result == DB_VALUE_OK) seed_hash2 = db_ret;
+
+    // both hash-halves equaling zero means no randomization has been performed
+    // in this case just never print the character icons
+    if (seed_hash1 != 0 || seed_hash2 != 0)
+    {
+        RECT box;
+        box.x = 45;
+        box.y = 4;
+        box.w = 200;
+        box.h = 33;
+        RECTMENU_DrawInnerRect(
+            &box,
+            0,
+            &gGT->backBuffer->otMem.startPlusFour[3]
+        );
+        for (char i = 0; i < 4; i++)
+        {
+            if (i == 2) seed_hash2 = seed_hash1;
+            RECTMENU_DrawPolyGT4(
+                gGT->ptrIcons[data.MetaDataCharacters[((seed_hash2 >> ((i % 2) * 8)) & 0xFF) % 16].iconID],
+                posX,
+                8,
+                &gGT->backBuffer->primMem,
+                gGT->pushBuffer_UI.ptrOT,
+                icon_color,
+                icon_color,
+                icon_color,
+                icon_color,
+                1,
+                0x1000
+            );
+
+            posX -= 50;
+        }
     }
 }

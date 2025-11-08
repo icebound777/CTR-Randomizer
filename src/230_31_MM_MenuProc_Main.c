@@ -1,5 +1,7 @@
 #include <common.h>
 
+#include "VehBirth_0_TeleportSelf.h"
+
 // byte budget
 // 840/1108
 
@@ -62,6 +64,12 @@ void DECOMP_MM_MenuProc_Main(struct RectMenu *mainMenu)
                 ORANGE,
                 &gGT->backBuffer->otMem.startPlusFour[3]
             );
+
+            /* START RANDOMIZER */
+            // Print seed hash in the form of character icons
+            randomizer_print_seedhash();
+
+            /* END RANDOMIZER */
         }
 
         if ((D230.menuMainMenu.state & DRAW_NEXT_MENU_IN_HIERARCHY) == 0)
