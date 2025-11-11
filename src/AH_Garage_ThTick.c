@@ -3,6 +3,7 @@
 #include "saveslot_defines.h"
 #include "reward_enums.h"
 #include "CTRRandomizer_database.h"
+#include "VehBirth_0_TeleportSelf.h"
 /* END Randomizer */
 
 void AH_Garage_Open(struct ScratchpadStruct *, struct Thread *);
@@ -214,7 +215,8 @@ LAB_800aeb6c:
                 }
 
                 // if any of the four trophy races is not beaten
-                if (CHECK_ADV_BIT(adv->rewards, levelID_to_check + 6) == 0)
+                short bitindex = randomizer_get_bitindex_for_garage_unlock(levelID_to_check);
+                if (CHECK_ADV_BIT(adv->rewards, bitindex) == 0)
                 {
                     // boss is not open
                     bossIsOpen = false;

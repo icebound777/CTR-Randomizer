@@ -2,6 +2,7 @@
 /* START Randomizer */
 #include "saveslot_defines.h"
 #include "CTRRandomizer_database.h"
+#include "VehBirth_0_TeleportSelf.h"
 /* END Randomizer */
 
 void AH_Map_HubItems(void* hubPtrs, short *param_2)
@@ -198,7 +199,8 @@ void AH_Map_HubItems(void* hubPtrs, short *param_2)
                                     }
                                 }
 
-                                if (CHECK_ADV_BIT(adv->rewards, (levelID_to_check + 6)) == 0)
+                                short bitindex = randomizer_get_bitindex_for_garage_unlock(levelID_to_check);
+                                if (CHECK_ADV_BIT(adv->rewards, bitindex) == 0)
                                 {
                                     open = false;
                                     break;

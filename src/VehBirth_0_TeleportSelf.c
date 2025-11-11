@@ -474,3 +474,11 @@ void randomizer_print_seedhash()
         }
     }
 }
+
+short randomizer_get_bitindex_for_garage_unlock(short levelID)
+{
+    short bitindex = levelID + 6;
+    if (levelID >= SLIDE_COLISEUM) bitindex = levelID + 22; // SC / TT
+    if (levelID >= 100) bitindex = levelID - 100 + 0x6a; // Gem Cups
+    return bitindex;
+}
