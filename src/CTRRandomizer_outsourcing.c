@@ -8,7 +8,7 @@ not fit there due to missing space for original functions to expand.
 #include "reward_enums.h"
 
 struct Instance *advhud_relic = 0;
-
+int pre_gemcup_levelid = 0;
 
 /*
 Outsourced from UI_34_DrawNumRelic.c

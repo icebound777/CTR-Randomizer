@@ -1,6 +1,7 @@
 #include <common.h>
 
 #include "CTRRandomizer_database.h"
+#include "CTRRandomizer_outsourcing.h"
 #include "reward_enums.h"
 
 void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
@@ -672,6 +673,9 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
 
         levelID = data.advCupTrackIDs[4*gGT->cup.cupID];
     }
+
+    // Save current level ID for returning here after a gem cup
+    pre_gemcup_levelid = gGT->levelID;
 
     // Rem Adventure Arena
     sdata->Loading.OnBegin.RemBitsConfig0 |= 0x100000;

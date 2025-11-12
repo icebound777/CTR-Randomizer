@@ -2,6 +2,7 @@
 /* START RANDOMIZER */
 #include "CTRRandomizer_handle_item_unlocks.h"
 #include "CTRRandomizer_database.h"
+#include "CTRRandomizer_outsourcing.h"
 #include "messages_handler.h"
 /* END RANDOMIZER */
 
@@ -690,8 +691,8 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
                     gGT->podiumRewardID = STATIC_BIG1;
                 }
 
-                // Level ID for Gemstone Valley (podiums)
-                MainRaceTrack_RequestLoad(0x19);
+                // Level ID from before entering the cup warp pad
+                MainRaceTrack_RequestLoad(pre_gemcup_levelid);
             }
         }
     }
