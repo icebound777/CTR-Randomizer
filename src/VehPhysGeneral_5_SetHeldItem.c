@@ -1,9 +1,5 @@
 #include <common.h>
 
-#ifdef USE_ONLINE
-#include "../AltMods/OnlineCTR/global.h"
-#endif
-
 enum ItemSet
 {
     ITEMSET_Race1=0,
@@ -17,6 +13,21 @@ enum ItemSet
     // for the sake of array
     ITEMSET_BossRace,
     ITEMSET_CrystalChallenge
+};
+
+enum Items {
+    ITEM_TURBO=0,
+    ITEM_BOMB,
+    ITEM_MISSILE,
+    ITEM_TNT,
+    ITEM_POTION,
+    ITEM_UNUSED_FEATHER,
+    ITEM_SHIELD,
+    ITEM_MASK,
+    ITEM_CLOCK,
+    ITEM_WARPBALL,
+    ITEM_BOMB_X3,
+    ITEM_MISSILE_X3
 };
 
 // all except CrystalChallenge
@@ -52,16 +63,6 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
         {
             // Choose Itemset based on number of Drivers
             int mode = gGT->numPlyrCurrGame + gGT->numBotsNextGame;
-
-            #if /*0 &&*/ defined(USE_ONLINE)
-            int rn = octr->serverRoom;
-            if (ROOM_IS_ITEMS(rn)) //if in item lobby.
-            {
-                mode = octr->NumDrivers;
-                if (octr->NumDrivers == 1) mode = 2; //why does this matter?
-                if (octr->NumDrivers == 7) mode = 8; //default 1p arcade
-            }
-            #endif
 
             switch(mode)
             {
@@ -177,9 +178,9 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
         case ITEMSET_CrystalChallenge:
             // Item is bomb at Rocky Road, Nitro Court
             // Item is turbo at Skull Rock and Rampage Ruins
-            item = 0x1;
+            item = ITEM_BOMB;
             if (gGT->levelID != SKULL_ROCK && gGT->levelID != RAMPAGE_RUINS) goto SetItem;
-            driver->heldItemID = 0x0;
+            driver->heldItemID = ITEM_TURBO;
             break;
 
         // "-1st place": Undecided rank
@@ -199,25 +200,25 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
         {
             // Replace Clock, Mask,  with 3 Missiles
             if ((u_int)driver->heldItemID - 0x7 < 0x3)
-                driver->heldItemID = 0xb;
+                driver->heldItemID = ITEM_MISSILE_X3;
         }
 
         else if (bossFails < 0x4)
         {
             // Replace Clock, Mask with 3 Missiles
             if ((u_int)driver->heldItemID - 0x7 < 0x2)
-                driver->heldItemID = 0xb;
+                driver->heldItemID = ITEM_MISSILE_X3;
         }
 
         else if (bossFails < 0x5 && driver->heldItemID == 0x8)
         {
             // Replace Clock with 3 Missiles
-            driver->heldItemID = 0xb;
+            driver->heldItemID = ITEM_MISSILE_X3;
         }
 
         // Replace 3 Missiles with 1 Missile if racing Komodo Joe
-        if (gGT->levelID == DRAGON_MINES && driver->heldItemID == 0xb)
-            driver->heldItemID = 0x2;
+        if (gGT->levelID == DRAGON_MINES && driver->heldItemID == ITEM_MISSILE_X3)
+            driver->heldItemID = ITEM_MISSILE;
     }
 
 #if 0
@@ -237,12 +238,12 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
             gGT->gameMode1 |= WARPBALL_HELD;
 
         // if somebody has warpball already, then give 3 missiles
-        else driver->heldItemID = 0xb;
+        else driver->heldItemID = ITEM_MISSILE_X3;
     }
 
     if (
             // if you got 3 missiles
-            driver->heldItemID == 0xb &&
+            driver->heldItemID == ITEM_MISSILE_X3 &&
 
             // if more than 2 players
             gGT->numPlyrCurrGame > 2 &&
@@ -256,7 +257,7 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
             gGT->numPlayersWith3Missiles++;
 
         // if 2 drivers already have 3 missiles, now you have 1 missile
-        else driver->heldItemID = 0x2;
+        else driver->heldItemID = ITEM_MISSILE;
     }
 
     // Set number of held items
