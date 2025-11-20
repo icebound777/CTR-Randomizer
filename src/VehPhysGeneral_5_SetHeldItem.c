@@ -1,5 +1,9 @@
 #include <common.h>
 
+/* START RANDOMIZER */
+#include "CTRRandomizer_database.h"
+/* END RANDOMIZER */
+
 enum ItemSet
 {
     ITEMSET_Race1=0,
@@ -45,6 +49,7 @@ void DECOMP_VehPhysGeneral_SetHeldItem(
     char item;
     char bossFails;
     struct GameTracker *gGT;
+    u_int (*FUN_8003ea28)() = 0x8003ea28;
 
     gGT = sdata->gGT;
 
@@ -93,7 +98,7 @@ void DECOMP_VehPhysGeneral_SetHeldItem(
                     if (driver->driverRank == 1)
                     {
                         itemSet = ITEMSET_Race3;
-                        rng = DECOMP_MixRNG_Scramble();
+                        rng = (*FUN_8003ea28)(); // DECOMP_MixRNG_Scramble();
                         if (rng & 1) goto Itemset2;
                     }
                     break;
@@ -156,11 +161,50 @@ void DECOMP_VehPhysGeneral_SetHeldItem(
     }
 
     // Decide item for Driver
-    rng = (DECOMP_MixRNG_Scramble() >> 0x3) % 0xc8;
+    rng = ((*FUN_8003ea28)() >> 0x3) % 0xc8; // DECOMP_MixRNG_Scramble()
 
     // number of weapons for RNG
     numWeapons[ITEMSET_BattleCustom] = gGT->battleSetup.numWeapons;
 
+    /* START RANDOMIZER */
+    driver->heldItemID = ITEM_TURBO;
+
+    short db_prefix = 0;
+
+    if (   gGT->levelID == PAPU_PYRAMID
+        && itemSet != ITEMSET_BossRace
+        && (driver->driverRank == 6 || driver->driverRank == 7)
+    )
+    {
+        db_prefix = DB_PREFIX_SETTINGS | SETTING_HELPER_TIZIANO;
+    }
+    else if (   gGT->levelID == TINY_ARENA
+             && (driver->driverRank == 0)
+    )
+    {
+        db_prefix = DB_PREFIX_SETTINGS | SETTING_HELPER_TA;
+    }
+
+    if (db_prefix != 0)
+    {
+        int db_fetch_result = DB_VALUE_NOTFOUND;
+        short db_ret = database_fetch(
+            db_prefix << 16,
+            &db_fetch_result
+        );
+        if (   db_fetch_result == DB_VALUE_OK
+            && db_ret != 0
+        )
+        {
+            driver->heldItemID = (gGT->levelID == TINY_ARENA)
+                ? ITEM_TNT
+                : ITEM_MASK
+            ;
+        }
+    }
+
+    if (driver->heldItemID == 0)
+    /* END RANDOMIZER */
     switch (itemSet)
     {
         case ITEMSET_Race1:
@@ -192,7 +236,7 @@ void DECOMP_VehPhysGeneral_SetHeldItem(
             break;
 
         default: // "-1st place": Undecided rank
-            rng = DECOMP_MixRNG_Scramble();
+            rng = (*FUN_8003ea28)(); // DECOMP_MixRNG_Scramble();
             item = (char)rng + -0xc*((char)(rng / 6 + (rng >> 0x1f) >> 1) - (char)(rng >> 0x1f));
             SetItem:
             driver->heldItemID = item;
