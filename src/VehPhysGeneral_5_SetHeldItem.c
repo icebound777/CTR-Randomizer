@@ -36,12 +36,15 @@ extern char numWeapons[7];
 
 // Itemset infographic (outdated):
 // https://discord.com/channels/330945093416779787/550106151887568906/734368526294450267
-void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
+void DECOMP_VehPhysGeneral_SetHeldItem(
+    struct Driver *driver
+)
+{
     u_int rng;
     int itemSet;
     char item;
     char bossFails;
-    struct GameTracker* gGT;
+    struct GameTracker *gGT;
 
     gGT = sdata->gGT;
 
@@ -49,8 +52,7 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
     itemSet = ITEMSET_BattleCustom;
 
     // 5th Itemset (Battle Mode Default Itemset, 0x34de)
-    if (gGT->battleSetup.enabledWeapons == 0x34de)
-        itemSet = ITEMSET_BattleDefault;
+    if (gGT->battleSetup.enabledWeapons == 0x34de) itemSet = ITEMSET_BattleDefault;
 
     // Not in Battle Mode
     if ((gGT->gameMode1 & BATTLE_MODE) == 0)
@@ -64,11 +66,9 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
             // Choose Itemset based on number of Drivers
             int mode = gGT->numPlyrCurrGame + gGT->numBotsNextGame;
 
-            switch(mode)
+            switch (mode)
             {
-                // if boss race
-                case 2:
-
+                case 2: // if boss race
                     // boss race, last place
                     itemSet = ITEMSET_BossRace;
 
@@ -81,9 +81,7 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
                     }
                     break;
 
-                // 3P VS race
-                case 3:
-
+                case 3: // 3P VS race
                     // if first place
                     if (driver->driverRank == 0) goto Itemset1;
 
@@ -92,27 +90,25 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
 
                     // 50/50 chance of an upgrade,
                     // while in 2nd place
-
                     if (driver->driverRank == 1)
                     {
                         itemSet = ITEMSET_Race3;
                         rng = DECOMP_MixRNG_Scramble();
                         if (rng & 1) goto Itemset2;
                     }
-
                     break;
+
                 case 4:
                     itemSet = driver->driverRank;
                     break;
+
                 case 5:
                     itemSet = driver->driverRank;
                     // 5th rank is 4th Itemset
                     if (itemSet == 4) itemSet = 3;
                     break;
 
-                // 2P Arcade
-                case 6:
-
+                case 6: // 2P Arcade
                     // careful, dont get confused by names
                     itemSet = driver->driverRank;
 
@@ -120,17 +116,19 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
                     if (itemSet == 0) goto Itemset1;
 
                     // if 6th place, ItemSet4
-                    if (itemSet == 5) itemSet = ITEMSET_Race4;
-
-                    // 2nd, 3rd place, gets 2nd Itemset
-                    // 4th, 5th place, gets 3rd Itemset
-                    else itemSet = (itemSet - 1)/2 + 1;
+                    if (itemSet == 5)
+                    {
+                        itemSet = ITEMSET_Race4;
+                    }
+                    else {
+                        // 2nd, 3rd place, gets 2nd Itemset
+                        // 4th, 5th place, gets 3rd Itemset
+                        itemSet = (itemSet - 1)/2 + 1;
+                    }
 
                     break;
 
-                // 1P Arcade
-                case 8:
-
+                case 8: // 1P Arcade & Adventure
                     // 0,1 = 0 (itemset1)
                     // 2,3 = 1 (itemset2)
                     // 4,5 = 2 (itemset3)
@@ -143,13 +141,18 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
                         Itemset2:
                         itemSet = ITEMSET_Race2;
                     }
+                    break;
             }
         }
 
         // if you have 4th-place itemset on first lap,
         // then override to 3rd place
-        if (itemSet == ITEMSET_Race4 && driver->lapIndex == 0)
+        if (   itemSet == ITEMSET_Race4
+            && driver->lapIndex == 0
+        )
+        {
             itemSet = ITEMSET_Race3;
+        }
     }
 
     // Decide item for Driver
@@ -158,7 +161,7 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
     // number of weapons for RNG
     numWeapons[ITEMSET_BattleCustom] = gGT->battleSetup.numWeapons;
 
-    switch(itemSet)
+    switch (itemSet)
     {
         case ITEMSET_Race1:
         case ITEMSET_Race2:
@@ -179,12 +182,16 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
             // Item is bomb at Rocky Road, Nitro Court
             // Item is turbo at Skull Rock and Rampage Ruins
             item = ITEM_BOMB;
-            if (gGT->levelID != SKULL_ROCK && gGT->levelID != RAMPAGE_RUINS) goto SetItem;
+            if (   gGT->levelID != SKULL_ROCK
+                && gGT->levelID != RAMPAGE_RUINS
+            )
+            {
+                goto SetItem;
+            }
             driver->heldItemID = ITEM_TURBO;
             break;
 
-        // "-1st place": Undecided rank
-        default:
+        default: // "-1st place": Undecided rank
             rng = DECOMP_MixRNG_Scramble();
             item = (char)rng + -0xc*((char)(rng / 6 + (rng >> 0x1f) >> 1) - (char)(rng >> 0x1f));
             SetItem:
@@ -196,29 +203,37 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
     {
         bossFails = sdata->advProgress.timesLostBossRace[gGT->bossID];
 
-        if (bossFails < 0x3)
+        if (bossFails < 3)
         {
             // Replace Clock, Mask,  with 3 Missiles
             if ((u_int)driver->heldItemID - 0x7 < 0x3)
+            {
                 driver->heldItemID = ITEM_MISSILE_X3;
+            }
         }
-
-        else if (bossFails < 0x4)
+        else if (bossFails < 4)
         {
             // Replace Clock, Mask with 3 Missiles
             if ((u_int)driver->heldItemID - 0x7 < 0x2)
+            {
                 driver->heldItemID = ITEM_MISSILE_X3;
+            }
         }
-
-        else if (bossFails < 0x5 && driver->heldItemID == 0x8)
+        else if (   bossFails < 0x5
+                 && driver->heldItemID == ITEM_CLOCK
+        )
         {
             // Replace Clock with 3 Missiles
             driver->heldItemID = ITEM_MISSILE_X3;
         }
 
         // Replace 3 Missiles with 1 Missile if racing Komodo Joe
-        if (gGT->levelID == DRAGON_MINES && driver->heldItemID == ITEM_MISSILE_X3)
+        if (   gGT->levelID == DRAGON_MINES
+            && driver->heldItemID == ITEM_MISSILE_X3
+        )
+        {
             driver->heldItemID = ITEM_MISSILE;
+        }
     }
 
 #if 0
@@ -226,45 +241,44 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
     // Spring is not in the RNG anyway
 
     // Replace unused Spring item with Turbo
-    if (driver->heldItemID == 0x5)
+    if (driver->heldItemID == ITEM_UNUSED_FEATHER)
         driver->heldItemID = 0x0;
 #endif
 
     // Make sure only 1 Warpball is instanced at once
-    if (driver->heldItemID == 0x9)
+    if (driver->heldItemID == ITEM_WARPBALL)
     {
         // if nobody has warpball, then set flag that somebody has it
         if ((gGT->gameMode1 & WARPBALL_HELD) == 0)
+        {
             gGT->gameMode1 |= WARPBALL_HELD;
-
-        // if somebody has warpball already, then give 3 missiles
-        else driver->heldItemID = ITEM_MISSILE_X3;
+        }
+        else
+        {
+            // if somebody has warpball already, then give 3 missiles
+            driver->heldItemID = ITEM_MISSILE_X3;
+        }
     }
 
-    if (
-            // if you got 3 missiles
-            driver->heldItemID == ITEM_MISSILE_X3 &&
-
-            // if more than 2 players
-            gGT->numPlyrCurrGame > 2 &&
-
-            // if not in battle mode
-            ((gGT->gameMode1 & BATTLE_MODE) == 0)
-        )
+    if (   driver->heldItemID == ITEM_MISSILE_X3  // if you got 3 missiles
+        && gGT->numPlyrCurrGame > 2 // if more than 2 players
+        && ((gGT->gameMode1 & BATTLE_MODE) == 0) // if not in battle mode
+    )
     {
         // if less than 2 drivers have 3 missiles, then increase number of drivers that have it
         if (gGT->numPlayersWith3Missiles < 2)
+        {
             gGT->numPlayersWith3Missiles++;
-
-        // if 2 drivers already have 3 missiles, now you have 1 missile
-        else driver->heldItemID = ITEM_MISSILE;
+        }
+        else
+        {
+            // if 2 drivers already have 3 missiles, now you have 1 missile
+            driver->heldItemID = ITEM_MISSILE;
+        }
     }
 
     // Set number of held items
-    if ((u_int)driver->heldItemID - 0xA < 0x2)
-        driver->numHeldItems = 0x3;
-
-    return;
+    if ((u_int)driver->heldItemID - 0xA < 0x2) driver->numHeldItems = 3;
 }
 
 char* charPtr[7] =
