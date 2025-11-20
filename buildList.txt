@@ -55,3 +55,6 @@ common, exe, UI_DrawRaceClock, 0x0, src/UI_23_DrawRaceClock.c
 common, exe, SelectProfile_AllProfiles_MenuProc, 0x0, src/SelectProfile_AllProfiles_MenuProc.c
 // Disable deleting adv saves
 common, exe, SelectProfile_AdvPickMode_MenuProc, 0x0, src/SelectProfile_AdvPickMode_MenuProc.c
+
+// Modify item boxes if helper settings for Tiziano or TA are active
+common, exe, VehPhysGeneral_SetHeldItem, 0x0, src/VehPhysGeneral_5_SetHeldItem.c
