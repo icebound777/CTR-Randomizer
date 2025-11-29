@@ -134,14 +134,14 @@ void DECOMP_VehPhysGeneral_SetHeldItem(
                     break;
 
                 case 8: // 1P Arcade & Adventure
-                    // 0,1 = 0 (itemset1)
-                    // 2,3 = 1 (itemset2)
+                    // 0 = 0 (itemset1)
+                    // 1,2,3 = 1 (itemset2)
                     // 4,5 = 2 (itemset3)
                     // 6,7 = 3 (itemset4)
                     itemSet = driver->driverRank >> 1;
 
                     // if in 2nd place, get itemSet2
-                    if (itemSet == 1)
+                    if (driver->driverRank == 1)
                     {
                         Itemset2:
                         itemSet = ITEMSET_Race2;
