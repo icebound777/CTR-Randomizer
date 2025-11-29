@@ -477,8 +477,20 @@ void randomizer_print_seedhash()
 
 short randomizer_get_bitindex_for_garage_unlock(short levelID)
 {
+    short hub[8] = {
+        3,  // 1st battle map, Nitro Court,   is for Hub 4 (3+1), Citadel City
+        1,  // 2nd battle map, Rampage Ruins, is for Hub 2 (1+1), Lost Ruins
+        -1, // 3rd battle map, Parking Lot,   is not used in any hub
+        0,  // 4th battle map, Skull Rock,    is for Hub 1 (0+1), N Sane Beach
+        -1, // 5th battle map, North Bowl,    is not used in any hub
+        2,  // 6th battle map, Rocky Road     is for Hub 3 (2+1), Glacier Park
+        -1, // 7th battle map, Lab Basement   is not used in any hub
+
+        0,  // Needed for 4-byte alignment
+    };
     short bitindex = levelID + 6;
     if (levelID >= SLIDE_COLISEUM) bitindex = levelID + 22; // SC / TT
+    if (levelID >= NITRO_COURT) bitindex = hub[levelID - NITRO_COURT] + 0x6f; // Battle Arenas
     if (levelID >= 100) bitindex = levelID - 100 + 0x6a; // Gem Cups
     return bitindex;
 }
