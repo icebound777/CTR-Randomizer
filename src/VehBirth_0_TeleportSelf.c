@@ -489,8 +489,10 @@ short randomizer_get_bitindex_for_garage_unlock(short levelID)
         0,  // Needed for 4-byte alignment
     };
     short bitindex = levelID + 6;
-    if (levelID >= SLIDE_COLISEUM) bitindex = levelID + 22; // SC / TT
-    if (levelID >= NITRO_COURT) bitindex = hub[levelID - NITRO_COURT] + 0x6f; // Battle Arenas
+
     if (levelID >= 100) bitindex = levelID - 100 + 0x6a; // Gem Cups
+    else if (levelID >= NITRO_COURT) bitindex = hub[levelID - NITRO_COURT] + 0x6f; // Battle Arenas
+    else if (levelID >= SLIDE_COLISEUM) bitindex = levelID + 22; // SC / TT
+
     return bitindex;
 }
