@@ -645,12 +645,18 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     else if (levelID < NITRO_COURT) // Slide Col or Turbo Track
     {
         // Add Relic
-        sdata->Loading.OnBegin.AddBitsConfig0 |= 0x4000000;
+        sdata->Loading.OnBegin.AddBitsConfig0 |= RELIC_RACE;
+
+        // RANDOMIZER
+        // Apparently the comment block further up is wrong for our case, and
+        // relic races *do* care about the kartSpawnOrderArray.
+        // So always place player in pos 1 if relic race.
+        sdata->kartSpawnOrderArray[0] = 1;
     }
     else if (levelID < GEM_STONE_VALLEY) // Battle Tracks
     {
         // Add Crystal Challenge
-        sdata->Loading.OnBegin.AddBitsConfig0 |= 0x8000000;
+        sdata->Loading.OnBegin.AddBitsConfig0 |= CRYSTAL_CHALLENGE;
 
         // Dont have hint "collect every crystal"
         if ((sdata->advProgress.rewards[4] & 0x8000) == 0) MainFrame_RequestMaskHint(0x19, 1);
@@ -665,7 +671,7 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     else // gem cups
     {
         // Add Adv Cup
-        sdata->Loading.OnBegin.AddBitsConfig0 |= 0x10000000;
+        sdata->Loading.OnBegin.AddBitsConfig0 |= ADVENTURE_CUP;
 
         gGT->cup.cupID = levelID - ADV_CUP;
         gGT->cup.trackIndex = 0;
@@ -674,11 +680,20 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
         levelID = data.advCupTrackIDs[4*gGT->cup.cupID];
     }
 
+    if ((gGT->gameMode1 & RELIC_RACE) != 0)
+    {
+        // RANDOMIZER
+        // Apparently the comment block further up is wrong for our case, and
+        // relic races *do* care about the kartSpawnOrderArray.
+        // So always place player in pos 1 if relic race.
+        sdata->kartSpawnOrderArray[0] = 1;
+    }
+
     // Save current level ID for returning here after a gem cup
     pre_gemcup_levelid = gGT->levelID;
 
     // Rem Adventure Arena
-    sdata->Loading.OnBegin.RemBitsConfig0 |= 0x100000;
+    sdata->Loading.OnBegin.RemBitsConfig0 |= ADVENTURE_ARENA;
 
     MainRaceTrack_RequestLoad(levelID);
 }
