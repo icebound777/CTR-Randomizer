@@ -15,7 +15,6 @@ void DECOMP_UI_DrawNumRelic(short posX, short posY)
     /* START Randomizer */
     num = randomizer_get_num_relic();
     /* END Randomizer */
-    if ((gGT->gameMode2 & 0x1000000) != 0) num--;
 
     sprintf(&string[0], &sdata->s_longInt[0], num);
     DecalFont_DrawLine(&string[0], posX+0xD, posY, FONT_BIG, ORANGE);
