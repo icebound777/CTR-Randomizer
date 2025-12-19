@@ -2,6 +2,7 @@
 /* START RANDOMIZER */
 #include "CTRRandomizer_database.h"
 #include "reward_enums.h"
+#include "CTRRandomizer_outsourcing.h"
 /* END RANDOMIZER */
 
 #define gte_ldVXY0(r0) __asm__ volatile("mtc2   %0, $0" \
@@ -158,6 +159,10 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
                     ? 0xd8d2090 // relic gold
                     : 0xffede90 // relic platinum
             ;
+
+            // pack relic color and a 75 frames lock timer together and pass to
+            // CTRRandomizer_outsourcing > randomizer_get_num_relic()
+            hud_relic_color_lock = prizeColor | (75 << 4);
 
             prize[12] = 0x2ab;
             prize[13] = 0x436;

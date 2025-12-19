@@ -5,5 +5,6 @@ int randomizer_get_num_relic(void);
 
 extern struct Instance *advhud_relic;
 extern int pre_gemcup_levelid;
+extern int hud_relic_color_lock;
 
 #endif
