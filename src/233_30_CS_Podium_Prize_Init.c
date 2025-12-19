@@ -1,6 +1,7 @@
 #include <common.h>
 /* START RANDOMIZER */
 #include "CTRRandomizer_database.h"
+#include "reward_enums.h"
 /* END RANDOMIZER */
 
 #define gte_ldVXY0(r0) __asm__ volatile("mtc2   %0, $0" \
@@ -150,37 +151,13 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
             prize[8] = (*ptrHudData)[UI_HUD_ELEM_NUMRELIC].x;
             prize[9] = (*ptrHudData)[UI_HUD_ELEM_NUMRELIC].y - 60;
 
-            // previous levID, + 0x3a (0x3a is first bit of platinum relic)
-            u_int bitIndex = gGT->prevLEV + 0x3a;
-
-            // if you have not earned a platinum relic on this track
-            if (CHECK_ADV_BIT(sdata->advProgress.rewards,bitIndex) == 0)
-            {
-                // previous levID, + 0x28 (0x2a is the first bit of gold relic)
-                bitIndex = gGT->prevLEV + 0x28;
-
-                // if you have not earned a gold relic on this track
-                if (CHECK_ADV_BIT(sdata->advProgress.rewards,bitIndex) == 0)
-                {
-                    // sapphire color
-                    relicColor = 0x20a5ff0;
-                }
-                // if you earned a gold relic on this track
-                else
-                {
-                    // gold color
-                    relicColor = 0xd8d2090;
-                }
-            }
-            // if you earned a platinum relic on this track
-            else
-            {
-                // platinum color
-                relicColor = 0xffede90;
-            }
-
             // set color of relic
-            inst->colorRGBA = relicColor;
+            inst->colorRGBA = (prizeColor == RELIC_SAPPHIRE)
+                ? 0x20a5ff0 // relic blue
+                : (prizeColor == RELIC_GOLD)
+                    ? 0xd8d2090 // relic gold
+                    : 0xffede90 // relic platinum
+            ;
 
             prize[12] = 0x2ab;
             prize[13] = 0x436;
