@@ -312,11 +312,31 @@ void DECOMP_BOTS_Adv_AdjustDifficulty(void)
         }
     }
 
+    if (   (   ((gameMode1 & ADVENTURE_CUP) == 0)
+            && ((gGT->gameMode2 & CUP_ANY_KIND) == 0))
+        || gGT->cup.trackIndex == 0
+    )
+    {
+        rng = (rng >> 8) & 3;
+
+        for (i = 0; i < 4; i++, rng++)
+        {
+            rowOrder[i] = rng;
+            // local_1c[i] = rng + 4;
+        }
+
+        for (i = 0; i < 8; i++)
+        {
+            // set acceleration order to spawn order?
+            sdata->accelerateOrder[i] = rowOrder[sdata->kartSpawnOrderArray[i]];
+        }
+    }
+
     // if you are in any cup,
     // and if this is not the first track
     if (   (   ((gameMode1 & ADVENTURE_CUP) != 0)
             || ((gGT->gameMode2 & CUP_ANY_KIND) != 0))
-        && gGT->cup.trackIndex != 0
+        && gGT->cup.trackIndex > 0
     )
     {
         short playerPoint = -1;
@@ -336,27 +356,11 @@ void DECOMP_BOTS_Adv_AdjustDifficulty(void)
 
             // if this driver starts at top speed
             if (sdata->accelerateOrder[i] == 0) topIndex = i;
-
-            // swap accel order
-            char  temp = sdata->accelerateOrder[playerIndex];
-            sdata->accelerateOrder[playerIndex] = sdata->accelerateOrder[topIndex];
-            sdata->accelerateOrder[topIndex] = temp;
-        }
-    }
-    else
-    {
-        rng = (rng >> 8) & 3;
-
-        for (i = 0; i < 4; i++, rng++)
-        {
-            rowOrder[i] = rng;
-            // local_1c[i] = rng + 4;
         }
 
-        for (i = 0; i < 8; i++)
-        {
-            // set acceleration order to spawn order?
-            sdata->accelerateOrder[i] = rowOrder[sdata->kartSpawnOrderArray[i]];
-        }
+        // swap accel order
+        char  temp = sdata->accelerateOrder[playerIndex];
+        sdata->accelerateOrder[playerIndex] = sdata->accelerateOrder[topIndex];
+        sdata->accelerateOrder[topIndex] = temp;
     }
 }
