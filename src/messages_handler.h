@@ -11,11 +11,11 @@ enum MsgTypes {
 };
 
 void enqueue_message(
-    int   msg_type,
+    char   msg_type,
     char *msg_pointer
 );
 void enqueue_reward_message(
-    int  msg_type,
+    char  msg_type,
     int  reward
 );
 

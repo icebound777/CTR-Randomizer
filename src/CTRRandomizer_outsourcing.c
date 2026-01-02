@@ -9,7 +9,7 @@ not fit there due to missing space for original functions to expand.
 
 struct Instance *advhud_relic = 0;
 int pre_gemcup_levelid = 0;
-int hud_relic_color_lock = 0;
+short hud_relic_color_lock = 0;
 
 /*
 Outsourced from UI_34_DrawNumRelic.c
@@ -43,17 +43,17 @@ int randomizer_get_num_relic(void)
 
     if (relic_type == RELIC_SAPPHIRE)
     {
-        if (advhud_relic != 0) advhud_relic->colorRGBA = 0x20a5ff0;
+        advhud_relic->colorRGBA = 0x20a5ff0;
         num_relic_to_draw += ((advSlot2->SLOT2_NUM_RELICS_SAPPHIRE) + (advSlot3->SLOT2_NUM_RELICS_SAPPHIRE));
     }
     else if (relic_type == RELIC_GOLD)
     {
-        if (advhud_relic != 0) advhud_relic->colorRGBA = 0xd8d2090;
+        advhud_relic->colorRGBA = 0xd8d2090;
         num_relic_to_draw += ((advSlot2->SLOT2_NUM_RELICS_GOLD) + (advSlot3->SLOT2_NUM_RELICS_GOLD));
     }
     else
     {
-        if (advhud_relic != 0) advhud_relic->colorRGBA = 0xffede90;
+        advhud_relic->colorRGBA = 0xffede90;
         num_relic_to_draw += ((advSlot2->SLOT2_NUM_RELICS_PLATINUM) + (advSlot3->SLOT2_NUM_RELICS_PLATINUM));
     }
 

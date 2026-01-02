@@ -30,7 +30,7 @@ enum MessageTimers {
 };
 
 struct MessageMeta {
-    int  msg_type;
+    char msg_type;
     char msg[LOCAL_MSG_SIZE + 1];
 };
 
@@ -216,7 +216,7 @@ void messages_handler()
    messages exceeds the buffer size.
 */
 void enqueue_message(
-    int   msg_type,
+    char  msg_type,
     char *msg_pointer
 )
 {
@@ -226,7 +226,7 @@ void enqueue_message(
 }
 
 void enqueue_reward_message(
-    int  msg_type,
+    char msg_type,
     int  reward
 )
 {
