@@ -227,7 +227,7 @@ void DECOMP_BOTS_Adv_AdjustDifficulty(void)
 
         // If you're not loading and
         // If you're not in Time Trial
-        if ((gameMode1 & (LOADING | TIME_TRIAL)) == 0)
+        if ((gameMode1 & (LOADING | TIME_TRIAL | RELIC_RACE)) == 0)
         {
             // If you're not in Crystal Challenge (in adventure mode)
             if ((gameMode1 & CRYSTAL_CHALLENGE) == 0)
