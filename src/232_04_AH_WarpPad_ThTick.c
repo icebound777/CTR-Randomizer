@@ -646,12 +646,6 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
     {
         // Add Relic
         sdata->Loading.OnBegin.AddBitsConfig0 |= RELIC_RACE;
-
-        // RANDOMIZER
-        // Apparently the comment block further up is wrong for our case, and
-        // relic races *do* care about the kartSpawnOrderArray.
-        // So always place player in pos 1 if relic race.
-        sdata->kartSpawnOrderArray[0] = 1;
     }
     else if (levelID < GEM_STONE_VALLEY) // Battle Tracks
     {
@@ -678,15 +672,6 @@ void DECOMP_AH_WarpPad_ThTick(struct Thread* t)
         for(i = 0; i < 8; i++) gGT->cup.points[i] = 0;
 
         levelID = data.advCupTrackIDs[4*gGT->cup.cupID];
-    }
-
-    if ((gGT->gameMode1 & RELIC_RACE) != 0)
-    {
-        // RANDOMIZER
-        // Apparently the comment block further up is wrong for our case, and
-        // relic races *do* care about the kartSpawnOrderArray.
-        // So always place player in pos 1 if relic race.
-        sdata->kartSpawnOrderArray[0] = 1;
     }
 
     // Save current level ID for returning here after a gem cup
