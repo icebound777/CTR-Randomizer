@@ -6,6 +6,7 @@
 
 # Unignore docs
 !docs
+!README.md
 
 # Unignore src dir files
 !src
@@ -13,10 +14,6 @@ src/*
 !/src/*.c
 !/src/*.h
 !/src/*.s
-
-# Unignore util files
-!util
-*.pyc
 
 # Unignore build files
 !build.bat
