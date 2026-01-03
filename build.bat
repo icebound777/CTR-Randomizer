@@ -1,1 +1,1 @@
-python util/build_main.py
+python ../../../../../tools/mod-builder/main.py
