@@ -1,0 +1,60 @@
+// Include anti-anti-piracy patches for PAL and NTSC-J
+1006, exe, 0x80012534, 0x0, ../../Patches/JpnModchips/src/jpnModchips.s
+1111, exe, 0x80012570, 0x0, ../../Patches/JpnModchips/src/jpnModchips.s
+1020, exe, 0x80031cc8, 0x0, ../../Patches/EurLibcrypt/src/libcrypt.s
+
+// Compile rando files to empty spaces in RDATA
+common, exe, rdata_free, 0x0, src/CTRRandomizer_database.c  src/messages_handler.c  src/CTRRandomizer_outsourcing.c  src/CTRRandomizer_handle_item_unlocks.c
+
+// Print Randomizer version message on every frame
+// ref: src/print_version.c
+common, exe, BOTS_SetRotation, -0x8, src/messages_handler_hook.s
+
+// Print seed hash character icons on title screen
+common, 230, MM_MenuProc_Main, 0x0, src/230_31_MM_MenuProc_Main.c
+
+// Rework Save/Load menu to limit save slots to slot 0
+common, exe, SelectProfile_InputLogic, 0x0, src/SelectProfile_InputLogic.c
+common, exe, SelectProfile_DrawAdvProfile, 0x0, src/SelectProfile_DrawAdvProfile.c
+
+// Modify New Savefile: Set all hints as already seen
+// ref: src/CTRRandomizer_init_profile.c
+common, exe, GAMEPROG_NewProfile_InsideAdv, 0x0, src/GAMEPROG_05_NewProfile_InsideAdv.c
+
+// Modify Boss Cutscene Check: Always return 0 so we never see boss scenes
+common, 233, CS_Camera_BoolGotoBoss, 0x0, src/CS_Camera_BoolGotoBoss.c
+
+// Modify Warppad
+common, 232, AH_WarpPad_LInB, 0x0, src/AH_WarpPad_LInB.c
+common, 232, AH_WarpPad_ThTick, 0x0, src/232_04_AH_WarpPad_ThTick.c
+
+// Decouple reward flags from the actual rewards by writing the rewards to save slot 2
+// Dynamically unlock items by fetching them from the rando database
+common, exe, GAMEPROG_AdvPercent, 0x0, src/GAMEPROG_00_AdvPercent.c
+common, 221, CC_EndEvent_DrawMenu, 0x0, src/221_Full.c
+common, 222, AA_EndEvent_DrawMenu, 0x0, src/222_Full.c
+common, 223, RR_EndEvent_UnlockAward, 0x0, src/223_RR_EndEvent_UnlockAward.c
+common, exe, UI_DrawNumRelic, 0x0, src/UI_34_DrawNumRelic.c
+common, exe, UI_DrawNumKey, 0x0, src/UI_35_DrawNumKey.c
+common, exe, UI_DrawNumTrophy, 0x0, src/UI_36_DrawNumTrophy.c
+common, exe, UI_CupStandings_InputAndDraw, 0x0, src/UI_58_CupStandings_InputAndDraw.c
+common, exe, BOTS_Adv_AdjustDifficulty, 0x0, src/BOTS_Adv_AdjustDifficulty.c
+common, exe, VehBirth_TeleportSelf, 0x0, src/VehBirth_0_TeleportSelf.c
+common, 232, AH_Door_ThTick, 0x0, src/AH_Door_ThTick.c
+common, 232, AH_Garage_ThTick, 0x0, src/AH_Garage_ThTick.c
+common, 232, AH_Map_HubItems, 0x0, src/AH_Map_HubItems.c
+common, 232, AH_Pause_Draw, 0x0, src/AH_Pause_Draw.c
+common, 233, CS_Podium_Prize_Init, 0x0, src/233_30_CS_Podium_Prize_Init.c
+common, 233, CS_Camera_ThTick_Podium, 0x0, src/233_23_CS_Camera_ThTick_Podium.c
+
+// Update relic timer to skip non-required relic difficulties
+common, exe, UI_INSTANCE_InitAll, 0x0, src/UI_08_INSTANCE_InitAll.c
+common, exe, UI_DrawRaceClock, 0x0, src/UI_23_DrawRaceClock.c
+
+// Change saving and loading to also move data between adv slots 1 and 3
+common, exe, SelectProfile_AllProfiles_MenuProc, 0x0, src/SelectProfile_AllProfiles_MenuProc.c
+// Disable deleting adv saves
+common, exe, SelectProfile_AdvPickMode_MenuProc, 0x0, src/SelectProfile_AdvPickMode_MenuProc.c
+
+// Modify item boxes if helper settings for Tiziano or TA are active
+common, exe, VehPhysGeneral_SetHeldItem, 0x0, src/VehPhysGeneral_5_SetHeldItem.c

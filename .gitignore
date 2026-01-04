@@ -4,8 +4,16 @@
 # Unignore .gitignore
 !.gitignore
 
+# Unignore docs
+!docs
+!README.md
+
 # Unignore src dir files
-!/src
+!src
+src/*
+!/src/*.c
+!/src/*.h
+!/src/*.s
 
 # Unignore build files
 !build.bat
