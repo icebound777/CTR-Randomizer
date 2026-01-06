@@ -1,5 +1,7 @@
 #include <common.h>
 
+#include "CTRRandomizer_outsourcing.h"
+
 void DECOMP_MainFreeze_MenuPtrDefault(struct RectMenu* menu)
 {
     int levID = 0; //dingo canyon
@@ -193,7 +195,9 @@ void DECOMP_MainFreeze_MenuPtrDefault(struct RectMenu* menu)
             }
             else // If you're in Adventure Cup
             {
-                levID = GEM_STONE_VALLEY;
+                /* RANDOMIZER */
+                levID = pre_gemcup_levelid;
+                /* RANDOMIZER */
 
                 // when loading is done remove bits for Adventure Cup, relic, and crystal challenge
                 sdata->Loading.OnBegin.RemBitsConfig0 |= 0x1c000000;
