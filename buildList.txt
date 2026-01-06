@@ -38,6 +38,7 @@ common, exe, UI_DrawNumRelic, 0x0, src/UI_34_DrawNumRelic.c
 common, exe, UI_DrawNumKey, 0x0, src/UI_35_DrawNumKey.c
 common, exe, UI_DrawNumTrophy, 0x0, src/UI_36_DrawNumTrophy.c
 common, exe, UI_CupStandings_InputAndDraw, 0x0, src/UI_58_CupStandings_InputAndDraw.c
+common, exe, MainFreeze_MenuPtrDefault, 0x0, src/MainFreeze_06_MenuPtrDefault.c
 common, exe, BOTS_Adv_AdjustDifficulty, 0x0, src/BOTS_Adv_AdjustDifficulty.c
 common, exe, VehBirth_TeleportSelf, 0x0, src/VehBirth_0_TeleportSelf.c
 common, 232, AH_Door_ThTick, 0x0, src/AH_Door_ThTick.c
