@@ -48,6 +48,9 @@ common, 232, AH_Pause_Draw, 0x0, src/AH_Pause_Draw.c
 common, 233, CS_Podium_Prize_Init, 0x0, src/233_30_CS_Podium_Prize_Init.c
 common, 233, CS_Camera_ThTick_Podium, 0x0, src/233_23_CS_Camera_ThTick_Podium.c
 
+// Load correct credits based on our relic counters
+common, 233, CS_Credits_Init, 0x0, src/233_47_CS_Credits_Init.c
+
 // Update relic timer to skip non-required relic difficulties
 common, exe, UI_INSTANCE_InitAll, 0x0, src/UI_08_INSTANCE_InitAll.c
 common, exe, UI_DrawRaceClock, 0x0, src/UI_23_DrawRaceClock.c

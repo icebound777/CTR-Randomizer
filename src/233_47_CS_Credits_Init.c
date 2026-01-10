@@ -1,0 +1,108 @@
+#include <common.h>
+
+// temporary workaround
+extern struct Ovr233_Credits_BSS* creditsBSS;
+
+void CS_Credits_ThTick();
+
+void CS_Credits_Init()
+{
+    int i;
+    int bitIndex;
+    struct Instance *inst;
+
+    struct GameTracker *gGT;
+    struct AdvProgress *advProg;
+    struct CreditsObj *creditsObj;
+    struct CreditsLevHeader *CLH;
+    struct CreditsLevHeader *creditsDst;
+
+    gGT = sdata->gGT;
+    advProg = &sdata->advProgress;
+    creditsObj = &creditsBSS->creditsObj;
+
+    void **pointers = ST1_GETPOINTERS(gGT->level1->ptrSpawnType1);
+    CLH = pointers[ST1_CREDITS];
+
+    creditsBSS->DancerThread = 0;
+
+    /* START Randomizer */
+    if ((sdata->advProgress.rewards[3] & 0x100000) != 0) // Oxide 2 beaten
+    {
+        creditsBSS->boolAllBlue = 1;
+
+        if (gGT->currAdvProfile.completionPercent == 101)
+        {
+            gGT->numWinners = 1;
+            gGT->winnerIndex[0] = 0;
+            gGT->confetti.numParticles_max = 250;
+            gGT->confetti.unk2 = 250;
+            gGT->renderFlags |= 4;
+        }
+    }
+    /* END Randomizer */
+
+    // 0 = size
+    // 0 = no relation to param4
+    // 0x300 = SmallStackPool
+    // 0xd = "other" thread bucket
+    creditsBSS->CreditThread = PROC_BirthWithObject(
+        0x30d,
+        CS_Credits_ThTick,
+        NULL,
+        NULL
+    );
+
+    memset(creditsObj, 0, sizeof(struct CreditsObj));
+    creditsObj->countdown = FPS_DOUBLE(360);
+
+    // === 5 instances ===
+    for (i = 0; i < 5; i++)
+    {
+        #if 0
+        // OG game passes CreditsThread as parameter,
+        // but that's pointless, so it is removed
+        #endif
+
+        // STATIC_AKUAKU for some reason?
+        inst = INSTANCE_Birth3D(gGT->modelPtr[STATIC_AKUAKU], 0, 0);
+
+        // save instance
+        creditsObj->creditGhostInst[4-i] = inst;
+
+        *(int*)(((unsigned int)&inst->matrix) + 0x0) = 0x1000;
+        *(int*)(((unsigned int)&inst->matrix) + 0x4) = 0;
+        *(int*)(((unsigned int)&inst->matrix) + 0x8) = 0x1000;
+        *(int*)(((unsigned int)&inst->matrix) + 0xC) = 0;
+        inst->matrix.m[2][2] = 0x1000;
+
+        inst->flags |= 0x400;
+
+        struct InstDrawPerPlayer* idpp = INST_GETIDPP(inst);
+        idpp[0].pushBuffer = &gGT->pushBuffer_UI;
+
+        #if 0
+        // OG game erases other idpp's, but just ignore it
+        #endif
+    }
+
+    creditsDst = MEMPACK_AllocHighMem(CLH->size /* "credits strings" */);
+
+    memcpy(creditsDst, CLH, CLH->size);
+
+    creditsBSS->numStrings = creditsDst->numStrings;
+
+    char **ptrStrings = (char**) CREDITSHEADER_GETSTRINGS(creditsDst);
+    creditsBSS->ptrStrings = ptrStrings;
+
+    for (i = 0; i < creditsBSS->numStrings; i++)
+    {
+        ptrStrings[i] = (char*) ((unsigned int)ptrStrings[i] + (unsigned int)creditsDst);
+    }
+
+    creditsObj->credits_posY = 340;
+    creditsObj->credits_topString = ptrStrings[0x14];
+}
+
+// temporary workaround
+struct Ovr233_Credits_BSS* creditsBSS = (struct Ovr233_Credits_BSS*)0x800b9488;
