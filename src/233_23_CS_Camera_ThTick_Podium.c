@@ -294,7 +294,7 @@ void CS_Camera_ThTick_Podium(struct Thread *th)
         // load LEV for beat oxide any%
         stringOrLevID = OXIDE_ENDING;
 
-        if ((sdata->advProgress.rewards[2] & 0x100000) != 0)
+        if ((sdata->advProgress.rewards[3] & 0x100000) != 0)
         {
             // load LEV for beat oxide 100%
             stringOrLevID = OXIDE_TRUE_ENDING;
