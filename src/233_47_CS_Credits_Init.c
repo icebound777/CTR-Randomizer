@@ -11,11 +11,6 @@ void CS_Credits_Init()
     int bitIndex;
     struct Instance *inst;
 
-    // optimization
-    //int boolAllBlue;
-    #define boolAllBlue creditsBSS->boolAllBlue
-
-    int boolAllGold;
     struct GameTracker *gGT;
     struct AdvProgress *advProg;
     struct CreditsObj *creditsObj;
@@ -31,34 +26,21 @@ void CS_Credits_Init()
 
     creditsBSS->DancerThread = 0;
 
-    boolAllBlue = 1;
-    boolAllGold = 1;
-
-    for (i = 0; i < 0x12; i++)
+    /* START Randomizer */
+    if ((sdata->advProgress.rewards[3] & 0x100000) != 0) // Oxide 2 beaten
     {
-        if (boolAllBlue != 0)
-        {
-            bitIndex = i + 0x16;
-            boolAllBlue = CHECK_ADV_BIT(advProg->rewards, bitIndex);
-        }
+        creditsBSS->boolAllBlue = 1;
 
-        if (boolAllGold != 0)
+        if (gGT->currAdvProfile.completionPercent == 101)
         {
-            bitIndex = i + 0x28;
-            boolAllGold = CHECK_ADV_BIT(advProg->rewards, bitIndex);
+            gGT->numWinners = 1;
+            gGT->winnerIndex[0] = 0;
+            gGT->confetti.numParticles_max = 250;
+            gGT->confetti.unk2 = 250;
+            gGT->renderFlags |= 4;
         }
     }
-
-    #undef boolAllBlue
-
-    if (boolAllGold != 0)
-    {
-        gGT->numWinners = 1;
-        gGT->winnerIndex[0] = 0;
-        gGT->confetti.numParticles_max = 250;
-        gGT->confetti.unk2 = 250;
-        gGT->renderFlags |= 4;
-    }
+    /* END Randomizer */
 
     // 0 = size
     // 0 = no relation to param4
