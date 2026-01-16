@@ -35,23 +35,20 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
     // change color
     txtColor = (gGT->timer & FPS_DOUBLE(1))
         ? 0xffff8000
-        : 0xffff8004;
+        : 0xffff8004
+    ;
 
     // 0x3a is the bit index of where platinum
     // relics start in adventure progress
     bitIndex = gGT->levelID + 0x3a;
 
     // set color of relic in Instance
-    relic->colorRGBA =
-
-        // check if platinum is unlocked, set platinum color
-        (CHECK_ADV_BIT(adv->rewards, bitIndex)) ? 0xffede90 :
-
-        // check if gold is unlocked, set gold color
-        (CHECK_ADV_BIT(adv->rewards, (bitIndex - 0x12) )) ? 0xd8d2090 :
-
-        // if sapphire, keep original color
-        relic->colorRGBA;
+    relic->colorRGBA = (CHECK_ADV_BIT(adv->rewards, bitIndex)) // check if platinum is unlocked, set platinum color
+        ? 0xffede90
+        : (CHECK_ADV_BIT(adv->rewards, (bitIndex - 0x12) )) // check if gold is unlocked, set gold color
+            ? 0xd8d2090
+            : relic->colorRGBA // if sapphire, keep original color
+    ;
 
     sdata->ptrTimebox1->scale[0] = 0x300;
     sdata->ptrTimebox1->scale[1] = 0x300;
@@ -71,9 +68,8 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
     }
 
 
-
     // Did not get all crates, prepare skips in the menus
-    if(d->numTimeCrates != gGT->timeCratesInLEV)
+    if (d->numTimeCrates != gGT->timeCratesInLEV)
     {
         // if race ended 59-80 frames ago
         if ((u_int)(sdata->framesSinceRaceEnded - FPS_DOUBLE(21)) < FPS_DOUBLE(59))
@@ -84,10 +80,9 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         }
 
         // if race ended 229-250 frames ago, and if WON relic
-        if (
-                ((gGT->gameModeEnd & NEW_RELIC) == 0) &&
-                ((u_int)(sdata->framesSinceRaceEnded - FPS_DOUBLE(21)) < FPS_DOUBLE(229))
-            )
+        if (   ((gGT->gameModeEnd & NEW_RELIC) == 0)
+            && ((u_int)(sdata->framesSinceRaceEnded - FPS_DOUBLE(21)) < FPS_DOUBLE(229))
+        )
         {
             // advance timer to 370 frames, since we can skip the amount of time
             // that would have been taken to draw the animation
@@ -97,37 +92,35 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
     }
 
 
-
     // Draw Race Clock,
     // Reset local frame counter
     elapsedFrames = sdata->framesSinceRaceEnded;
+
+    if (elapsedFrames >= FPS_DOUBLE(490))
     {
-        if (elapsedFrames >= FPS_DOUBLE(490))
-        {
-            elapsedFrames -= FPS_DOUBLE(490);
+        elapsedFrames -= FPS_DOUBLE(490);
 
-            startX = 0x100;
-            endY = -0x32;
-        }
-
-        // 0 - 489
-        else
-        {
-            startX = -0x96;
-            endY = 0x32;
-        }
-
-
-        // interpolate fly-in
-        DECOMP_UI_Lerp2D_Linear(
-            &pos[0],
-            startX, 0x32,
-            0x100, endY,
-            elapsedFrames, FPS_DOUBLE(0x14));
-
-        DECOMP_UI_DrawRaceClock(pos[0], pos[1] - 8, 1, d);
+        startX = 0x100;
+        endY = -0x32;
+    }
+    else // 0 - 489
+    {
+        startX = -0x96;
+        endY = 0x32;
     }
 
+    // interpolate fly-in
+    DECOMP_UI_Lerp2D_Linear(
+        &pos[0],
+        startX,
+        0x32,
+        0x100,
+        endY,
+        elapsedFrames,
+        FPS_DOUBLE(0x14)
+    );
+
+    DECOMP_UI_DrawRaceClock(pos[0], pos[1] - 8, 1, d);
 
 
     // Draw Relic,
@@ -145,11 +138,14 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
 
             DECOMP_UI_Lerp2D_Linear(
                 &pos[0],
-                0x100, 0,
-                -0x64, 0,
-                elapsedFrames, FPS_DOUBLE(0x14));
+                0x100,
+                0,
+                -0x64,
+                0,
+                elapsedFrames,
+                FPS_DOUBLE(0x14)
+            );
         }
-
         else if (elapsedFrames >= FPS_DOUBLE(250))
         {
             // on exactly the 251st frame after race ends
@@ -177,43 +173,44 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
     // Draw Time Crates
     // Reset local frame counter
     elapsedFrames = sdata->framesSinceRaceEnded;
+
+    if (elapsedFrames >= FPS_DOUBLE(490))
     {
-        if (elapsedFrames >= FPS_DOUBLE(490))
-        {
-            elapsedFrames -= FPS_DOUBLE(490);
+        elapsedFrames -= FPS_DOUBLE(490);
 
-            // interpolate fly-in
-            DECOMP_UI_Lerp2D_Linear(
-                &pos[0],
-                200,   0x79,
-                0x264, 0x79,
-                elapsedFrames, FPS_DOUBLE(0x14));
-        }
-
-        else
-        {
-            pos[0] = 200;
-        }
-
-        pos[1] = 0x79;
-
-        sdata->ptrTimebox1->matrix.t[0] = DECOMP_UI_ConvertX_2(pos[0], 0x100);
-        sdata->ptrTimebox1->matrix.t[1] = DECOMP_UI_ConvertY_2(pos[1], 0x100);
-
-        // Draw 'x' before number of crates
-        DecalFont_DrawLine("x", pos[0] + 0x14, pos[1] - 10, 2, 0);
-
-        // %2.02d/%ld: Amount of crates you collected / Total number of crates
-        sprintf(auStack72, "%2.02d/%ld", d->numTimeCrates, gGT->timeCratesInLEV);
-
-        // Draw amount of crates collected
-        DecalFont_DrawLine(auStack72, pos[0] + 0x21, pos[1] - 0xe, 1, 0);
+        // interpolate fly-in
+        DECOMP_UI_Lerp2D_Linear(
+            &pos[0],
+            200,
+            0x79,
+            0x264,
+            0x79,
+            elapsedFrames,
+            FPS_DOUBLE(0x14)
+        );
+    }
+    else
+    {
+        pos[0] = 200;
     }
 
+    pos[1] = 0x79;
+
+    sdata->ptrTimebox1->matrix.t[0] = DECOMP_UI_ConvertX_2(pos[0], 0x100);
+    sdata->ptrTimebox1->matrix.t[1] = DECOMP_UI_ConvertY_2(pos[1], 0x100);
+
+    // Draw 'x' before number of crates
+    DecalFont_DrawLine("x", pos[0] + 0x14, pos[1] - 10, 2, 0);
+
+    // %2.02d/%ld: Amount of crates you collected / Total number of crates
+    sprintf(auStack72, "%2.02d/%ld", d->numTimeCrates, gGT->timeCratesInLEV);
+
+    // Draw amount of crates collected
+    DecalFont_DrawLine(auStack72, pos[0] + 0x21, pos[1] - 0xe, 1, 0);
 
 
     // if collected all time boxes in level
-    if(d->numTimeCrates == gGT->timeCratesInLEV)
+    if (d->numTimeCrates == gGT->timeCratesInLEV)
     {
         // copy to local frame counter
         elapsedFrames = sdata->framesSinceRaceEnded;
@@ -230,9 +227,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
                 startX = 0x100;
                 endX = 0x296;
             }
-
-            // === fade-in PERFECT >=80 ===
-            else
+            else // === fade-in PERFECT >=80 ===
             {
                 startX = -0x96;
                 endX = 0x100;
@@ -246,13 +241,22 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
 
             DECOMP_UI_Lerp2D_Linear(
                 &pos[0],
-                startX, 0,
-                endX, 0,
-                elapsedFrames, FPS_DOUBLE(0x14));
+                startX,
+                0,
+                endX,
+                0,
+                elapsedFrames,
+                FPS_DOUBLE(0x14)
+            );
 
             // "PERFECT"
             DecalFont_DrawLine(
-                sdata->lngStrings[0x162], pos[0], 0x8a, 1, txtColor);
+                sdata->lngStrings[0x162],
+                pos[0],
+                0x8a,
+                1,
+                txtColor
+            );
         }
 
         // copy to local frame counter
@@ -273,9 +277,13 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
             // interpolate fly-in
             DECOMP_UI_Lerp2D_Linear(
                 &pos[0],
-                0x296, 0,
-                0x199, 0,
-                elapsedFrames, FPS_DOUBLE(0x14));
+                0x296,
+                0,
+                0x199,
+                0,
+                elapsedFrames,
+                FPS_DOUBLE(0x14)
+            );
 
             // 20 frames after fly-in starts, do the countdown
             if (elapsedFrames >= FPS_DOUBLE(20))
@@ -288,11 +296,10 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
 
                 // -3, -2, -1, -0... (dont go past 0)
                 if (minusSeconds > 10)
+                {
                     minusSeconds = 10;
-
-                // "if != 0" means
-                // "if text is not -10"
-                else if (minusSeconds != 0)
+                }
+                else if (minusSeconds != 0) // "if != 0" means "if text is not -10"
                 {
                     // on every 5th frame, except the first frame
                     if (elapsedFrames % FPS_DOUBLE(5) == 0)
@@ -314,15 +321,13 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
     }
 
 
-
     // Draw RELIC AWARDED
     // copy to local frame counter
     elapsedFrames = sdata->framesSinceRaceEnded;
 
-    if (
-            (elapsedFrames >= FPS_DOUBLE(250)) &&
-            ((gGT->gameModeEnd & NEW_RELIC) != 0)
-        )
+    if (   (elapsedFrames >= FPS_DOUBLE(250))
+        && ((gGT->gameModeEnd & NEW_RELIC) != 0)
+    )
     {
         // Fade-out early, so "NEW HIGH SCORE" can fade-in
         if (elapsedFrames >= FPS_DOUBLE(370))
@@ -332,9 +337,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
             startX = 0x100;
             endX = 0x296;
         }
-
-        // Fade-In
-        else
+        else // Fade-In
         {
             elapsedFrames -= FPS_DOUBLE(250);
 
@@ -345,25 +348,31 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         // interpolate fly-in
         DECOMP_UI_Lerp2D_Linear(
             &pos[0],
-            startX, 0x50,
-            endX, 0x50,
-            elapsedFrames, FPS_DOUBLE(0x14));
+            startX,
+            0x50,
+            endX,
+            0x50,
+            elapsedFrames,
+            FPS_DOUBLE(0x14)
+        );
 
         // "RELIC AWARDED!"
         DecalFont_DrawLine(
-            sdata->lngStrings[0x160], pos[0], pos[1], 1, txtColor);
+            sdata->lngStrings[0x160],
+            pos[0],
+            pos[1],
+            1,
+            txtColor
+        );
     }
-
-
 
 
     // copy to local frame counter
     elapsedFrames = sdata->framesSinceRaceEnded;
 
-    if (
-            (elapsedFrames >= FPS_DOUBLE(370)) &&
-            ((gGT->gameModeEnd & NEW_HIGH_SCORE) != 0)
-        )
+    if (   (elapsedFrames >= FPS_DOUBLE(370))
+        && ((gGT->gameModeEnd & NEW_HIGH_SCORE) != 0)
+    )
     {
         elapsedFrames -= FPS_DOUBLE(370);
 
@@ -375,7 +384,6 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
             startX = 0x100;
             endX = 0x296;
         }
-
         else
         {
             startX = -0x96;
@@ -385,16 +393,23 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         // Interpolate fly-in
         DECOMP_UI_Lerp2D_Linear(
             &pos[0],
-            startX, 0x50,
-            endX, 0x50,
-            elapsedFrames, FPS_DOUBLE(0x14));
+            startX,
+            0x50,
+            endX,
+            0x50,
+            elapsedFrames,
+            FPS_DOUBLE(0x14)
+        );
 
         // "NEW HIGH SCORE!"
         DecalFont_DrawLine(
-            sdata->lngStrings[0x161], pos[0], pos[1], 1, txtColor);
+            sdata->lngStrings[0x161],
+            pos[0],
+            pos[1],
+            1,
+            txtColor
+        );
     }
-
-
 
 
     // copy to local frame counter
@@ -410,12 +425,14 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         // Interpolate, vertical fly-out
         DECOMP_UI_Lerp2D_Linear(
             &pos[0],
-            -0xa, 0xc,
-            -0xa, -0x58,
-            elapsedFrames, FPS_DOUBLE(0x14));
+            -0xa,
+            0xc,
+            -0xa,
+            -0x58,
+            elapsedFrames,
+            FPS_DOUBLE(0x14)
+        );
     }
-
-
 
 
     // This is actually a RECT on the stack
@@ -426,17 +443,16 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
 
     // Draw 2D Menu rectangle background
     RECTMENU_DrawInnerRect(
-        &box, 0, gGT->backBuffer->otMem.startPlusFour);
+        &box,
+        0,
+        gGT->backBuffer->otMem.startPlusFour
+    );
 
 
-
-    if (     // If you have not pressed X to continue
-            ((sdata->menuReadyToPass & 1) == 0) &&
-
-            (sdata->framesSinceRaceEnded >= 510) &&
-
-            ((gGT->gameModeEnd & NEW_HIGH_SCORE) == 0)
-        )
+    if (   ((sdata->menuReadyToPass & 1) == 0) // If you have not pressed X to continue
+        && (sdata->framesSinceRaceEnded >= 510)
+        && ((gGT->gameModeEnd & NEW_HIGH_SCORE) == 0)
+    )
     {
         DECOMP_RR_EndEvent_DrawHighScore(0x100, 10);
 
