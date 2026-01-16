@@ -1,5 +1,19 @@
 # Changelog
 
+## alpha 3
+
+### General Changes
+
+* CTR Challenges
+  * Hide the CTR token at the end of a successful CTR Challenge
+  * Change the displayed text from `CTR TOKEN AWARDED` to `LETTERS COLLECTED`
+* Crystal Challenges
+  * Hide the CTR token at the end of a successful Crystal Challenge
+  * Change the displayed text from `CTR TOKEN AWARDED` to `CRYSTALS COLLECTED`
+* Relic Races
+  * Hide the Relic at the end of a successful Relic Race
+  * Change the displayed text from `RELIC AWARDED!` to `<type> TIME BEATEN` (type being `SAPPHIRE`, `GOLD`, `PLATINUM`)
+
 ## alpha 2
 
 ### Bug Fixes
