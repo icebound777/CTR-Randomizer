@@ -5,7 +5,10 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
     struct GameTracker *gGT;
     struct AdvProgress *adv;
     struct Driver *d;
+    // RANDOMIZER hides the relic
+    #if 0
     struct Instance *relic;
+    #endif
 
     char boolEarly;
     short pos[2];
@@ -26,7 +29,10 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
 
     gGT = sdata->gGT;
     d = gGT->drivers[0];
+    // RANDOMIZER hides the relic
+    #if 0
     relic = sdata->ptrRelic;
+    #endif
     adv = &sdata->advProgress;
 
     // testing
@@ -42,6 +48,8 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
     // relics start in adventure progress
     bitIndex = gGT->levelID + 0x3a;
 
+    // RANDOMIZER hides the relic
+    #if 0
     // set color of relic in Instance
     relic->colorRGBA = (CHECK_ADV_BIT(adv->rewards, bitIndex)) // check if platinum is unlocked, set platinum color
         ? 0xffede90
@@ -49,6 +57,23 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
             ? 0xd8d2090
             : relic->colorRGBA // if sapphire, keep original color
     ;
+    #endif
+
+    // RANDOMIZER START
+    char relictime_text[20 + 1] = {0};
+    if (CHECK_ADV_BIT(adv->rewards, bitIndex)) // plat time beaten
+    {
+        strcpy(relictime_text, "PLATINUM TIME BEATEN");
+    }
+    else if (CHECK_ADV_BIT(adv->rewards, (bitIndex - 0x12)))
+    {
+        strcpy(relictime_text, "GOLD TIME BEATEN");
+    }
+    else
+    {
+        strcpy(relictime_text, "SAPPHIRE TIME BEATEN");
+    }
+    // RANDOMIZER END
 
     sdata->ptrTimebox1->scale[0] = 0x300;
     sdata->ptrTimebox1->scale[1] = 0x300;
@@ -155,6 +180,8 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
                 OtherFX_Play(0x67, 1);
             }
 
+            // RANDOMIZER hides the relic
+            #if 0
             // if relic has not fully grown
             if (relic->scale[0] < 0xc00)
             {
@@ -163,10 +190,14 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
                 relic->scale[1] += FPS;
                 relic->scale[2] += FPS;
             }
+            #endif
         }
 
+        // RANDOMIZER hides the relic
+        #if 0
         relic->matrix.t[0] = UI_ConvertX_2(pos[0], 0x100);
         relic->matrix.t[1] = UI_ConvertY_2(0xa2, 0x100);
+        #endif
     }
 
 
@@ -334,15 +365,15 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         {
             elapsedFrames -= FPS_DOUBLE(370);
 
-            startX = 0x100;
-            endX = 0x296;
+            startX = 256;
+            endX = 682;
         }
         else // Fade-In
         {
             elapsedFrames -= FPS_DOUBLE(250);
 
-            startX = -0x96;
-            endX = 0x100;
+            startX = -170;
+            endX = 256;
         }
 
         // interpolate fly-in
@@ -358,7 +389,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
 
         // "RELIC AWARDED!"
         DecalFont_DrawLine(
-            sdata->lngStrings[0x160],
+            &relictime_text,
             pos[0],
             pos[1],
             1,
@@ -454,6 +485,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         && ((gGT->gameModeEnd & NEW_HIGH_SCORE) == 0)
     )
     {
+        // RR_EndEvent_DrawHighScore
         void (*FUN_8009fcd0)(short param_1, int param_2, short param_3) = 0x8009fcd0;
         FUN_8009fcd0(0x100, 10, 1);
 
