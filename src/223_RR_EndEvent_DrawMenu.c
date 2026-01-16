@@ -454,7 +454,8 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         && ((gGT->gameModeEnd & NEW_HIGH_SCORE) == 0)
     )
     {
-        RR_EndEvent_DrawHighScore(0x100, 10);
+        void (*FUN_8009fcd0)(short param_1, int param_2, short param_3) = 0x8009fcd0;
+        FUN_8009fcd0(0x100, 10, 1);
 
         // PRESS * TO CONTINUE
         DecalFont_DrawLine(sdata->lngStrings[0xc9], 0x100, 0xbe, 1, 0xffff8000);
