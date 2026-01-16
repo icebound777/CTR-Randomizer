@@ -57,7 +57,7 @@ void messages_handler()
     if (msg_mode != DISPLAYING_MESSAGE_AP && msg_mode != DISPLAYING_MESSAGE_INTERNAL)
     {
         DecalFont_DrawLine("CTR Randomizer", 10, 190, FONT_SMALL, ORANGE);
-        DecalFont_DrawLine("alpha 2            ", 10, 200, FONT_SMALL, ORANGE);
+        DecalFont_DrawLine("alpha 3            ", 10, 200, FONT_SMALL, ORANGE);
     }
 
     // Handle messsage handler states
