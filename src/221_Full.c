@@ -165,11 +165,13 @@ void DECOMP_CC_EndEvent_DrawMenu()
 
     // CTR TOKEN AWARDED
     DecalFont_DrawLine(
-        sdata->lngStrings[0x16F],
+        "CRYSTALS COLLECTED", //sdata->lngStrings[0x16F],
         posXY[0], 0xA2,
         FONT_BIG, (JUSTIFY_CENTER | ORANGE));
 
     // make token visible
+    // RANDOMIZER: Actually, don't
+    #if 0
     tokenInst->flags &= ~(HIDE_MODEL);
 
     tokenInst->matrix.t[0] = UI_ConvertX_2(posXY[0], 0x200);
@@ -186,9 +188,10 @@ void DECOMP_CC_EndEvent_DrawMenu()
             tokenInst->scale[2] = growVal;
         }
     }
+    else
+    #endif
 
-    // play unlock sound after exactly 1 second
-    else if(elapsedFrames == FPS_DOUBLE(30))
+    if (elapsedFrames == FPS_DOUBLE(30)) // play unlock sound after exactly 1 second
     {
         OtherFX_Play(0x67, 1);
     }
