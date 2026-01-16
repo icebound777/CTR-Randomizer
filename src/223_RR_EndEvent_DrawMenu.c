@@ -110,7 +110,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
     }
 
     // interpolate fly-in
-    DECOMP_UI_Lerp2D_Linear(
+    UI_Lerp2D_Linear(
         &pos[0],
         startX,
         0x32,
@@ -120,7 +120,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         FPS_DOUBLE(0x14)
     );
 
-    DECOMP_UI_DrawRaceClock(pos[0], pos[1] - 8, 1, d);
+    UI_DrawRaceClock(pos[0], pos[1] - 8, 1, d);
 
 
     // Draw Relic,
@@ -136,7 +136,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         {
             elapsedFrames -= FPS_DOUBLE(490);
 
-            DECOMP_UI_Lerp2D_Linear(
+            UI_Lerp2D_Linear(
                 &pos[0],
                 0x100,
                 0,
@@ -165,8 +165,8 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
             }
         }
 
-        relic->matrix.t[0] = DECOMP_UI_ConvertX_2(pos[0], 0x100);
-        relic->matrix.t[1] = DECOMP_UI_ConvertY_2(0xa2, 0x100);
+        relic->matrix.t[0] = UI_ConvertX_2(pos[0], 0x100);
+        relic->matrix.t[1] = UI_ConvertY_2(0xa2, 0x100);
     }
 
 
@@ -179,7 +179,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         elapsedFrames -= FPS_DOUBLE(490);
 
         // interpolate fly-in
-        DECOMP_UI_Lerp2D_Linear(
+        UI_Lerp2D_Linear(
             &pos[0],
             200,
             0x79,
@@ -196,8 +196,8 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
 
     pos[1] = 0x79;
 
-    sdata->ptrTimebox1->matrix.t[0] = DECOMP_UI_ConvertX_2(pos[0], 0x100);
-    sdata->ptrTimebox1->matrix.t[1] = DECOMP_UI_ConvertY_2(pos[1], 0x100);
+    sdata->ptrTimebox1->matrix.t[0] = UI_ConvertX_2(pos[0], 0x100);
+    sdata->ptrTimebox1->matrix.t[1] = UI_ConvertY_2(pos[1], 0x100);
 
     // Draw 'x' before number of crates
     DecalFont_DrawLine("x", pos[0] + 0x14, pos[1] - 10, 2, 0);
@@ -239,7 +239,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
                 }
             }
 
-            DECOMP_UI_Lerp2D_Linear(
+            UI_Lerp2D_Linear(
                 &pos[0],
                 startX,
                 0,
@@ -275,7 +275,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
             str[3] = 0;
 
             // interpolate fly-in
-            DECOMP_UI_Lerp2D_Linear(
+            UI_Lerp2D_Linear(
                 &pos[0],
                 0x296,
                 0,
@@ -346,7 +346,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         }
 
         // interpolate fly-in
-        DECOMP_UI_Lerp2D_Linear(
+        UI_Lerp2D_Linear(
             &pos[0],
             startX,
             0x50,
@@ -391,7 +391,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         }
 
         // Interpolate fly-in
-        DECOMP_UI_Lerp2D_Linear(
+        UI_Lerp2D_Linear(
             &pos[0],
             startX,
             0x50,
@@ -423,7 +423,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         elapsedFrames -= FPS_DOUBLE(490);
 
         // Interpolate, vertical fly-out
-        DECOMP_UI_Lerp2D_Linear(
+        UI_Lerp2D_Linear(
             &pos[0],
             -0xa,
             0xc,
@@ -454,7 +454,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         && ((gGT->gameModeEnd & NEW_HIGH_SCORE) == 0)
     )
     {
-        DECOMP_RR_EndEvent_DrawHighScore(0x100, 10);
+        RR_EndEvent_DrawHighScore(0x100, 10);
 
         // PRESS * TO CONTINUE
         DecalFont_DrawLine(sdata->lngStrings[0xc9], 0x100, 0xbe, 1, 0xffff8000);
