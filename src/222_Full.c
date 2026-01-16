@@ -160,12 +160,15 @@ void AA_EndEvent_DrawMenu(void)
                     lerpEndX = hudCTR->x - 0x10;
                     lerpEndY = hudCTR->y + 0x50;
 
+                    // RANDOMIZER
+                    #if 0
                     if (hudToken->scale[0] < 0x2001)
                     {
                         hudToken->scale[0] += FPS_HALF(0x200);
                         hudToken->scale[1] += FPS_HALF(0x200);
                         hudToken->scale[2] += FPS_HALF(0x200);
                     }
+                    #endif
 
                     if (hudC->scale[0] == 0x800)
                         OtherFX_Play(0x67, 1);
@@ -203,7 +206,7 @@ void AA_EndEvent_DrawMenu(void)
                     txtColor = (gGT->timer & FPS_DOUBLE(1)) ? 0xFFFF8003 : 0xFFFF8004;
 
                     DecalFont_DrawLine(
-                        sdata->lngStrings[0x16F],
+                        "LETTERS COLLECTED", //sdata->lngStrings[0x16F],
                         txtPos[0], txtPos[1],
                         1, txtColor);
                 }
@@ -214,9 +217,12 @@ void AA_EndEvent_DrawMenu(void)
                     lerpEndX, lerpEndY,
                     elapsedFrames, FPS_DOUBLE(8));
 
+                // RANDOMIZER
+                #if 0
                 hudToken->flags &= ~HIDE_MODEL;
                 hudToken->matrix.t[0] = hudT->matrix.t[0];
                 hudToken->matrix.t[1] = UI_ConvertY_2(letterPos[1] + 0x18, 0x200);
+                #endif
 
                 // variable reuse, frame timers
                 lerpStartY = FPS_DOUBLE(120);
