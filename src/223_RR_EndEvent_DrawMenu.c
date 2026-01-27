@@ -326,14 +326,13 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
                 int minusSeconds = elapsedFrames / FPS_DOUBLE(5);
 
                 // -3, -2, -1, -0... (dont go past 0)
-                if (minusSeconds > 10)
+                if (minusSeconds != 0)
                 {
-                    minusSeconds = 10;
-                }
-                else if (minusSeconds != 0) // "if != 0" means "if text is not -10"
-                {
-                    // on every 5th frame, except the first frame
-                    if (elapsedFrames % FPS_DOUBLE(5) == 0)
+                    if (minusSeconds > 10)
+                    {
+                        minusSeconds = 10;
+                    }
+                    else if (elapsedFrames % FPS_DOUBLE(5) == 0) // on every 5th frame, except the first frame
                     {
                         // subtract a second
                         d->timeElapsedInRace -= 960;
