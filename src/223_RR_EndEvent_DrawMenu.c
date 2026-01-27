@@ -257,6 +257,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
             {
                 startX = 0x100;
                 endX = 0x296;
+                elapsedFrames -= FPS_DOUBLE(170);
             }
             else // === fade-in PERFECT >=80 ===
             {
