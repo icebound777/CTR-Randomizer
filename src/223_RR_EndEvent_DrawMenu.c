@@ -294,7 +294,7 @@ void DECOMP_RR_EndEvent_DrawMenu(void)
         elapsedFrames = sdata->framesSinceRaceEnded;
 
         // fade-in COUNTDOWN (-10, -9, -8...)
-        if (elapsedFrames >= FPS_DOUBLE(140))
+        if (elapsedFrames >= FPS_DOUBLE(140) && elapsedFrames < FPS_DOUBLE(250))
         {
             elapsedFrames -= FPS_DOUBLE(140);
 
