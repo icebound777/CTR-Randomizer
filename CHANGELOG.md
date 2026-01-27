@@ -1,8 +1,17 @@
 # Changelog
 
+## beta 1
+
+### Bug Fixes
+
+* Relic Races
+  * Fix 10 second bonus counter for perfect runs resetting to `-10` after counting to zero.
+  * Fix 10 second bonus counter for perfect runs staying on screen instead of vanishing.
+  * Fix `PERFECT` text for perfect runs not doing a fade-out to the right-side screen edge.
+
 ## alpha 3
 
-### General Changes
+### General Changes (alpha 3)
 
 * CTR Challenges
   * Hide the CTR token at the end of a successful CTR Challenge
@@ -16,7 +25,7 @@
 
 ## alpha 2
 
-### Bug Fixes
+### Bug Fixes (alpha 2)
 
 * Gem Cups
   * Exiting out of a gem cup, or losing a gem cup, should no longer place the player into an unloaded hub. This only happened if gem cup warp pads were shuffled into locations outside of Gemstone Valley.
