@@ -23,13 +23,13 @@ void DECOMP_SelectProfile_AdvPickMode_MenuProc(struct RectMenu* menu)
     // get value of row selected
     short row = menu->rowSelected;
 
-    if (row < ROW_EXIT && row >= ROW_LOAD)
+    if (row < ROW_EXIT)
     {
         if (row == ROW_DELETE)
         {
             OtherFX_Play(5, 1); // play menu error sound
         }
-        else
+        else if (-1 < row)
         {
             // Set Load/Save to "Green" mode, remembering the last selected row
             SelectProfile_ToggleMode((row | 0x20));
@@ -38,14 +38,17 @@ void DECOMP_SelectProfile_AdvPickMode_MenuProc(struct RectMenu* menu)
             sdata->ptrDesiredMenu = &data.menuFourAdvProfiles;
             return;
         }
-    }
 
-    if (row == ROW_EXIT)
+        if (row != -1) return;
+    }
+    else if (row != ROW_EXIT)
     {
-        // make Menu invisible
-        RECTMENU_Hide(menu);
-
-        // SelectProfile_Destroy
-        SelectProfile_Destroy();
+        return;
     }
+
+    // make Menu invisible
+    RECTMENU_Hide(menu);
+
+    // SelectProfile_Destroy
+    SelectProfile_Destroy();
 }
