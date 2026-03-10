@@ -127,6 +127,10 @@ void randomizer_set_profile_defaults(struct AdvProgress *adv)
     );
     if (db_result == DB_VALUE_OK) skip_mask_hints = db_ret;
 
+    // Always skip new world hint: If we didn't, then the post-RipperRoo
+    // cutscene not playing can crash the game.
+    adv->rewards[3] = REWARD_MASKHINT_NEWWORLD;
+
     if (skip_mask_hints)
     {
         // Set all mask hints as already witnessed
@@ -137,8 +141,7 @@ void randomizer_set_profile_defaults(struct AdvProgress *adv)
             REWARD_MASKHINT_BOSSGARAGE      |
             REWARD_MASKHINT_ENTEROXIDESHIO  |
             REWARD_MASKHINT_OPENDOORS       |
-            REWARD_MASKHINT_SAVELOADSCREEN  |
-            REWARD_MASKHINT_NEWWORLD
+            REWARD_MASKHINT_SAVELOADSCREEN
         );
         adv->rewards[4] = (
             REWARD_MASKHINT_HANGTIMETURBO  |
