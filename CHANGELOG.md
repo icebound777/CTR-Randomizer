@@ -1,8 +1,15 @@
 # Changelog
 
-## beta 1
+## beta 2
 
 ### Bug Fixes
+
+* Mask Hints
+  * Fix a possible game crash after opening the first key door, if `Skip Mask Hints` was turned off. Fixed by always skipping the "opening first door" mask hint, even if `Skip Mask Hints` is disabled.
+
+## beta 1
+
+### Bug Fixes (beta 1)
 
 * Relic Races
   * Fix 10 second bonus counter for perfect runs resetting to `-10` after counting to zero.
