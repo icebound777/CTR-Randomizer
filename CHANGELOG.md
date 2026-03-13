@@ -1,5 +1,10 @@
 # Changelog
 
+## next version
+
+* Bug Fixes
+  * Fix the background of the `SAVING TO MEMORY CARD` screen not being transparent.
+
 ## beta 2
 
 ### Bug Fixes
