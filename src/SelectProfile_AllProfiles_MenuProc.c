@@ -1255,7 +1255,7 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
                     }
 
                     // 0xea
-                    // SAVING TO MEMORY CARD...
+                     // SAVING TO MEMORY CARD...
 
                     if (   // If you are deleting data
                            (sdata->memcardAction == 2)
@@ -1325,8 +1325,8 @@ void SelectProfile_AllProfiles_MenuProc(struct RectMenu* menu)
 
                     // Draw 2D Menu rectangle background
                     RECTMENU_DrawInnerRect(
-                        &(sdata->unk_BeforeTokenMenu[0]),
-                        (int)*(short *)(menu + 0x14),
+                        sdata->unk_BeforeTokenMenu,
+                        (int) menu->drawStyle,
                         sdata->gGT->backBuffer->otMem.startPlusFour
                     );
                 }

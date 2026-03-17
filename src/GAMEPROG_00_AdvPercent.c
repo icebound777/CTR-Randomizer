@@ -141,7 +141,8 @@ void randomizer_set_profile_defaults(struct AdvProgress *adv)
             REWARD_MASKHINT_BOSSGARAGE      |
             REWARD_MASKHINT_ENTEROXIDESHIO  |
             REWARD_MASKHINT_OPENDOORS       |
-            REWARD_MASKHINT_SAVELOADSCREEN
+            REWARD_MASKHINT_SAVELOADSCREEN  |
+            REWARD_MASKHINT_NEWWORLD
         );
         adv->rewards[4] = (
             REWARD_MASKHINT_HANGTIMETURBO  |
