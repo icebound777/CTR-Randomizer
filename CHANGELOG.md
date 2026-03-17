@@ -1,9 +1,10 @@
 # Changelog
 
-## next version
+## beta 3
 
 * Bug Fixes
   * Fix the background of the `SAVING TO MEMORY CARD` screen not being transparent.
+  * Fix issue introduced in `beta 2` that played the "post-opening a door" mask hint if mask hints were turned off, causing the crash to actually happen to more players.
 
 ## beta 2
 
