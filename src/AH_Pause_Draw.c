@@ -200,7 +200,6 @@ void DECOMP_AH_Pause_Draw(int pageID, int posX)
                 ptrPauseObject->PauseMember[2+i].indexAdvPauseInst = i;
 
                 // unlock gem
-                ptrPauseObject->PauseMember[2+i].unlockFlag |= CHECK_ADV_BIT(adv->rewards, (i+0x6a));
                 ptrPauseObject->PauseMember[2+i].unlockFlag |= (
                     (advSlot2->rewards[5] & (0x100 << i))
                     || (advSlot3->rewards[5] & (0x100 << i))
