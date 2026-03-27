@@ -1,6 +1,6 @@
 # Changelog
 
-## next version
+## beta 4
 
 * Bug Fixes
   * Fix the gems showing as unlocked in the pause menu after winning their original gem cup, even if the player never actually found the gem item. These "fake gems" did not count for warp pad unlocks, though, so this was a purely visual bug.
