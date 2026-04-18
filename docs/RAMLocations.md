@@ -270,3 +270,12 @@ rewards[5] & 0x400  = flag blue gem
 rewards[5] & 0x800  = flag yellow gem
 rewards[5] & 0x1000 = flag purple gem
 ```
+
+## Tool-specific Data
+
+It is possible for outside tools, like a multiworld integration, to write their own data into the save files.  
+This will most likely be used for writing a multiworld's `item received sequence` into the save.
+
+It does not actually matter where exactly in the save files the tool writes its data, as long as this does not interfere with the data handled by the randomizer mod itself.  
+For this purpose, it is recommended to stick to SaveSlot 4.  
+Particularly the `name` and `timesLostRacePerLev` arrays lend themselves to this, as they are never written to or read from by the randomizer mod.
