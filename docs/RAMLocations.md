@@ -21,7 +21,7 @@ The randomizer only makes CurrAdv and SaveSlot 1 available to the player; SaveSl
 * CurrAdv: Currently loaded Adventure Mode game; progress flags only
 * SaveSlot 1: slot for CurrAdv to save to.
 * SaveSlot 2: Local item unlocks. Here lives CurrAdv's item inventory. Gets deleted when a new Adventure Mode run is started.
-* SaveSlot 3: Copy of SaveSlot 2. Does not get deleted when a new Adventure Mode run is started. Gets copied over by SaveSlot 2 every time the player manually saves the game. Gets copied to SaveSlot 2 whenever the player manually loads a save. (don't worry about this slot, it's for internal use only)
+* SaveSlot 3: Copy of SaveSlot 2. (don't worry about this slot, it's for internal use only) Does not get deleted when a new Adventure Mode run is started. Gets copied over by SaveSlot 2 every time the player manually saves the game. Gets copied to SaveSlot 2 whenever the player manually loads a save.
 * SaveSlot 4: Multiworld item inventory. Has the exact same data layout as SaveSlot 2, but is never written to by the game. Items written into this save file by outside tools are added to SaveSlot 2's data while calculating item counts for display in the Adventure Mode UI or for unlocking warp pads and boss garages.
 
 For tracker and multiworld tools, the only relevant data is found in:
@@ -40,7 +40,7 @@ The following shows how data is arranged in the 0x50 bytes that each of the 5 sl
 struct AdvProgress
 {
     // offset 0x0
-    unsigned int rewards[6]; (6 * 0x4), but last 2 unused
+    unsigned int rewards[6]; (6 * 0x4), but last one unused
 
     // offset 0x18
     char name[18]; // 0x12
@@ -194,7 +194,7 @@ The `rewards` array saves the Adventure Mode progress. The 6 ints stored here ho
     0x10000: Rampage Ruins CTR Token
     0x20000: Rocky Road CTR Token
     0x40000: Nitro Court CTR Token
-    0x80000: Oxide 1
+    0x80000: Oxide 1 // Yeah no clue why this is tracked in two different locations, but it is
     0x100000: Oxide 2
     0x200000: ???
     0x400000: Mask Hint - Welcome to Arena
