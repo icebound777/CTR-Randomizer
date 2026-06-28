@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0-beta5
+
+* Credits
+  * Moved `Wiz_Taor` to new `Special Thanks` section.
+* Multiworld
+  * Add ignoring the special white gem race reward, so that can be handled by multiworld implementations.
+
 ## beta 4
 
 * Bug Fixes

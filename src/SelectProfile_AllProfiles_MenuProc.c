@@ -1623,39 +1623,46 @@ void randomizer_draw_credits(void)
             (JUSTIFY_CENTER | ORANGE)
         );
         DecalFont_DrawLine(
-            "Wiz_Taor",
-            xpos,
-            21,
-            font,
-            (JUSTIFY_CENTER | N_GIN_PURPLE)
-        );
-        DecalFont_DrawLine(
             "Icebound777",
             xpos,
-            28,
+            21,
             font,
             (JUSTIFY_CENTER | TROPY_LIGHT_BLUE)
         );
         DecalFont_DrawLine(
             "made using",
             xpos,
-            38,
+            31,
             font,
             (JUSTIFY_CENTER | ORANGE)
         );
         DecalFont_DrawLine(
             "CTR ModSDK",
             xpos,
-            45,
+            38,
             font,
             (JUSTIFY_CENTER | ORANGE)
         );
         DecalFont_DrawLine(
             "PSX Modding Toolchain",
             xpos,
-            52,
+            45,
             font,
             (JUSTIFY_CENTER | ORANGE)
+        );
+        DecalFont_DrawLine(
+            "Special Thanks",
+            xpos,
+            55,
+            font,
+            (JUSTIFY_CENTER | ORANGE)
+        );
+        DecalFont_DrawLine(
+            "Wiz_Taor",
+            xpos,
+            62,
+            font,
+            (JUSTIFY_CENTER | N_GIN_PURPLE)
         );
     }
 }
