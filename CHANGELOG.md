@@ -1,6 +1,6 @@
 # Changelog
 
-## beta 5
+## 1.0.0-beta5
 
 * Credits
   * Moved `Wiz_Taor` to new `Special Thanks` section.
