@@ -1,5 +1,10 @@
 # Changelog
 
+## beta 5
+
+* Multiworld
+  * Add ignoring the special white gem race reward, so that can be handled by multiworld implementations.
+
 ## beta 4
 
 * Bug Fixes
